@@ -9,7 +9,7 @@ export default function PatientDashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showPdfModal, setShowPdfModal] = useState(false);
 
-  const isRegistered = patientData && patientData.name;
+  const isRegistered = patientData && (patientData.firstName || patientData.name);
   const firstName = patientData?.firstName || patientData?.name || "Guest";
   const initials = firstName.slice(0, 2).toUpperCase();
 
