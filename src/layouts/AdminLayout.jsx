@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Activity, LayoutDashboard, FileText, Users, LogOut,
-  Building2, ChevronDown, PlusCircle, List, Bell, Search
+  Building2, ChevronDown, PlusCircle, List, Bell, Search, Menu
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -10,6 +10,8 @@ export default function AdminLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useAuth();
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const [hospitalsMenuOpen, setHospitalsMenuOpen] = useState(
     location.pathname.startsWith('/admin/hospitals')
@@ -53,7 +55,7 @@ export default function AdminLayout() {
     <div className="min-h-screen bg-slate-100 flex font-sans text-slate-900 antialiased">
 
       {/* ── Sidebar ── */}
-      <aside className="w-64 bg-indigo-900 flex flex-col fixed h-full z-20">
+      <aside className={`w-64 bg-indigo-900 flex flex-col fixed h-full z-20 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
 
         {/* Logo */}
         <div className="h-16 flex items-center px-5 border-b border-indigo-800">
@@ -138,14 +140,22 @@ export default function AdminLayout() {
       </aside>
 
       {/* ── Main ── */}
-      <div className="flex-1 ml-64 flex flex-col min-h-screen">
+      <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out ${isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
 
         {/* Header */}
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
 
           {/* Left: breadcrumb + title */}
-          <div>
-            <nav className="flex items-center gap-1 text-xs text-slate-400 mb-0.5">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="p-1.5 -ml-2 rounded-md text-slate-500 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              aria-label="Toggle sidebar"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div>
+              <nav className="flex items-center gap-1 text-xs text-slate-400 mb-0.5">
               {pathSegments.map((seg, i, arr) => {
                 const path   = '/' + arr.slice(0, i + 1).join('/');
                 const isLast = i === arr.length - 1;
@@ -164,6 +174,7 @@ export default function AdminLayout() {
               })}
             </nav>
             <h1 className="text-base font-semibold text-slate-900 leading-tight">{pageTitle}</h1>
+            </div>
           </div>
 
           {/* Right: search + bell + avatar */}
