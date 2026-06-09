@@ -8,6 +8,7 @@ import AdminLayout from './layouts/AdminLayout';
 
 import Home from './pages/Home';
 import FindDoctors from './pages/FindDoctors';
+import PublicDoctorProfile from './pages/PublicDoctorProfile';
 import Hospitals from './pages/Hospitals';
 import SignIn from './pages/SignIn';
 import Dashboard from './pages/admin/Dashboard';
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/" element={<PublicLayout />}>
               <Route index element={<Home />} />
               <Route path="find-doctors" element={<FindDoctors />} />
+              <Route path="find-doctors/:id" element={<PublicDoctorProfile />} />
               <Route path="hospitals" element={<Hospitals />} />
             </Route>
             {/* Auth Route without Navbar/Footer */}

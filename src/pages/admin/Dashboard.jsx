@@ -1,365 +1,420 @@
 import { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import {
-  Users, CheckCircle2, AlertCircle, Hospital, DollarSign,
-  ChevronUp, ChevronDown, ChevronRight, ArrowUpRight,
-  Star, Filter, Download
+  Users, IndianRupee, Stethoscope, MapPin,
+  ChevronUp, ChevronDown, ChevronRight,
+  Star, Filter, Download, Award, TrendingUp,
 } from "lucide-react";
 
-const C = {
-  indigo: "#4f46e5",
+// ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
+const T = {
+  indigo:      "#4f46e5",
   indigoLight: "#eef2ff",
-  indigoMid: "#818cf8",
-  slate900: "#0f172a",
-  slate500: "#64748b",
-  slate300: "#cbd5e1",
-  slate100: "#f1f5f9",
-  white: "#ffffff",
-  emerald: "#10b981",
-  amber: "#f59e0b",
-  rose: "#f43f5e",
-  violet: "#7c3aed",
+  indigoMid:   "#818cf8",
+  emerald:     "#10b981",
+  emeraldLight:"#d1fae5",
+  amber:       "#f59e0b",
+  amberLight:  "#fef3c7",
+  rose:        "#f43f5e",
+  roseLight:   "#ffe4e6",
+  violet:      "#7c3aed",
+  violetLight: "#ede9fe",
+  sky:         "#0ea5e9",
+  skyLight:    "#e0f2fe",
+  slate900:    "#0f172a",
+  slate700:    "#334155",
+  slate500:    "#64748b",
+  slate300:    "#cbd5e1",
+  slate100:    "#f1f5f9",
+  white:       "#ffffff",
+  bg:          "#f8f9fc",
 };
 
-function StatCard({ label, value, icon: Icon, change, changeUp, color }) {
-  const colors = {
-    indigo:  { bg: C.indigoLight, icon: C.indigo,   border: "rgba(79,70,229,0.15)"  },
-    emerald: { bg: "#d1fae5",     icon: C.emerald,  border: "rgba(16,185,129,0.15)" },
-    amber:   { bg: "#fef3c7",     icon: C.amber,    border: "rgba(245,158,11,0.15)" },
-    rose:    { bg: "#ffe4e6",     icon: C.rose,     border: "rgba(244,63,94,0.15)"  },
-    violet:  { bg: "#ede9fe",     icon: C.violet,   border: "rgba(124,58,237,0.15)" },
-  };
-  const c = colors[color] || colors.indigo;
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const STATS = [
+  { label: "Total Patients",    value: "4,218",  change: "+12.4%", up: true,  icon: Users,        color: "indigo"  },
+  { label: "Total Revenue",     value: "₹38.6L", change: "+18.2%", up: true,  icon: IndianRupee,  color: "emerald" },
+  { label: "Top Specialty",     value: "Cardio", change: "146 pts",up: true,  icon: Stethoscope,  color: "violet"  },
+  { label: "Active Regions",    value: "12",     change: "+3 new", up: true,  icon: MapPin,       color: "amber"   },
+];
+
+const SPECIALTY_SERIES = [146, 98, 87, 73, 61, 44];
+const SPECIALTY_LABELS = ["Cardiology", "Orthopedics", "Neurology", "Oncology", "Pediatrics", "Radiology"];
+const SPECIALTY_COLORS = [T.indigo, T.emerald, T.violet, T.rose, T.amber, T.sky];
+
+const REGIONS = [
+  { name: "Maharashtra",   patients: 940, revenue: "₹9.2L",  growth: "+14%" },
+  { name: "Delhi NCR",     patients: 812, revenue: "₹8.1L",  growth: "+11%" },
+  { name: "Karnataka",     patients: 674, revenue: "₹6.8L",  growth: "+19%" },
+  { name: "Tamil Nadu",    patients: 531, revenue: "₹5.4L",  growth: "+8%"  },
+  { name: "Gujarat",       patients: 445, revenue: "₹4.6L",  growth: "+16%" },
+  { name: "West Bengal",   patients: 388, revenue: "₹3.9L",  growth: "+7%"  },
+];
+
+const TOP_DOCTORS = [
+  { name: "Dr. Priya Sharma",  dept: "Cardiology",   patients: 148, rating: 4.9, tag: "indigo"  },
+  { name: "Dr. Arjun Mehta",   dept: "Neurology",    patients: 124, rating: 4.8, tag: "violet"  },
+  { name: "Dr. Kavya Iyer",    dept: "Orthopedics",  patients: 117, rating: 4.9, tag: "emerald" },
+  { name: "Dr. Rohan Gupta",   dept: "Oncology",     patients: 103, rating: 4.7, tag: "rose"    },
+  { name: "Dr. Meena Verma",   dept: "Pediatrics",   patients: 96,  rating: 4.8, tag: "amber"   },
+];
+
+// ─── CHART CONFIGS ───────────────────────────────────────────────────────────
+const revenueChartConfig = {
+  series: [
+    { name: "OPD Revenue",  data: [18, 24, 19, 28, 34, 29, 38, 35, 42, 48, 44, 52] },
+    { name: "IPD Revenue",  data: [12, 16, 14, 20, 24, 22, 28, 26, 30, 34, 32, 38] },
+  ],
+  options: {
+    chart: { type: "area", toolbar: { show: false }, fontFamily: "DM Sans,sans-serif", stacked: false },
+    colors: [T.indigo, T.emerald],
+    fill: { type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.28, opacityTo: 0.02, stops: [0, 100] } },
+    stroke: { curve: "smooth", width: 2.5 },
+    dataLabels: { enabled: false },
+    xaxis: {
+      categories: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+      axisBorder: { show: false }, axisTicks: { show: false },
+      labels: { style: { fontSize: "11px", colors: T.slate500 } },
+    },
+    yaxis: { labels: { formatter: v => `₹${v}L`, style: { fontSize: "11px", colors: T.slate500 } } },
+    grid: { borderColor: T.slate100, strokeDashArray: 4 },
+    legend: { position: "top", horizontalAlign: "right", fontSize: "12px", fontFamily: "DM Sans,sans-serif", labels: { colors: T.slate700 } },
+    tooltip: { theme: "light", y: { formatter: v => `₹${v} Lakh` } },
+  },
+};
+
+const specialtyDonutConfig = {
+  series: SPECIALTY_SERIES,
+  options: {
+    chart: { type: "donut", fontFamily: "DM Sans,sans-serif" },
+    colors: SPECIALTY_COLORS,
+    labels: SPECIALTY_LABELS,
+    legend: { show: false },
+    dataLabels: { enabled: false },
+    stroke: { width: 0 },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "70%",
+          labels: {
+            show: true,
+            total: {
+              show: true, label: "Total Cases",
+              fontSize: "11px", fontWeight: 600, color: T.slate500,
+              fontFamily: "DM Sans,sans-serif",
+              formatter: () => "509",
+            },
+            value: { fontSize: "22px", fontWeight: 800, color: T.slate900, offsetY: 4, fontFamily: "'Sora',sans-serif" },
+          },
+        },
+      },
+    },
+    tooltip: { theme: "light", y: { formatter: v => `${v} patients` } },
+  },
+};
+
+const regionBarConfig = {
+  series: [{ name: "Patients", data: REGIONS.map(r => r.patients) }],
+  options: {
+    chart: { type: "bar", toolbar: { show: false }, fontFamily: "DM Sans,sans-serif" },
+    colors: REGIONS.map((_, i) => [T.indigo, T.emerald, T.violet, T.amber, T.rose, T.sky][i]),
+    plotOptions: { bar: { borderRadius: 6, horizontal: true, barHeight: "58%", distributed: true } },
+    dataLabels: {
+      enabled: true,
+      formatter: v => `${v} pts`,
+      offsetX: 6,
+      style: { fontSize: "11px", fontWeight: 600, colors: [T.slate500] },
+    },
+    xaxis: {
+      categories: REGIONS.map(r => r.name),
+      labels: { style: { fontSize: "11px", colors: T.slate500 } },
+      axisBorder: { show: false }, axisTicks: { show: false },
+    },
+    yaxis: { labels: { style: { fontSize: "12px", colors: T.slate700, fontWeight: 500 } } },
+    grid: { borderColor: T.slate100, strokeDashArray: 4, yaxis: { lines: { show: false } } },
+    legend: { show: false },
+    tooltip: { theme: "light", y: { formatter: v => `${v} patients` } },
+  },
+};
+
+// ─── SUB-COMPONENTS ──────────────────────────────────────────────────────────
+const colorMap = {
+  indigo:  { bg: T.indigoLight,   icon: T.indigo,   border: "rgba(79,70,229,0.12)"   },
+  emerald: { bg: T.emeraldLight,  icon: T.emerald,  border: "rgba(16,185,129,0.12)"  },
+  violet:  { bg: T.violetLight,   icon: T.violet,   border: "rgba(124,58,237,0.12)"  },
+  amber:   { bg: T.amberLight,    icon: T.amber,    border: "rgba(245,158,11,0.12)"  },
+  rose:    { bg: T.roseLight,     icon: T.rose,     border: "rgba(244,63,94,0.12)"   },
+  sky:     { bg: T.skyLight,      icon: T.sky,      border: "rgba(14,165,233,0.12)"  },
+};
+
+function StatCard({ label, value, change, up, icon: Icon, color }) {
+  const c = colorMap[color] || colorMap.indigo;
   return (
     <div style={{
-      background: C.white, borderRadius: 16, padding: "20px 22px",
+      background: T.white, borderRadius: 16, padding: "20px 22px",
       border: `1px solid ${c.border}`,
-      boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(79,70,229,0.04)",
+      boxShadow: "0 1px 4px rgba(0,0,0,0.04), 0 4px 16px rgba(79,70,229,0.04)",
       display: "flex", flexDirection: "column", gap: 14,
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
         <div style={{
           width: 42, height: 42, borderRadius: 12,
-          background: c.bg, display: "flex", alignItems: "center", justifyContent: "center"
+          background: c.bg, display: "flex", alignItems: "center", justifyContent: "center",
         }}>
           <Icon size={20} color={c.icon} strokeWidth={1.8} />
         </div>
         <span style={{
           display: "flex", alignItems: "center", gap: 3,
-          fontSize: 11, fontWeight: 600,
-          color: changeUp ? C.emerald : C.rose,
-          background: changeUp ? "#d1fae5" : "#ffe4e6",
+          fontSize: 11, fontWeight: 700,
+          color: up ? T.emerald : T.rose,
+          background: up ? T.emeraldLight : T.roseLight,
           padding: "3px 8px", borderRadius: 999,
         }}>
-          {changeUp ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
-          {change}
+          {up ? <ChevronUp size={11} /> : <ChevronDown size={11} />} {change}
         </span>
       </div>
       <div>
-        <div style={{ fontSize: 26, fontWeight: 800, color: C.slate900, fontFamily: "'Sora',sans-serif", lineHeight: 1 }}>
+        <div style={{ fontSize: 26, fontWeight: 800, color: T.slate900, fontFamily: "'Sora',sans-serif", lineHeight: 1 }}>
           {value}
         </div>
-        <div style={{ fontSize: 12, color: C.slate500, marginTop: 4, fontWeight: 500 }}>{label}</div>
+        <div style={{ fontSize: 12, color: T.slate500, marginTop: 5, fontWeight: 500 }}>{label}</div>
       </div>
     </div>
   );
 }
 
-function Badge({ status }) {
-  const map = {
-    "In Review": { bg: "#fef3c7", color: "#d97706" },
-    "Completed": { bg: "#d1fae5", color: "#059669" },
-    "Pending":   { bg: "#ede9fe", color: "#7c3aed" },
-    "Urgent":    { bg: "#ffe4e6", color: "#e11d48" },
-  };
-  const s = map[status] || map["Pending"];
+function Card({ children, style = {} }) {
   return (
-    <span style={{
-      fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 999,
-      background: s.bg, color: s.color, letterSpacing: ".03em", whiteSpace: "nowrap"
-    }}>{status}</span>
-  );
-}
-
-export default function Dashboard() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
-
-  const revenueChart = {
-    series: [{ name: "Revenue", data: [42, 58, 51, 67, 82, 74, 93, 88, 105, 118, 112, 134] }],
-    options: {
-      chart: { type: "area", toolbar: { show: false }, fontFamily: "DM Sans,sans-serif" },
-      colors: [C.indigo],
-      fill: { type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.02, stops: [0, 100] } },
-      stroke: { curve: "smooth", width: 2.5 },
-      dataLabels: { enabled: false },
-      xaxis: {
-        categories: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-        axisBorder: { show: false }, axisTicks: { show: false },
-        labels: { style: { fontSize: "11px", colors: C.slate500 } },
-      },
-      yaxis: { labels: { formatter: v => `$${v}k`, style: { fontSize: "11px", colors: C.slate500 } } },
-      grid: { borderColor: "#f1f5f9", strokeDashArray: 4 },
-      tooltip: { theme: "light", y: { formatter: v => `$${v},000` } },
-    },
-  };
-
-  const casesDonut = {
-    series: [46, 30, 14, 10],
-    options: {
-      chart: { type: "donut", fontFamily: "DM Sans,sans-serif" },
-      colors: [C.indigo, C.emerald, C.amber, C.rose],
-      labels: ["Cardiology", "Oncology", "Neurology", "Other"],
-      legend: { position: "bottom", fontSize: "12px", fontFamily: "DM Sans,sans-serif" },
-      plotOptions: { pie: { donut: { size: "68%", labels: { show: true, total: { show: true, label: "Cases", fontSize: "13px", color: C.slate500, fontFamily: "DM Sans,sans-serif", formatter: () => "324" } } } } },
-      dataLabels: { enabled: false },
-      stroke: { width: 0 },
-      tooltip: { theme: "light" },
-    },
-  };
-
-  const bookingsBar = {
-    series: [
-      { name: "Bookings",  data: [18, 27, 22, 35, 29, 40, 33] },
-      { name: "Completed", data: [14, 21, 18, 29, 25, 36, 30] },
-    ],
-    options: {
-      chart: { type: "bar", toolbar: { show: false }, fontFamily: "DM Sans,sans-serif" },
-      colors: [C.indigo, C.emerald],
-      plotOptions: { bar: { borderRadius: 6, columnWidth: "55%", borderRadiusApplication: "end" } },
-      dataLabels: { enabled: false },
-      xaxis: {
-        categories: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
-        axisBorder: { show: false }, axisTicks: { show: false },
-        labels: { style: { fontSize: "11px", colors: C.slate500 } },
-      },
-      yaxis: { labels: { style: { fontSize: "11px", colors: C.slate500 } } },
-      grid: { borderColor: "#f1f5f9", strokeDashArray: 4 },
-      legend: { position: "top", horizontalAlign: "right", fontSize: "12px", fontFamily: "DM Sans,sans-serif" },
-      tooltip: { theme: "light" },
-    },
-  };
-
-  const hospitalRadial = {
-    series: [78, 62, 91, 55],
-    options: {
-      chart: { type: "radialBar", fontFamily: "DM Sans,sans-serif" },
-      colors: [C.indigo, C.violet, C.emerald, C.amber],
-      labels: ["Mayo Clinic", "Johns Hopkins", "Cleveland", "Stanford"],
-      plotOptions: {
-        radialBar: {
-          startAngle: -90, endAngle: 90,
-          hollow: { size: "28%" },
-          track: { background: "#f1f5f9" },
-          dataLabels: { name: { fontSize: "11px" }, value: { fontSize: "13px", fontWeight: 700 } },
-        },
-      },
-      legend: { show: true, position: "bottom", fontSize: "11px", fontFamily: "DM Sans,sans-serif" },
-    },
-  };
-
-  const recentCases = [
-    { id: "#10451", type: "Cardiology Review",        doctor: "Dr. Sarah Johnson", time: "2h ago",  status: "In Review", avatar: "SJ" },
-    { id: "#10452", type: "Oncology Second Opinion",  doctor: "Dr. Raj Patel",     time: "4h ago",  status: "Completed", avatar: "RP" },
-    { id: "#10453", type: "Neurology Consultation",   doctor: "Dr. Liu Wei",       time: "5h ago",  status: "Pending",   avatar: "LW" },
-    { id: "#10454", type: "Orthopedics Review",       doctor: "Dr. Maria Santos",  time: "7h ago",  status: "Urgent",    avatar: "MS" },
-    { id: "#10455", type: "Radiology Analysis",       doctor: "Dr. Tom Harrison",  time: "9h ago",  status: "In Review", avatar: "TH" },
-  ];
-
-  const hospitals = [
-    { name: "Mayo Clinic",      cases: 89, rev: "$124k", rating: 4.9 },
-    { name: "Johns Hopkins",    cases: 72, rev: "$98k",  rating: 4.8 },
-    { name: "Cleveland Clinic", cases: 61, rev: "$87k",  rating: 4.9 },
-    { name: "Stanford Medical", cases: 54, rev: "$76k",  rating: 4.7 },
-  ];
-
-  const card = (children, style = {}) => (
-    <div style={{ background: C.white, borderRadius: 16, border: `1px solid ${C.slate100}`, ...style }}>
+    <div style={{
+      background: T.white, borderRadius: 16,
+      border: `1px solid ${T.slate100}`,
+      boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+      overflow: "hidden", ...style,
+    }}>
       {children}
     </div>
   );
+}
+
+function CardHeader({ title, sub, action }) {
+  return (
+    <div style={{
+      padding: "18px 22px",
+      borderBottom: `1px solid ${T.slate100}`,
+      display: "flex", alignItems: "center", justifyContent: "space-between",
+    }}>
+      <div>
+        <h2 style={{ fontSize: 14, fontWeight: 700, color: T.slate900, fontFamily: "'Sora',sans-serif", margin: 0 }}>{title}</h2>
+        {sub && <p style={{ fontSize: 11, color: T.slate500, margin: "3px 0 0" }}>{sub}</p>}
+      </div>
+      {action}
+    </div>
+  );
+}
+
+// ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
+export default function Dashboard() {
+  const [mounted, setMounted] = useState(false);
+  const [activePeriod, setActivePeriod] = useState(2);
+  useEffect(() => { setMounted(true); }, []);
 
   return (
-    <div style={{ background: "#f8f9fc", minHeight: "100vh", padding: "28px", fontFamily: "'DM Sans', sans-serif" }}>
+    <div >
 
-      {/* Page header */}
+      {/* ── Header ── */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
-          <h1 style={{ fontFamily: "'Sora',sans-serif", fontSize: 22, fontWeight: 800, color: C.slate900, margin: 0 }}>
-            Overview
-          </h1>
-          <p style={{ fontSize: 13, color: C.slate500, marginTop: 4 }}>
-            Here's what's happening with MedExpert today.
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".08em", color: T.indigo, textTransform: "uppercase", margin: 0 }}>
+            Hospital Intelligence
           </p>
+          <h1 style={{ fontFamily: "'Sora',sans-serif", fontSize: 22, fontWeight: 800, color: T.slate900, margin: "4px 0 4px" }}>
+            Overview Dashboard
+          </h1>
+          <p style={{ fontSize: 12, color: T.slate500, margin: 0 }}>Live metrics across patients, revenue, specialties &amp; regions</p>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button style={{
-            display: "flex", alignItems: "center", gap: 6,
-            padding: "8px 14px", borderRadius: 10, border: `1px solid ${C.slate300}`,
-            background: C.white, fontSize: 12, fontWeight: 600, color: C.slate500, cursor: "pointer"
+            display: "flex", alignItems: "center", gap: 6, padding: "8px 14px",
+            borderRadius: 10, border: `1px solid ${T.slate300}`,
+            background: T.white, fontSize: 12, fontWeight: 600, color: T.slate500, cursor: "pointer",
           }}>
             <Filter size={13} /> Filter
           </button>
           <button style={{
-            display: "flex", alignItems: "center", gap: 6,
-            padding: "8px 14px", borderRadius: 10, border: "none",
-            background: C.indigo, fontSize: 12, fontWeight: 600, color: "#fff", cursor: "pointer"
+            display: "flex", alignItems: "center", gap: 6, padding: "8px 16px",
+            borderRadius: 10, border: "none", background: T.indigo,
+            fontSize: 12, fontWeight: 600, color: "#fff", cursor: "pointer",
           }}>
             <Download size={13} /> Export
           </button>
         </div>
       </div>
 
-      {/* Stat cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px,1fr))", gap: 16, marginBottom: 20 }}>
-        <StatCard label="Total Revenue"       value="$1.24M" icon={DollarSign}   change="+18.2%" changeUp color="indigo"  />
-        <StatCard label="Active Patients"      value="3,842"  icon={Users}        change="+9.4%"  changeUp color="emerald" />
-        <StatCard label="Pending Cases"        value="127"    icon={AlertCircle}  change="+4.1%"  changeUp={false} color="amber" />
-        <StatCard label="Completed Opinions"   value="2,189"  icon={CheckCircle2} change="+22.7%" changeUp color="violet" />
-        <StatCard label="Partner Hospitals"    value="512"    icon={Hospital}     change="+6.3%"  changeUp color="rose"   />
+      {/* ── Stat Cards ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 20 }}>
+        {STATS.map(s => <StatCard key={s.label} {...s} />)}
       </div>
 
-      {/* Revenue + Donut */}
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 16, marginBottom: 16 }}>
-        {card(
-          <>
-            <div style={{ padding: "20px 24px 4px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <h2 style={{ fontSize: 15, fontWeight: 700, color: C.slate900, fontFamily: "'Sora',sans-serif", margin: 0 }}>Revenue Overview</h2>
-                <p style={{ fontSize: 12, color: C.slate500, margin: "3px 0 0" }}>Monthly revenue from second opinion services</p>
-              </div>
+      {/* ── Revenue + Specialty Donut ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 16, marginBottom: 16 }}>
+
+        {/* Revenue area chart */}
+        <Card>
+          <CardHeader
+            title="Revenue Trend"
+            sub="OPD vs IPD monthly revenue (₹ Lakh)"
+            action={
               <div style={{ display: "flex", gap: 6 }}>
-                {["1M","6M","1Y"].map((t, i) => (
-                  <button key={t} style={{
+                {["1M","6M","1Y"].map((p, i) => (
+                  <button key={p} onClick={() => setActivePeriod(i)} style={{
                     padding: "4px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: "pointer",
-                    background: i === 2 ? C.indigoLight : "transparent",
-                    color: i === 2 ? C.indigo : C.slate500,
-                    border: i === 2 ? `1px solid rgba(79,70,229,0.2)` : "1px solid transparent",
-                  }}>{t}</button>
+                    background: activePeriod === i ? T.indigoLight : "transparent",
+                    color: activePeriod === i ? T.indigo : T.slate500,
+                    border: activePeriod === i ? `1px solid rgba(79,70,229,0.2)` : "1px solid transparent",
+                  }}>{p}</button>
                 ))}
               </div>
-            </div>
-            {mounted && <ReactApexChart options={revenueChart.options} series={revenueChart.series} type="area" height={220} />}
-          </>
-        )}
-        {card(
-          <>
-            <div style={{ padding: "20px 24px 4px" }}>
-              <h2 style={{ fontSize: 15, fontWeight: 700, color: C.slate900, fontFamily: "'Sora',sans-serif", margin: 0 }}>Cases by Specialty</h2>
-              <p style={{ fontSize: 12, color: C.slate500, margin: "3px 0 0" }}>Distribution this quarter</p>
-            </div>
-            {mounted && <ReactApexChart options={casesDonut.options} series={casesDonut.series} type="donut" height={248} />}
-          </>
-        )}
+            }
+          />
+          <div style={{ padding: "4px 8px 0" }}>
+            {mounted && <ReactApexChart options={revenueChartConfig.options} series={revenueChartConfig.series} type="area" height={230} />}
+          </div>
+        </Card>
+
+        {/* Specialty donut */}
+        <Card>
+          <CardHeader title="Specialty Breakdown" sub="Patient volume by department" />
+          <div style={{ padding: "8px 16px 4px", display: "flex", justifyContent: "center" }}>
+            {mounted && <ReactApexChart options={specialtyDonutConfig.options} series={specialtyDonutConfig.series} type="donut" height={200} width={200} />}
+          </div>
+          <div style={{ padding: "0 20px 16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 12px" }}>
+            {SPECIALTY_LABELS.map((label, i) => (
+              <div key={label} style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: SPECIALTY_COLORS[i], flexShrink: 0 }} />
+                <span style={{ fontSize: 11, color: T.slate600 }}>{label}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: T.slate700, marginLeft: "auto" }}>{SPECIALTY_SERIES[i]}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
       </div>
 
-      {/* Bookings + Radial */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
-        {card(
-          <>
-            <div style={{ padding: "20px 24px 4px" }}>
-              <h2 style={{ fontSize: 15, fontWeight: 700, color: C.slate900, fontFamily: "'Sora',sans-serif", margin: 0 }}>Weekly Bookings</h2>
-              <p style={{ fontSize: 12, color: C.slate500, margin: "3px 0 0" }}>Consultations booked vs completed</p>
-            </div>
-            {mounted && <ReactApexChart options={bookingsBar.options} series={bookingsBar.series} type="bar" height={210} />}
-          </>
-        )}
-        {card(
-          <>
-            <div style={{ padding: "20px 24px 4px" }}>
-              <h2 style={{ fontSize: 15, fontWeight: 700, color: C.slate900, fontFamily: "'Sora',sans-serif", margin: 0 }}>Hospital Performance</h2>
-              <p style={{ fontSize: 12, color: C.slate500, margin: "3px 0 0" }}>Case completion rate by partner</p>
-            </div>
-            {mounted && <ReactApexChart options={hospitalRadial.options} series={hospitalRadial.series} type="radialBar" height={210} />}
-          </>
-        )}
-      </div>
+      {/* ── Region Map + Top Doctors ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
 
-      {/* Recent Cases + Top Hospitals */}
-      <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: 16 }}>
-
-        {/* Recent cases */}
-        {card(
-          <>
-            <div style={{ padding: "18px 22px", borderBottom: `1px solid ${C.slate100}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <h2 style={{ fontSize: 15, fontWeight: 700, color: C.slate900, fontFamily: "'Sora',sans-serif", margin: 0 }}>Recent Cases</h2>
-              <button style={{ fontSize: 12, color: C.indigo, fontWeight: 600, background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}>
-                View all <ChevronRight size={12} />
-              </button>
-            </div>
-            {recentCases.map((c, i) => (
-              <div key={c.id} style={{
-                padding: "13px 22px",
-                borderBottom: i < recentCases.length - 1 ? `1px solid ${C.slate100}` : "none",
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: "50%",
-                    background: C.indigoLight, display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 11, fontWeight: 700, color: C.indigo, flexShrink: 0
-                  }}>{c.avatar}</div>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: C.slate900 }}>{c.type}</div>
-                    <div style={{ fontSize: 11, color: C.slate500 }}>{c.id} · {c.doctor}</div>
-                  </div>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <Badge status={c.status} />
-                  <span style={{ fontSize: 11, color: C.slate500 }}>{c.time}</span>
+        {/* Region-wise patients */}
+        <Card>
+          <CardHeader title="Region-wise Patients" sub="Top 6 states by patient volume" />
+          <div style={{ padding: "8px 8px 0" }}>
+            {mounted && <ReactApexChart options={regionBarConfig.options} series={regionBarConfig.series} type="bar" height={240} />}
+          </div>
+          <div style={{ padding: "0 20px 16px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "4px 0" }}>
+            {REGIONS.map((r, i) => (
+              <div key={r.name} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 0", borderTop: `1px solid ${T.slate100}` }}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: [T.indigo,T.emerald,T.violet,T.amber,T.rose,T.sky][i], flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: T.slate700 }}>{r.name}</div>
+                  <div style={{ fontSize: 10, color: T.slate500 }}>{r.revenue} <span style={{ color: T.emerald, fontWeight: 600 }}>{r.growth}</span></div>
                 </div>
               </div>
             ))}
-          </>
-        )}
+          </div>
+        </Card>
 
-        {/* Top hospitals */}
-        {card(
-          <>
-            <div style={{ padding: "18px 22px", borderBottom: `1px solid ${C.slate100}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <h2 style={{ fontSize: 15, fontWeight: 700, color: C.slate900, fontFamily: "'Sora',sans-serif", margin: 0 }}>Top Hospitals</h2>
-              <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: C.indigoLight, color: C.indigo }}>
-                This Month
-              </span>
-            </div>
-            {hospitals.map((h, i) => (
-              <div key={h.name} style={{
-                padding: "14px 22px",
-                borderBottom: i < hospitals.length - 1 ? `1px solid ${C.slate100}` : "none",
-                display: "flex", alignItems: "center", justifyContent: "space-between"
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, background: C.indigoLight, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Hospital size={16} color={C.indigo} strokeWidth={1.8} />
+        {/* Top Doctors */}
+        <Card>
+          <CardHeader
+            title="Top Doctors"
+            sub="Ranked by patient load this month"
+            action={
+              <span style={{
+                fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 999,
+                background: T.indigoLight, color: T.indigo,
+              }}>This Month</span>
+            }
+          />
+          <div>
+            {TOP_DOCTORS.map((doc, i) => {
+              const c = colorMap[doc.tag] || colorMap.indigo;
+              const isFirst = i === 0;
+              return (
+                <div key={doc.name} style={{
+                  padding: "13px 20px",
+                  borderBottom: i < TOP_DOCTORS.length - 1 ? `1px solid ${T.slate100}` : "none",
+                  display: "flex", alignItems: "center", gap: 12,
+                  background: isFirst ? `linear-gradient(90deg, ${T.indigoLight} 0%, transparent 100%)` : "transparent",
+                }}>
+                  {/* Rank */}
+                  <div style={{
+                    width: 24, height: 24, borderRadius: 8,
+                    background: isFirst ? T.indigo : T.slate100,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 11, fontWeight: 800,
+                    color: isFirst ? T.white : T.slate500,
+                    flexShrink: 0,
+                  }}>
+                    {isFirst ? <Award size={12} /> : i + 1}
                   </div>
-                  <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: C.slate900 }}>{h.name}</div>
-                    <div style={{ fontSize: 11, color: C.slate500, display: "flex", alignItems: "center", gap: 4 }}>
-                      <Star size={10} color={C.amber} fill={C.amber} /> {h.rating}
-                      <span style={{ color: C.slate300 }}>·</span>
-                      {h.cases} cases
+
+                  {/* Avatar */}
+                  <div style={{
+                    width: 36, height: 36, borderRadius: "50%",
+                    background: c.bg, display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 11, fontWeight: 800, color: c.icon, flexShrink: 0,
+                  }}>
+                    {doc.name.split(" ").slice(1).map(n => n[0]).join("").slice(0, 2)}
+                  </div>
+
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: T.slate900, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {doc.name}
+                    </div>
+                    <div style={{ fontSize: 11, color: T.slate500, display: "flex", alignItems: "center", gap: 4 }}>
+                      <span style={{
+                        fontSize: 10, fontWeight: 600, padding: "1px 7px", borderRadius: 999,
+                        background: c.bg, color: c.icon,
+                      }}>{doc.dept}</span>
+                    </div>
+                  </div>
+
+                  {/* Stats */}
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: T.slate900, fontFamily: "'Sora',sans-serif" }}>
+                      {doc.patients}
+                    </div>
+                    <div style={{ fontSize: 10, color: T.slate500 }}>patients</div>
+                    <div style={{ fontSize: 10, color: T.amber, fontWeight: 600, display: "flex", alignItems: "center", gap: 2, justifyContent: "flex-end", marginTop: 1 }}>
+                      <Star size={9} fill={T.amber} /> {doc.rating}
                     </div>
                   </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: C.slate900 }}>{h.rev}</div>
-                  <div style={{ fontSize: 10, color: C.emerald, fontWeight: 600, display: "flex", alignItems: "center", gap: 2, justifyContent: "flex-end" }}>
-                    <ArrowUpRight size={10} /> +12%
+              );
+            })}
+
+            {/* Progress bars */}
+            <div style={{ padding: "12px 20px 16px" }}>
+              <p style={{ fontSize: 11, fontWeight: 600, color: T.slate500, margin: "0 0 10px", textTransform: "uppercase", letterSpacing: ".06em" }}>
+                <TrendingUp size={10} style={{ marginRight: 4 }} />Patient Load Share
+              </p>
+              {TOP_DOCTORS.map(doc => {
+                const c = colorMap[doc.tag];
+                const pct = Math.round((doc.patients / TOP_DOCTORS[0].patients) * 100);
+                return (
+                  <div key={doc.name} style={{ marginBottom: 7 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                      <span style={{ fontSize: 11, color: T.slate600, fontWeight: 500 }}>{doc.name.split(" ").slice(1).join(" ")}</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: c.icon }}>{pct}%</span>
+                    </div>
+                    <div style={{ height: 5, borderRadius: 999, background: T.slate100, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${pct}%`, background: c.icon, borderRadius: 999, transition: "width 0.8s ease" }} />
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-            <div style={{ padding: "14px 22px" }}>
-              <button style={{
-                width: "100%", padding: "9px", borderRadius: 10,
-                border: `1.5px dashed ${C.slate300}`, background: "transparent",
-                fontSize: 12, fontWeight: 600, color: C.slate500, cursor: "pointer",
-              }}>
-                + Add Hospital Partner
-              </button>
+                );
+              })}
             </div>
-          </>
-        )}
+          </div>
+        </Card>
       </div>
     </div>
   );

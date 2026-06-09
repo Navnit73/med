@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, Plus, Trash2, Edit, UserCircle, HeartPulse, Brain, Bone, Eye, Baby, FlaskConical, Stethoscope } from 'lucide-react';
+import { Search, Plus, Trash2, Edit, UserCircle, HeartPulse, Brain, Bone, Eye, Baby, FlaskConical, Stethoscope, Users, Activity } from 'lucide-react';
+import DepartmentForm from './DepartmentForm';
 
 const DEPT_ICONS = {
   Cardiology:    { icon: HeartPulse, bg: 'bg-red-100',    icon_color: 'text-red-500'    },
@@ -12,11 +13,11 @@ const DEPT_ICONS = {
 const DEFAULT_ICON = { icon: Stethoscope, bg: 'bg-slate-100', icon_color: 'text-slate-500' };
 
 const INITIAL_DEPARTMENTS = [
-  { id: 1, name: 'Cardiology',  head: 'Dr. Sarah Johnson', doctors: 4, nurses: 8,  beds: 24, status: 'active'   },
-  { id: 2, name: 'Neurology',   head: 'Dr. Michael Chen',  doctors: 5, nurses: 9,  beds: 18, status: 'active'   },
-  { id: 3, name: 'Orthopedics', head: 'Dr. Priya Patel',   doctors: 3, nurses: 6,  beds: 20, status: 'active'   },
-  { id: 4, name: 'Pediatrics',  head: 'Dr. Mark Evans',    doctors: 6, nurses: 12, beds: 30, status: 'active'   },
-  { id: 5, name: 'Pathology',   head: 'TBD',               doctors: 2, nurses: 4,  beds: 0,  status: 'inactive' },
+  { id: 1, name: 'Cardiology',  head: 'Dr. Sarah Johnson', doctors: ['Dr. Sarah Johnson', 'Dr. John Doe', 'Dr. Alice Smith'], patients: 145, status: 'active' },
+  { id: 2, name: 'Neurology',   head: 'Dr. Michael Chen',  doctors: ['Dr. Michael Chen', 'Dr. Bob Williams'], patients: 87, status: 'active' },
+  { id: 3, name: 'Orthopedics', head: 'Dr. Priya Patel',   doctors: ['Dr. Priya Patel', 'Dr. Emily Clark', 'Dr. David Jones'], patients: 112, status: 'active' },
+  { id: 4, name: 'Pediatrics',  head: 'Dr. Mark Evans',    doctors: ['Dr. Mark Evans', 'Dr. Emma Watson', 'Dr. James Lee'], patients: 189, status: 'active' },
+  { id: 5, name: 'Pathology',   head: 'TBD',               doctors: [], patients: 0, status: 'inactive' },
 ];
 
 const STATUS = {
@@ -28,15 +29,34 @@ export default function DepartmentsTab() {
   const [departments, setDepartments] = useState(INITIAL_DEPARTMENTS);
   const [search, setSearch]           = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  
+  const [view, setView] = useState('list');
+  const [selectedDept, setSelectedDept] = useState(null);
 
-  const handleDelete = (id) => setDepartments(d => d.filter(x => x.id !== id));
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this speciality?")) {
+      setDepartments(d => d.filter(x => x.id !== id));
+    }
+  };
 
-  const handleAdd = () => {
-    const newId = Math.max(...departments.map(d => d.id)) + 1;
-    setDepartments(d => [...d, {
-      id: newId, name: `New Department`, head: 'TBD',
-      doctors: 0, nurses: 0, beds: 0, status: 'inactive',
-    }]);
+  const handleSave = (deptData) => {
+    if (selectedDept && selectedDept.id === deptData.id) {
+      setDepartments(d => d.map(x => x.id === deptData.id ? deptData : x));
+    } else {
+      setDepartments(d => [...d, deptData]);
+    }
+    setView('list');
+    setSelectedDept(null);
+  };
+
+  const openAddForm = () => {
+    setSelectedDept(null);
+    setView('form');
+  };
+
+  const openEditForm = (dept) => {
+    setSelectedDept(dept);
+    setView('form');
   };
 
   const filtered = departments.filter(d =>
@@ -45,20 +65,28 @@ export default function DepartmentsTab() {
   );
 
   const total = {
-    doctors: departments.reduce((s, d) => s + d.doctors, 0),
-    nurses:  departments.reduce((s, d) => s + d.nurses,  0),
-    beds:    departments.reduce((s, d) => s + d.beds,    0),
+    doctors: departments.reduce((s, d) => s + (d.doctors ? d.doctors.length : 0), 0),
+    patients: departments.reduce((s, d) => s + d.patients, 0),
   };
+
+  if (view === 'form') {
+    return (
+      <DepartmentForm 
+        department={selectedDept}
+        onSave={handleSave}
+        onCancel={() => { setView('list'); setSelectedDept(null); }}
+      />
+    );
+  }
 
   return (
     <div className="space-y-5">
-
       {/* Summary row */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Total Departments', value: departments.length, sub: `${departments.filter(d=>d.status==='active').length} active` },
-          { label: 'Total Staff',       value: total.doctors + total.nurses, sub: `${total.doctors} doctors · ${total.nurses} nurses` },
-          { label: 'Total Beds',        value: total.beds,  sub: 'across all departments' },
+          { label: 'Total Specialities', value: departments.length, sub: `${departments.filter(d=>d.status==='active').length} active` },
+          { label: 'Assigned Doctors',   value: total.doctors, sub: `across all specialities` },
+          { label: 'Total Patients',     value: total.patients,  sub: 'currently treated' },
         ].map(({ label, value, sub }) => (
           <div key={label} className="bg-white border border-slate-200 rounded-xl px-5 py-4 ">
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</p>
@@ -75,7 +103,7 @@ export default function DepartmentsTab() {
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search departments…"
+              placeholder="Search specialities…"
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="pl-8 pr-4 py-1.5 text-sm bg-white border border-slate-200 rounded-lg w-56 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400 transition"
@@ -101,19 +129,19 @@ export default function DepartmentsTab() {
         </div>
 
         <button
-          onClick={handleAdd}
+          onClick={openAddForm}
           className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-sm font-medium rounded-lg transition-all "
         >
           <Plus className="w-4 h-4" />
-          Add Department
+          Add Speciality
         </button>
       </div>
 
       {/* Cards grid */}
       {filtered.length === 0 ? (
-        <div className="py-16 text-center text-sm text-slate-400">
+        <div className="py-16 text-center text-sm text-slate-400 bg-white border border-slate-200 rounded-xl">
           <Stethoscope className="w-8 h-8 mx-auto mb-3 text-slate-200" />
-          No departments found.
+          No specialities found.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -121,12 +149,11 @@ export default function DepartmentsTab() {
             const cfg    = DEPT_ICONS[dept.name] ?? DEFAULT_ICON;
             const DeptIcon = cfg.icon;
             const scfg   = STATUS[dept.status] ?? STATUS.inactive;
-            const totalStaff = dept.doctors + dept.nurses;
 
             return (
               <div
                 key={dept.id}
-                className="bg-white border border-slate-200 rounded-xl p-5  hover:shadow-md hover:border-slate-300 transition-all group relative flex flex-col gap-4"
+                className="bg-white border border-slate-200 rounded-xl p-5 hover:shadow-md hover:border-slate-300 transition-all group relative flex flex-col gap-4"
               >
                 {/* Header row */}
                 <div className="flex items-start justify-between">
@@ -150,7 +177,7 @@ export default function DepartmentsTab() {
                       {dept.status}
                     </span>
                     <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="w-6 h-6 flex items-center justify-center rounded-md text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all">
+                      <button onClick={() => openEditForm(dept)} className="w-6 h-6 flex items-center justify-center rounded-md text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all">
                         <Edit className="w-3.5 h-3.5" />
                       </button>
                       <button onClick={() => handleDelete(dept.id)} className="w-6 h-6 flex items-center justify-center rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all">
@@ -163,51 +190,41 @@ export default function DepartmentsTab() {
                 {/* Divider */}
                 <div className="h-px bg-slate-100" />
 
-                {/* Stats row */}
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { label: 'Doctors', value: dept.doctors, color: 'text-blue-600',   bg: 'bg-blue-50'   },
-                    { label: 'Nurses',  value: dept.nurses,  color: 'text-violet-600', bg: 'bg-violet-50' },
-                    { label: 'Beds',    value: dept.beds,    color: 'text-teal-600',   bg: 'bg-teal-50'   },
-                  ].map(({ label, value, color, bg }) => (
-                    <div key={label} className={`${bg} rounded-lg px-3 py-2.5 text-center`}>
-                      <p className={`text-base font-semibold ${color}`}>{value}</p>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{label}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Staff progress bar */}
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-[11px] text-slate-400">Staff breakdown</span>
-                    <span className="text-[11px] font-medium text-slate-600">{totalStaff} total</span>
+                {/* Assigned Doctors List */}
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-slate-400" />
+                      Assigned Doctors
+                    </span>
+                    <span className="text-[10px] font-medium bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
+                      {dept.doctors ? dept.doctors.length : 0}
+                    </span>
                   </div>
-                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    {totalStaff > 0 ? (
-                      <div className="h-full flex rounded-full overflow-hidden">
-                        <div
-                          className="bg-blue-400 transition-all"
-                          style={{ width: `${(dept.doctors / totalStaff) * 100}%` }}
-                        />
-                        <div
-                          className="bg-violet-300 transition-all"
-                          style={{ width: `${(dept.nurses / totalStaff) * 100}%` }}
-                        />
-                      </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {dept.doctors && dept.doctors.length > 0 ? (
+                      dept.doctors.map((doc, i) => (
+                        <span key={i} className="text-[11px] bg-slate-50 border border-slate-100 text-slate-600 px-2 py-1 rounded-md">
+                          {doc}
+                        </span>
+                      ))
                     ) : (
-                      <div className="h-full bg-slate-200 rounded-full" />
+                      <span className="text-xs text-slate-400 italic">No doctors assigned</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <span className="flex items-center gap-1 text-[10px] text-slate-400">
-                      <span className="w-2 h-2 rounded-full bg-blue-400 inline-block" /> Doctors
-                    </span>
-                    <span className="flex items-center gap-1 text-[10px] text-slate-400">
-                      <span className="w-2 h-2 rounded-full bg-violet-300 inline-block" /> Nurses
-                    </span>
-                  </div>
                 </div>
+
+                {/* Stats / Patients */}
+                <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 flex items-center justify-between mt-auto">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-white rounded-md shadow-sm">
+                      <Activity className="w-4 h-4 text-blue-600" />
+                    </div>
+                    <span className="text-xs font-medium text-blue-900">Total Patients</span>
+                  </div>
+                  <span className="text-lg font-bold text-blue-700">{dept.patients}</span>
+                </div>
+
               </div>
             );
           })}

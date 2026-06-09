@@ -11,7 +11,7 @@ export default function HospitalViewLayout() {
     { name: 'Dashboard',   path: `/admin/hospitals/${id}/dashboard`,   icon: LayoutDashboard },
     { name: 'Contracts',   path: `/admin/hospitals/${id}/contracts`,   icon: FileText },
     { name: 'Patients',    path: `/admin/hospitals/${id}/patients`,    icon: Users },
-    { name: 'Departments', path: `/admin/hospitals/${id}/departments`, icon: Building2 },
+    { name: 'Speciality', path: `/admin/hospitals/${id}/departments`, icon: Building2 },
     { name: 'Doctors',     path: `/admin/hospitals/${id}/doctors`,     icon: UserCircle },
   ];
 
