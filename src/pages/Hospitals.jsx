@@ -55,7 +55,7 @@ export default function Hospitals() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
 
         {/* Search + filter toolbar */}
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 mb-6 flex flex-col md:flex-row gap-3 items-center justify-between">
+        <div className="bg-white rounded-sm border border-slate-100 p-4 mb-6 flex flex-col md:flex-row gap-3 items-center justify-between">
           <div className="relative w-full md:w-72">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
             <input
@@ -97,16 +97,15 @@ export default function Hospitals() {
           {filtered.map((h, i) => {
             const scfg = STATUS[h.status];
             return (
-              <div key={i} className="bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md hover:border-[#2DB37D]/30 transition-all duration-200 group overflow-hidden flex flex-col">
+              <div key={i} className="bg-white rounded-sm border border-slate-100 hover:shadow-sm hover:border-[#2DB37D]/30 transition-all duration-200 group overflow-hidden flex flex-col">
 
-                {/* Top accent for active */}
-                {h.status === 'active' && <div className="h-1 bg-[#2DB37D]" />}
+             
 
                 <div className="p-5 flex flex-col flex-1">
                   {/* Header */}
                   <div className="flex items-start justify-between mb-5">
                     <div className="flex items-center gap-3">
-                      <div className={`w-11 h-11 rounded-xl ${AVATAR_COLORS[i % AVATAR_COLORS.length]} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+                      <div className={`w-11 h-11 rounded-sm ${AVATAR_COLORS[i % AVATAR_COLORS.length]} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
                         {abbr(h.name)}
                       </div>
                       <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#2DB37D] transition-colors leading-snug">{h.name}</h3>
@@ -167,7 +166,7 @@ export default function Hospitals() {
           })}
 
           {filtered.length === 0 && (
-            <div className="col-span-full py-16 text-center bg-white rounded-xl border border-slate-100">
+            <div className="col-span-full py-16 text-center bg-white rounded-sm border border-slate-100">
               <Building2 className="w-10 h-10 mx-auto mb-3 text-slate-200" />
               <p className="text-sm font-semibold text-slate-600">No hospitals match your search</p>
               <button
