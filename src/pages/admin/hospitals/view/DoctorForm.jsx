@@ -64,12 +64,12 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button 
             onClick={onCancel}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -93,7 +93,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
             <h3 className="text-sm font-semibold text-slate-800 mb-1">Profile Photo</h3>
             <p className="text-xs text-slate-500 mb-3">Upload a professional headshot. Recommended size 256x256px.</p>
             <div className="flex items-center gap-3">
-              <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-sm font-medium text-slate-700 rounded-lg hover:bg-slate-50 transition-colors">
+              <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 text-sm font-medium text-slate-700 rounded-sm hover:bg-slate-50 transition-colors">
                 <span>Upload Image</span>
                 <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
               </label>
@@ -119,7 +119,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
                   type="text" name="name" required
                   value={formData.name} onChange={handleChange}
                   placeholder="e.g. Dr. Jane Smith"
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                 />
               </div>
             </div>
@@ -132,7 +132,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
                   type="email" name="email"
                   value={formData.email} onChange={handleChange}
                   placeholder="doctor@hospital.com"
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                 />
               </div>
             </div>
@@ -145,7 +145,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
                   type="tel" name="phone"
                   value={formData.phone} onChange={handleChange}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                 />
               </div>
             </div>
@@ -155,7 +155,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
               <select
                 name="status"
                 value={formData.status} onChange={handleChange}
-                className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive / On Leave</option>
@@ -174,7 +174,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
                 <select
                   name="specialty" required
                   value={formData.specialty} onChange={handleChange}
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow appearance-none"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow appearance-none"
                 >
                   {SPECIALTIES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -189,7 +189,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
                   type="text" name="degree" required
                   value={formData.degree} onChange={handleChange}
                   placeholder="e.g. MBBS, MD"
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                 />
               </div>
             </div>
@@ -202,7 +202,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
                   <input 
                     type="number" name="exp" min="0" required
                     value={formData.exp} onChange={handleChange}
-                    className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                    className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                   />
                 </div>
               </div>
@@ -214,7 +214,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
                   <input 
                     type="number" name="patients" min="0"
                     value={formData.patients} onChange={handleChange}
-                    className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                    className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                   />
                 </div>
               </div>
@@ -227,7 +227,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
                 <input 
                   type="number" name="rating" min="0" max="5" step="0.1"
                   value={formData.rating} onChange={handleChange}
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                 />
               </div>
             </div>
@@ -242,7 +242,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
                   name="bio" rows="4"
                   value={formData.bio} onChange={handleChange}
                   placeholder="Enter detailed biography, areas of interest, or additional notes..."
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow resize-none"
                 />
               </div>
           </div>
@@ -253,13 +253,13 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
           <button 
             type="button" 
             onClick={onCancel}
-            className="px-5 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+            className="px-5 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-sm hover:bg-slate-50 transition-colors"
           >
             Cancel
           </button>
           <button 
             type="submit"
-            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-[#2DB37D] hover:bg-[#24a06e] rounded-sm transition-colors shadow-sm"
           >
             <Save className="w-4 h-4" />
             {isEdit ? 'Save Changes' : 'Add Doctor'}

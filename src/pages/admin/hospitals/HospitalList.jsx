@@ -18,12 +18,12 @@ const STATUS_CONFIG = {
 };
 
 const AVATAR_COLORS = [
-  'bg-blue-100 text-blue-700',
+  'bg-[#edf9f4] text-[#2DB37D]',
   'bg-violet-100 text-violet-700',
   'bg-pink-100 text-pink-700',
   'bg-teal-100 text-teal-700',
   'bg-orange-100 text-orange-700',
-  'bg-indigo-100 text-indigo-700',
+  'bg-slate-100 text-slate-700',
 ];
 
 function initials(name) {
@@ -55,8 +55,8 @@ export default function HospitalList() {
 
   const SortIcon = ({ col }) => (
     <span className="ml-1 inline-flex flex-col gap-px opacity-40">
-      <ChevronUp className={`w-2.5 h-2.5 ${sortKey === col && sortDir === 'asc' ? 'opacity-100 text-blue-600' : ''}`} />
-      <ChevronDown className={`w-2.5 h-2.5 -mt-1 ${sortKey === col && sortDir === 'desc' ? 'opacity-100 text-blue-600' : ''}`} />
+      <ChevronUp className={`w-2.5 h-2.5 ${sortKey === col && sortDir === 'asc' ? 'opacity-100 text-[#2DB37D]' : ''}`} />
+      <ChevronDown className={`w-2.5 h-2.5 -mt-1 ${sortKey === col && sortDir === 'desc' ? 'opacity-100 text-[#2DB37D]' : ''}`} />
     </span>
   );
 
@@ -78,7 +78,7 @@ export default function HospitalList() {
         </div>
         <Link
           to="/admin/hospitals/add"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-sm font-medium rounded-lg transition-all "
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[#2DB37D] hover:bg-[#24a06e] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all "
         >
           <Plus className="w-4 h-4" />
           Add Hospital
@@ -109,7 +109,7 @@ export default function HospitalList() {
       </div>
 
       {/* Table card */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden ">
+      <div className="bg-white border border-slate-200 rounded-sm overflow-hidden ">
 
         {/* Toolbar */}
         <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between gap-4">
@@ -120,7 +120,7 @@ export default function HospitalList() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by name or city…"
-              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400 transition"
+              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-sm w-64 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
             />
           </div>
           <span className="text-xs text-slate-400">{filtered.length} result{filtered.length !== 1 ? 's' : ''}</span>
@@ -168,12 +168,12 @@ export default function HospitalList() {
                   {/* Name + avatar */}
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${AVATAR_COLORS[i % AVATAR_COLORS.length]}`}>
+                      <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-xs font-bold shrink-0 ${AVATAR_COLORS[i % AVATAR_COLORS.length]}`}>
                         {initials(hospital.name)}
                       </div>
                       <Link
                         to={`/admin/hospitals/${hospital.id}`}
-                        className="text-sm font-medium text-slate-800 hover:text-blue-600 transition-colors"
+                        className="text-sm font-medium text-slate-800 hover:text-[#2DB37D] transition-colors"
                       >
                         {hospital.name}
                       </Link>
@@ -206,20 +206,20 @@ export default function HospitalList() {
                       <Link
                         to={`/admin/hospitals/${hospital.id}`}
                         title="View"
-                        className="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
+                        className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-[#2DB37D] hover:bg-[#edf9f4] transition-all"
                       >
                         <Eye className="w-4 h-4" />
                       </Link>
                       <Link
                         to={`/admin/hospitals/edit/${hospital.id}`}
                         title="Edit"
-                        className="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all"
+                        className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all"
                       >
                         <Edit className="w-4 h-4" />
                       </Link>
                       <button
                         title="Delete"
-                        className="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
+                        className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -237,11 +237,11 @@ export default function HospitalList() {
             Showing <span className="font-medium text-slate-600">{filtered.length}</span> of <span className="font-medium text-slate-600">{HOSPITALS_DATA.length}</span> hospitals
           </span>
           <div className="flex items-center gap-1">
-            <button className="w-7 h-7 flex items-center justify-center rounded-md border border-slate-200 text-slate-400 hover:bg-slate-100 disabled:opacity-40 transition-colors" disabled>
+            <button className="w-7 h-7 flex items-center justify-center rounded-sm border border-slate-200 text-slate-400 hover:bg-slate-100 disabled:opacity-40 transition-colors" disabled>
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
-            <span className="text-xs px-2.5 py-1 rounded-md bg-blue-600 text-white font-medium">1</span>
-            <button className="w-7 h-7 flex items-center justify-center rounded-md border border-slate-200 text-slate-400 hover:bg-slate-100 disabled:opacity-40 transition-colors" disabled>
+            <span className="text-xs px-2.5 py-1 rounded-sm bg-[#2DB37D] text-white font-medium">1</span>
+            <button className="w-7 h-7 flex items-center justify-center rounded-sm border border-slate-200 text-slate-400 hover:bg-slate-100 disabled:opacity-40 transition-colors" disabled>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>

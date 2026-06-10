@@ -57,11 +57,11 @@ export default function HospitalEdit() {
   };
 
   const inputClass = (field) =>
-    `w-full px-3.5 py-2.5 text-sm border rounded-lg bg-white text-slate-900 placeholder-slate-300
+    `w-full px-3.5 py-2.5 text-sm border rounded-sm bg-white text-slate-900 placeholder-slate-300
      focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
       errors[field]
         ? 'border-red-300 focus:ring-red-400'
-        : 'border-slate-200 focus:ring-blue-500 hover:border-slate-300'
+        : 'border-slate-200 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] hover:border-slate-300'
     }`;
 
   return (
@@ -71,7 +71,7 @@ export default function HospitalEdit() {
       <div className="flex items-center gap-4">
         <Link
           to="/admin/hospitals"
-          className="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm shrink-0"
+          className="w-9 h-9 flex items-center justify-center rounded-sm border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm shrink-0"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
@@ -84,7 +84,7 @@ export default function HospitalEdit() {
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
-        <div className="bg-white border border-slate-200 rounded-xl  overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-sm  overflow-hidden">
 
           {/* Section: Basic Info */}
           <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/60">
@@ -147,9 +147,9 @@ export default function HospitalEdit() {
                 {Object.entries(STATUS_CONFIG).map(([val, cfg]) => (
                   <label
                     key={val}
-                    className={`flex items-center gap-2.5 px-3.5 py-3 rounded-xl border cursor-pointer transition-all ${
+                    className={`flex items-center gap-2.5 px-3.5 py-3 rounded-sm border cursor-pointer transition-all ${
                       formData.status === val
-                        ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                        ? 'border-[#2DB37D] bg-[#edf9f4] ring-2 ring-[#2DB37D]/30'
                         : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >
@@ -162,11 +162,11 @@ export default function HospitalEdit() {
                       className="sr-only"
                     />
                     <span className={`w-2 h-2 rounded-full shrink-0 ${cfg.dot}`} />
-                    <span className={`text-sm font-medium ${formData.status === val ? 'text-blue-700' : 'text-slate-600'}`}>
+                    <span className={`text-sm font-medium ${formData.status === val ? 'text-[#2DB37D]' : 'text-slate-600'}`}>
                       {cfg.label}
                     </span>
                     {formData.status === val && (
-                      <CheckCircle className="w-3.5 h-3.5 text-blue-500 ml-auto" />
+                      <CheckCircle className="w-3.5 h-3.5 text-[#2DB37D] ml-auto" />
                     )}
                   </label>
                 ))}
@@ -182,17 +182,17 @@ export default function HospitalEdit() {
             <div className="flex items-center gap-2">
               <Link
                 to="/admin/hospitals"
-                className="px-4 py-2 text-sm font-medium text-slate-600 border border-slate-200 bg-white rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all"
+                className="px-4 py-2 text-sm font-medium text-slate-600 border border-slate-200 bg-white rounded-sm hover:bg-slate-50 hover:border-slate-300 transition-all"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={saved}
-                className={`inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-lg transition-all shadow-sm active:scale-[0.98] ${
+                className={`inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-sm transition-all shadow-sm active:scale-[0.98] ${
                   saved
                     ? 'bg-emerald-500 text-white cursor-default'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    : 'bg-[#2DB37D] hover:bg-[#24a06e] text-white'
                 }`}
               >
                 {saved ? (

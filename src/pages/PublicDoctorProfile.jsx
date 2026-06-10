@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { GraduationCap, Award, ArrowLeft, CheckCircle2, ThumbsUp, ChevronRight, Building2, Clock, Calendar, MapPin, Star, Video, Phone, Shield, ChevronLeft } from 'lucide-react';
+import { Star, GraduationCap, Clock, Award, Video, Building2, Calendar, ChevronLeft, CheckCircle2, ArrowLeft, ThumbsUp, ChevronRight, Shield } from 'lucide-react';
 import { DOCTORS, AVATAR_COLORS } from '../data/mockDoctors';
 
 function initials(name) {

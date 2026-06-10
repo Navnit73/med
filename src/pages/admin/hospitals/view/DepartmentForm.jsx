@@ -44,12 +44,12 @@ export default function DepartmentForm({ department, onSave, onCancel }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-sm overflow-hidden">
       <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button 
             onClick={onCancel}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -70,7 +70,7 @@ export default function DepartmentForm({ department, onSave, onCancel }) {
                   type="text" name="name" required
                   value={formData.name} onChange={handleChange}
                   placeholder="e.g. Cardiology"
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                 />
               </div>
             </div>
@@ -83,7 +83,7 @@ export default function DepartmentForm({ department, onSave, onCancel }) {
                   type="text" name="head" required
                   value={formData.head} onChange={handleChange}
                   placeholder="e.g. Dr. Sarah Johnson"
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                 />
               </div>
             </div>
@@ -93,7 +93,7 @@ export default function DepartmentForm({ department, onSave, onCancel }) {
               <select
                 name="status"
                 value={formData.status} onChange={handleChange}
-                className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -109,7 +109,7 @@ export default function DepartmentForm({ department, onSave, onCancel }) {
                 <input 
                   type="number" name="patients" min="0" required
                   value={formData.patients} onChange={handleChange}
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow"
                 />
               </div>
             </div>
@@ -122,7 +122,7 @@ export default function DepartmentForm({ department, onSave, onCancel }) {
                   name="doctors" rows="4" required
                   value={formData.doctors} onChange={handleChange}
                   placeholder="e.g. Dr. John Doe, Dr. Jane Smith"
-                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none"
+                  className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-shadow resize-none"
                 />
               </div>
             </div>
@@ -133,13 +133,13 @@ export default function DepartmentForm({ department, onSave, onCancel }) {
           <button 
             type="button" 
             onClick={onCancel}
-            className="px-5 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+            className="px-5 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-300 rounded-sm hover:bg-slate-50 transition-colors"
           >
             Cancel
           </button>
           <button 
             type="submit"
-            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-[#2DB37D] hover:bg-[#24a06e] rounded-sm transition-colors shadow-sm"
           >
             <Save className="w-4 h-4" />
             {isEdit ? 'Save Changes' : 'Add Speciality'}

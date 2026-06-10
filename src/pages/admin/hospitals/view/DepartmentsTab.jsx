@@ -88,7 +88,7 @@ export default function DepartmentsTab() {
           { label: 'Assigned Doctors',   value: total.doctors, sub: `across all specialities` },
           { label: 'Total Patients',     value: total.patients,  sub: 'currently treated' },
         ].map(({ label, value, sub }) => (
-          <div key={label} className="bg-white border border-slate-200 rounded-xl px-5 py-4 ">
+          <div key={label} className="bg-white border border-slate-200 rounded-sm px-5 py-4 ">
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">{label}</p>
             <p className="text-2xl font-semibold text-slate-900">{value}</p>
             <p className="text-xs text-slate-400 mt-0.5">{sub}</p>
@@ -106,19 +106,19 @@ export default function DepartmentsTab() {
               placeholder="Search specialities…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-8 pr-4 py-1.5 text-sm bg-white border border-slate-200 rounded-lg w-56 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400 transition"
+              className="pl-8 pr-4 py-1.5 text-sm bg-white border border-slate-200 rounded-sm w-56 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
             />
           </div>
 
           {/* Status toggle pills */}
-          <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-slate-100 rounded-sm p-1">
             {['all', 'active', 'inactive'].map(s => (
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
                 className={`px-3 py-1 text-xs font-medium rounded-md capitalize transition-all ${
                   statusFilter === s
-                    ? 'bg-white text-slate-800 '
+                    ? 'bg-white text-slate-800 shadow-sm'
                     : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
@@ -130,7 +130,7 @@ export default function DepartmentsTab() {
 
         <button
           onClick={openAddForm}
-          className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-sm font-medium rounded-lg transition-all "
+          className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#2DB37D] hover:bg-[#24a06e] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all shadow-sm"
         >
           <Plus className="w-4 h-4" />
           Add Speciality
@@ -139,7 +139,7 @@ export default function DepartmentsTab() {
 
       {/* Cards grid */}
       {filtered.length === 0 ? (
-        <div className="py-16 text-center text-sm text-slate-400 bg-white border border-slate-200 rounded-xl">
+        <div className="py-16 text-center text-sm text-slate-400 bg-white border border-slate-200 rounded-sm">
           <Stethoscope className="w-8 h-8 mx-auto mb-3 text-slate-200" />
           No specialities found.
         </div>
@@ -153,12 +153,12 @@ export default function DepartmentsTab() {
             return (
               <div
                 key={dept.id}
-                className="bg-white border border-slate-200 rounded-xl p-5 hover:shadow-md hover:border-slate-300 transition-all group relative flex flex-col gap-4"
+                className="bg-white border border-slate-200 rounded-sm p-5 hover:shadow-md hover:border-slate-300 transition-all group relative flex flex-col gap-4"
               >
                 {/* Header row */}
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${cfg.bg}`}>
+                    <div className={`w-10 h-10 rounded-sm flex items-center justify-center shrink-0 ${cfg.bg}`}>
                       <DeptIcon className={`w-5 h-5 ${cfg.icon_color}`} strokeWidth={1.8} />
                     </div>
                     <div>
@@ -215,14 +215,14 @@ export default function DepartmentsTab() {
                 </div>
 
                 {/* Stats / Patients */}
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 flex items-center justify-between mt-auto">
+                <div className="bg-[#edf9f4] border border-[#2DB37D]/20 rounded-sm p-3 flex items-center justify-between mt-auto">
                   <div className="flex items-center gap-2">
-                    <div className="p-1.5 bg-white rounded-md shadow-sm">
-                      <Activity className="w-4 h-4 text-blue-600" />
+                    <div className="p-1.5 bg-white rounded-sm shadow-sm">
+                      <Activity className="w-4 h-4 text-[#2DB37D]" />
                     </div>
-                    <span className="text-xs font-medium text-blue-900">Total Patients</span>
+                    <span className="text-xs font-medium text-slate-800">Total Patients</span>
                   </div>
-                  <span className="text-lg font-bold text-blue-700">{dept.patients}</span>
+                  <span className="text-lg font-bold text-[#2DB37D]">{dept.patients}</span>
                 </div>
 
               </div>

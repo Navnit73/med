@@ -10,9 +10,9 @@ const STATS = [
     delta: '+18',
     up: true,
     icon: Users,
-    bg: 'bg-sky-50',
-    icon_c: 'text-sky-600',
-    val_c: 'text-sky-700',
+    bg: 'bg-[#edf9f4]',
+    icon_c: 'text-[#2DB37D]',
+    val_c: 'text-[#2DB37D]',
     sub: 'patients today',
   },
   {
@@ -58,7 +58,7 @@ const admissionSeries = [
 const admissionOptions = {
   chart: { type: 'area', toolbar: { show: false }, fontFamily: 'inherit', background: 'transparent' },
   stroke: { curve: 'smooth', width: 2.5 },
-  colors: ['#0ea5e9', '#8b5cf6'],
+  colors: ['#2DB37D', '#10b981'],
   fill: {
     type: 'gradient',
     gradient: { shadeIntensity: 1, opacityFrom: 0.18, opacityTo: 0.01, stops: [0, 100] },
@@ -83,7 +83,7 @@ const admissionOptions = {
 
 // ─── DOCTOR PATIENT DISTRIBUTION ─────────────────────────────────────────────
 const DOCTORS = [
-  { name: 'Dr. Sharma',    dept: 'Cardiology',  patients: 58, color: '#6366f1' },
+  { name: 'Dr. Sharma',    dept: 'Cardiology',  patients: 58, color: '#2DB37D' },
   { name: 'Dr. Mehta',     dept: 'Neurology',   patients: 44, color: '#0ea5e9' },
   { name: 'Dr. Kapoor',    dept: 'Orthopedics', patients: 39, color: '#f59e0b' },
   { name: 'Dr. Verma',     dept: 'Pediatrics',  patients: 35, color: '#ec4899' },
@@ -165,7 +165,7 @@ export default function DashboardTab() {
       {/* ── Stat Cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {STATS.map(({ label, value, delta, up, icon: Icon, bg, icon_c, val_c, sub }) => (
-          <div key={label} className="bg-white border border-slate-200 rounded-xl px-5 py-4 flex items-start justify-between gap-3">
+          <div key={label} className="bg-white border border-slate-200 rounded-sm px-5 py-4 flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2 truncate">{label}</p>
               <p className={`text-2xl font-bold ${val_c}`}>{value}</p>
@@ -176,7 +176,7 @@ export default function DashboardTab() {
               </div>
               <p className="text-[11px] text-slate-400 mt-1">{sub}</p>
             </div>
-            <div className={`w-10 h-10 rounded-xl ${bg} ${icon_c} flex items-center justify-center shrink-0`}>
+            <div className={`w-10 h-10 rounded-sm ${bg} ${icon_c} flex items-center justify-center shrink-0`}>
               <Icon className="w-5 h-5" strokeWidth={1.8} />
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function DashboardTab() {
       </div>
 
       {/* ── OPD vs IPD Trend ── */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5">
+      <div className="bg-white border border-slate-200 rounded-sm p-5">
         <div className="flex items-center justify-between mb-1">
           <div>
             <h2 className="text-sm font-semibold text-slate-800">OPD → IPD Trends</h2>
@@ -209,7 +209,7 @@ export default function DashboardTab() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
         {/* Doctor Patient Distribution Donut — 2/5 */}
-        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-5 flex flex-col">
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-sm p-5 flex flex-col">
           <div className="mb-2">
             <h2 className="text-sm font-semibold text-slate-800">Patient Distribution by Doctor</h2>
             <p className="text-xs text-slate-400 mt-0.5">OPD share per consultant today</p>
@@ -230,7 +230,7 @@ export default function DashboardTab() {
         </div>
 
         {/* Top Doctors Bar — 3/5 */}
-        <div className="lg:col-span-3 bg-white border border-slate-200 rounded-xl p-5 flex flex-col">
+        <div className="lg:col-span-3 bg-white border border-slate-200 rounded-sm p-5 flex flex-col">
           <div className="flex items-center justify-between mb-3">
             <div>
               <h2 className="text-sm font-semibold text-slate-800 flex items-center gap-1.5">
@@ -242,7 +242,7 @@ export default function DashboardTab() {
           <ReactApexChart type="bar" series={topDoctorSeries} options={topDoctorOptions} height={220} />
 
           {/* Top performer badge */}
-          <div className="mt-3 bg-amber-50 border border-amber-100 rounded-lg px-4 py-2.5 flex items-center gap-3">
+          <div className="mt-3 bg-amber-50 border border-amber-100 rounded-sm px-4 py-2.5 flex items-center gap-3">
             <Star className="w-5 h-5 text-amber-500 shrink-0" fill="#f59e0b" />
             <div>
               <p className="text-xs font-semibold text-amber-800">Top Performer — {TOP_DOCTORS[0].name}</p>

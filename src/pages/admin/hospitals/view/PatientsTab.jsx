@@ -10,7 +10,7 @@ const INITIAL_PATIENTS = [
 ];
 
 const STATUS = {
-  admitted:   { label: 'Admitted',    dot: 'bg-blue-500',    badge: 'bg-blue-50 text-blue-700 ring-blue-200' },
+  admitted:   { label: 'Admitted',    dot: 'bg-[#2DB37D]',    badge: 'bg-[#edf9f4] text-[#2DB37D] ring-[#2DB37D]/30' },
   outpatient: { label: 'Outpatient',  dot: 'bg-violet-400',  badge: 'bg-violet-50 text-violet-700 ring-violet-200' },
   discharged: { label: 'Discharged',  dot: 'bg-slate-400',   badge: 'bg-slate-100 text-slate-500 ring-slate-200' },
   critical:   { label: 'Critical',    dot: 'bg-red-500',     badge: 'bg-red-50 text-red-700 ring-red-200' },
@@ -24,8 +24,8 @@ const WARD_COLOR = {
 };
 
 const GENDER_COLOR = {
-  Male:   'bg-blue-100 text-blue-700',
-  Female: 'bg-pink-100 text-pink-700',
+  Male:   'bg-slate-100 text-slate-700',
+  Female: 'bg-slate-100 text-slate-700',
 };
 
 function avatar(name) {
@@ -33,7 +33,7 @@ function avatar(name) {
 }
 
 const AVATAR_COLORS = [
-  'bg-blue-100 text-blue-700',
+  'bg-[#edf9f4] text-[#2DB37D]',
   'bg-teal-100 text-teal-700',
   'bg-violet-100 text-violet-700',
   'bg-orange-100 text-orange-700',
@@ -76,15 +76,15 @@ export default function PatientsTab() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { key: 'all',        label: 'Total Patients', icon: Users,      bg: 'bg-slate-50  border-slate-200',   text: 'text-slate-700'  },
-          { key: 'admitted',   label: 'Admitted',       icon: Activity,   bg: 'bg-blue-50   border-blue-200',    text: 'text-blue-700'   },
+          { key: 'admitted',   label: 'Admitted',       icon: Activity,   bg: 'bg-[#edf9f4] border-[#2DB37D]/20',text: 'text-[#2DB37D]'  },
           { key: 'outpatient', label: 'Outpatients',    icon: UserCheck,  bg: 'bg-violet-50 border-violet-200',  text: 'text-violet-700' },
           { key: 'discharged', label: 'Discharged',     icon: UserX,      bg: 'bg-slate-50  border-slate-200',   text: 'text-slate-500'  },
         ].map(({ key, label, icon: Icon, bg, text }) => (
           <button
             key={key}
             onClick={() => setFilter(key)}
-            className={`flex items-center gap-4 px-5 py-4 rounded-xl border text-left transition-all ${bg} ${
-              filter === key ? 'ring-2 ring-offset-1 ring-blue-400' : 'hover:'
+            className={`flex items-center gap-4 px-5 py-4 rounded-sm border text-left transition-all ${bg} ${
+              filter === key ? 'ring-2 ring-offset-1 ring-[#2DB37D]/50' : 'hover:opacity-90'
             }`}
           >
             <Icon className={`w-5 h-5 shrink-0 ${text}`} strokeWidth={1.8} />
@@ -97,7 +97,7 @@ export default function PatientsTab() {
       </div>
 
       {/* Table card */}
-      <div className="bg-white border border-slate-200 rounded-xl  overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-sm overflow-hidden">
 
         {/* Toolbar */}
         <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between gap-4">
@@ -108,14 +108,14 @@ export default function PatientsTab() {
               placeholder="Search by name, MRN, doctor…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400 transition"
+              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-sm w-64 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
             />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs text-slate-400">{filtered.length} result{filtered.length !== 1 ? 's' : ''}</span>
             <button
               onClick={handleAdd}
-              className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-sm font-medium rounded-lg transition-all "
+              className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#2DB37D] hover:bg-[#24a06e] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all shadow-sm"
             >
               <UserPlus className="w-4 h-4" />
               Register Patient
@@ -160,7 +160,7 @@ export default function PatientsTab() {
 
                     {/* MRN */}
                     <td className="px-5 py-3.5">
-                      <span className="text-xs font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{p.id}</span>
+                      <span className="text-xs font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded-sm">{p.id}</span>
                     </td>
 
                     {/* Gender */}
@@ -194,10 +194,10 @@ export default function PatientsTab() {
                     {/* Actions */}
                     <td className="px-5 py-3.5">
                       <div className="flex items-center justify-end gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all" title="Edit">
+                        <button className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all" title="Edit">
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button onClick={() => handleDelete(p.id)} className="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all" title="Delete">
+                        <button onClick={() => handleDelete(p.id)} className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all" title="Delete">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

@@ -7,9 +7,9 @@ import {
 
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
 const T = {
-  indigo:      "#4f46e5",
-  indigoLight: "#eef2ff",
-  indigoMid:   "#818cf8",
+  primary:     "#2DB37D",
+  primaryLight:"#edf9f4",
+  primaryMid:  "#24a06e",
   emerald:     "#10b981",
   emeraldLight:"#d1fae5",
   amber:       "#f59e0b",
@@ -31,7 +31,7 @@ const T = {
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 const STATS = [
-  { label: "Total Patients",    value: "4,218",  change: "+12.4%", up: true,  icon: Users,        color: "indigo"  },
+  { label: "Total Patients",    value: "4,218",  change: "+12.4%", up: true,  icon: Users,        color: "primary"  },
   { label: "Total Revenue",     value: "₹38.6L", change: "+18.2%", up: true,  icon: IndianRupee,  color: "emerald" },
   { label: "Top Specialty",     value: "Cardio", change: "146 pts",up: true,  icon: Stethoscope,  color: "violet"  },
   { label: "Active Regions",    value: "12",     change: "+3 new", up: true,  icon: MapPin,       color: "amber"   },
@@ -39,7 +39,7 @@ const STATS = [
 
 const SPECIALTY_SERIES = [146, 98, 87, 73, 61, 44];
 const SPECIALTY_LABELS = ["Cardiology", "Orthopedics", "Neurology", "Oncology", "Pediatrics", "Radiology"];
-const SPECIALTY_COLORS = [T.indigo, T.emerald, T.violet, T.rose, T.amber, T.sky];
+const SPECIALTY_COLORS = [T.primary, T.emerald, T.violet, T.rose, T.amber, T.sky];
 
 const REGIONS = [
   { name: "Maharashtra",   patients: 940, revenue: "₹9.2L",  growth: "+14%" },
@@ -51,7 +51,7 @@ const REGIONS = [
 ];
 
 const TOP_DOCTORS = [
-  { name: "Dr. Priya Sharma",  dept: "Cardiology",   patients: 148, rating: 4.9, tag: "indigo"  },
+  { name: "Dr. Priya Sharma",  dept: "Cardiology",   patients: 148, rating: 4.9, tag: "primary"  },
   { name: "Dr. Arjun Mehta",   dept: "Neurology",    patients: 124, rating: 4.8, tag: "violet"  },
   { name: "Dr. Kavya Iyer",    dept: "Orthopedics",  patients: 117, rating: 4.9, tag: "emerald" },
   { name: "Dr. Rohan Gupta",   dept: "Oncology",     patients: 103, rating: 4.7, tag: "rose"    },
@@ -66,7 +66,7 @@ const revenueChartConfig = {
   ],
   options: {
     chart: { type: "area", toolbar: { show: false }, fontFamily: "DM Sans,sans-serif", stacked: false },
-    colors: [T.indigo, T.emerald],
+    colors: [T.primary, T.emerald],
     fill: { type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.28, opacityTo: 0.02, stops: [0, 100] } },
     stroke: { curve: "smooth", width: 2.5 },
     dataLabels: { enabled: false },
@@ -116,7 +116,7 @@ const regionBarConfig = {
   series: [{ name: "Patients", data: REGIONS.map(r => r.patients) }],
   options: {
     chart: { type: "bar", toolbar: { show: false }, fontFamily: "DM Sans,sans-serif" },
-    colors: REGIONS.map((_, i) => [T.indigo, T.emerald, T.violet, T.amber, T.rose, T.sky][i]),
+    colors: REGIONS.map((_, i) => [T.primary, T.emerald, T.violet, T.amber, T.rose, T.sky][i]),
     plotOptions: { bar: { borderRadius: 6, horizontal: true, barHeight: "58%", distributed: true } },
     dataLabels: {
       enabled: true,
@@ -138,7 +138,7 @@ const regionBarConfig = {
 
 // ─── SUB-COMPONENTS ──────────────────────────────────────────────────────────
 const colorMap = {
-  indigo:  { bg: T.indigoLight,   icon: T.indigo,   border: "rgba(79,70,229,0.12)"   },
+  primary: { bg: T.primaryLight,  icon: T.primary,  border: "rgba(45,179,125,0.12)"  },
   emerald: { bg: T.emeraldLight,  icon: T.emerald,  border: "rgba(16,185,129,0.12)"  },
   violet:  { bg: T.violetLight,   icon: T.violet,   border: "rgba(124,58,237,0.12)"  },
   amber:   { bg: T.amberLight,    icon: T.amber,    border: "rgba(245,158,11,0.12)"  },
@@ -147,17 +147,17 @@ const colorMap = {
 };
 
 function StatCard({ label, value, change, up, icon: Icon, color }) {
-  const c = colorMap[color] || colorMap.indigo;
+  const c = colorMap[color] || colorMap.primary;
   return (
     <div style={{
-      background: T.white, borderRadius: 16, padding: "20px 22px",
+      background: T.white, borderRadius: 2, padding: "20px 22px",
       border: `1px solid ${c.border}`,
-      boxShadow: "0 1px 4px rgba(0,0,0,0.04), 0 4px 16px rgba(79,70,229,0.04)",
+      boxShadow: "0 1px 4px rgba(0,0,0,0.04), 0 4px 16px rgba(45,179,125,0.04)",
       display: "flex", flexDirection: "column", gap: 14,
     }}>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
         <div style={{
-          width: 42, height: 42, borderRadius: 12,
+          width: 42, height: 42, borderRadius: 2,
           background: c.bg, display: "flex", alignItems: "center", justifyContent: "center",
         }}>
           <Icon size={20} color={c.icon} strokeWidth={1.8} />
@@ -167,7 +167,7 @@ function StatCard({ label, value, change, up, icon: Icon, color }) {
           fontSize: 11, fontWeight: 700,
           color: up ? T.emerald : T.rose,
           background: up ? T.emeraldLight : T.roseLight,
-          padding: "3px 8px", borderRadius: 999,
+          padding: "3px 8px", borderRadius: 2,
         }}>
           {up ? <ChevronUp size={11} /> : <ChevronDown size={11} />} {change}
         </span>
@@ -185,7 +185,7 @@ function StatCard({ label, value, change, up, icon: Icon, color }) {
 function Card({ children, style = {} }) {
   return (
     <div style={{
-      background: T.white, borderRadius: 16,
+      background: T.white, borderRadius: 2,
       border: `1px solid ${T.slate100}`,
       boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
       overflow: "hidden", ...style,
@@ -224,7 +224,7 @@ export default function Dashboard() {
       {/* ── Header ── */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".08em", color: T.indigo, textTransform: "uppercase", margin: 0 }}>
+          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: ".08em", color: T.primary, textTransform: "uppercase", margin: 0 }}>
             Hospital Intelligence
           </p>
           <h1 style={{ fontFamily: "'Sora',sans-serif", fontSize: 22, fontWeight: 800, color: T.slate900, margin: "4px 0 4px" }}>
@@ -235,14 +235,14 @@ export default function Dashboard() {
         <div style={{ display: "flex", gap: 8 }}>
           <button style={{
             display: "flex", alignItems: "center", gap: 6, padding: "8px 14px",
-            borderRadius: 10, border: `1px solid ${T.slate300}`,
+            borderRadius: 2, border: `1px solid ${T.slate300}`,
             background: T.white, fontSize: 12, fontWeight: 600, color: T.slate500, cursor: "pointer",
           }}>
             <Filter size={13} /> Filter
           </button>
           <button style={{
             display: "flex", alignItems: "center", gap: 6, padding: "8px 16px",
-            borderRadius: 10, border: "none", background: T.indigo,
+            borderRadius: 2, border: "none", background: T.primary,
             fontSize: 12, fontWeight: 600, color: "#fff", cursor: "pointer",
           }}>
             <Download size={13} /> Export
@@ -267,10 +267,10 @@ export default function Dashboard() {
               <div style={{ display: "flex", gap: 6 }}>
                 {["1M","6M","1Y"].map((p, i) => (
                   <button key={p} onClick={() => setActivePeriod(i)} style={{
-                    padding: "4px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, cursor: "pointer",
-                    background: activePeriod === i ? T.indigoLight : "transparent",
-                    color: activePeriod === i ? T.indigo : T.slate500,
-                    border: activePeriod === i ? `1px solid rgba(79,70,229,0.2)` : "1px solid transparent",
+                    padding: "4px 10px", borderRadius: 2, fontSize: 11, fontWeight: 600, cursor: "pointer",
+                    background: activePeriod === i ? T.primaryLight : "transparent",
+                    color: activePeriod === i ? T.primary : T.slate500,
+                    border: activePeriod === i ? `1px solid rgba(45,179,125,0.2)` : "1px solid transparent",
                   }}>{p}</button>
                 ))}
               </div>
@@ -311,7 +311,7 @@ export default function Dashboard() {
           <div style={{ padding: "0 20px 16px", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "4px 0" }}>
             {REGIONS.map((r, i) => (
               <div key={r.name} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 0", borderTop: `1px solid ${T.slate100}` }}>
-                <span style={{ width: 7, height: 7, borderRadius: "50%", background: [T.indigo,T.emerald,T.violet,T.amber,T.rose,T.sky][i], flexShrink: 0 }} />
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: [T.primary,T.emerald,T.violet,T.amber,T.rose,T.sky][i], flexShrink: 0 }} />
                 <div>
                   <div style={{ fontSize: 11, fontWeight: 600, color: T.slate700 }}>{r.name}</div>
                   <div style={{ fontSize: 10, color: T.slate500 }}>{r.revenue} <span style={{ color: T.emerald, fontWeight: 600 }}>{r.growth}</span></div>
@@ -328,26 +328,26 @@ export default function Dashboard() {
             sub="Ranked by patient load this month"
             action={
               <span style={{
-                fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 999,
-                background: T.indigoLight, color: T.indigo,
+                fontSize: 10, fontWeight: 700, padding: "3px 10px", borderRadius: 2,
+                background: T.primaryLight, color: T.primary,
               }}>This Month</span>
             }
           />
           <div>
             {TOP_DOCTORS.map((doc, i) => {
-              const c = colorMap[doc.tag] || colorMap.indigo;
+              const c = colorMap[doc.tag] || colorMap.primary;
               const isFirst = i === 0;
               return (
                 <div key={doc.name} style={{
                   padding: "13px 20px",
                   borderBottom: i < TOP_DOCTORS.length - 1 ? `1px solid ${T.slate100}` : "none",
                   display: "flex", alignItems: "center", gap: 12,
-                  background: isFirst ? `linear-gradient(90deg, ${T.indigoLight} 0%, transparent 100%)` : "transparent",
+                  background: isFirst ? `linear-gradient(90deg, ${T.primaryLight} 0%, transparent 100%)` : "transparent",
                 }}>
                   {/* Rank */}
                   <div style={{
-                    width: 24, height: 24, borderRadius: 8,
-                    background: isFirst ? T.indigo : T.slate100,
+                    width: 24, height: 24, borderRadius: 2,
+                    background: isFirst ? T.primary : T.slate100,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     fontSize: 11, fontWeight: 800,
                     color: isFirst ? T.white : T.slate500,
@@ -372,7 +372,7 @@ export default function Dashboard() {
                     </div>
                     <div style={{ fontSize: 11, color: T.slate500, display: "flex", alignItems: "center", gap: 4 }}>
                       <span style={{
-                        fontSize: 10, fontWeight: 600, padding: "1px 7px", borderRadius: 999,
+                        fontSize: 10, fontWeight: 600, padding: "1px 7px", borderRadius: 2,
                         background: c.bg, color: c.icon,
                       }}>{doc.dept}</span>
                     </div>

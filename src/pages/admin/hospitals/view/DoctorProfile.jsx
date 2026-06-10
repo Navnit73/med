@@ -18,14 +18,14 @@ export default function DoctorProfile({ doctor, onBack, onEdit, onDelete }) {
         <div className="flex items-center gap-2">
           <button 
             onClick={() => onEdit(doctor)}
-            className="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-sm hover:bg-slate-50 transition-colors"
           >
             <Edit className="w-4 h-4" />
             Edit Profile
           </button>
           <button 
             onClick={() => onDelete(doctor.id)}
-            className="inline-flex items-center gap-2 px-4 py-1.5 bg-red-50 text-red-600 text-sm font-medium rounded-lg hover:bg-red-100 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-1.5 bg-red-50 text-red-600 text-sm font-medium rounded-sm hover:bg-red-100 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
             Delete
@@ -34,7 +34,7 @@ export default function DoctorProfile({ doctor, onBack, onEdit, onDelete }) {
       </div>
 
       {/* Main Profile Card */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-white border border-slate-200 rounded-sm overflow-hidden shadow-sm">
         <div className="p-6 sm:p-8 flex flex-col sm:flex-row gap-6 sm:gap-8 items-start sm:items-center border-b border-slate-100">
           
           <div className="w-24 h-24 sm:w-32 sm:h-32 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden shrink-0 border-4 border-white shadow-md">
@@ -57,7 +57,7 @@ export default function DoctorProfile({ doctor, onBack, onEdit, onDelete }) {
               </span>
             </div>
             
-            <p className="text-lg text-blue-600 font-medium">{doctor.specialty}</p>
+            <p className="text-lg text-[#2DB37D] font-medium">{doctor.specialty}</p>
             
             <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mt-2">
               <div className="flex items-center gap-1.5">
@@ -98,18 +98,18 @@ export default function DoctorProfile({ doctor, onBack, onEdit, onDelete }) {
             <section>
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Key Metrics</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm text-center">
+                <div className="bg-white p-4 rounded-sm border border-slate-100 shadow-sm text-center">
                   <div className="flex justify-center mb-2">
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                      <Users className="w-5 h-5 text-blue-600" />
+                    <div className="p-2 bg-[#edf9f4] rounded-sm">
+                      <Users className="w-5 h-5 text-[#2DB37D]" />
                     </div>
                   </div>
                   <div className="text-xl font-bold text-slate-800">{doctor.patients}</div>
                   <div className="text-xs text-slate-500 font-medium">Patients Treated</div>
                 </div>
-                <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm text-center">
+                <div className="bg-white p-4 rounded-sm border border-slate-100 shadow-sm text-center">
                   <div className="flex justify-center mb-2">
-                    <div className="p-2 bg-amber-50 rounded-lg">
+                    <div className="p-2 bg-amber-50 rounded-sm">
                       <Award className="w-5 h-5 text-amber-600" />
                     </div>
                   </div>
@@ -136,7 +136,7 @@ export default function DoctorProfile({ doctor, onBack, onEdit, onDelete }) {
             {/* Can add more sections like "Working Hours" or "Recent Patients" here */}
             <section>
               <h3 className="text-lg font-semibold text-slate-800 mb-3 border-b border-slate-100 pb-2">Schedule Details</h3>
-              <div className="bg-slate-50 rounded-lg p-5 border border-slate-100 text-center text-sm text-slate-500">
+              <div className="bg-slate-50 rounded-sm p-5 border border-slate-100 text-center text-sm text-slate-500">
                 <Clock className="w-6 h-6 mx-auto mb-2 text-slate-300" />
                 Schedule management coming soon.
               </div>

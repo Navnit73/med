@@ -61,6 +61,7 @@ export default function SignIn() {
 
   useEffect(() => {
     const r = searchParams.get('role') === 'patient' ? 'patient' : 'admin';
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRole(r);
     setPhoneNumber('');
     setOtpSent(false);

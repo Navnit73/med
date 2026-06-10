@@ -30,13 +30,13 @@ export default function HospitalViewLayout() {
       </button>
 
       {/* Hospital header card */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-sm overflow-hidden">
 
         {/* Top band: avatar + name + meta */}
         <div className="px-7 pt-6 pb-5 flex items-start gap-5">
 
           {/* Avatar */}
-          <div className="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center shrink-0 ">
+          <div className="w-14 h-14 rounded-sm bg-[#2DB37D] flex items-center justify-center shrink-0 shadow-sm shadow-[#2DB37D]/20">
             <span className="text-white text-lg font-bold tracking-tight">AM</span>
           </div>
 
@@ -72,7 +72,7 @@ export default function HospitalViewLayout() {
               { label: 'Departments', value: '12'  },
               { label: 'Doctors',     value: '87'  },
             ].map(({ label, value }) => (
-              <div key={label} className="text-center px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-100">
+              <div key={label} className="text-center px-4 py-2.5 rounded-sm bg-slate-50 border border-slate-100">
                 <p className="text-base font-semibold text-slate-800">{value}</p>
                 <p className="text-[11px] text-slate-400 mt-0.5">{label}</p>
               </div>
@@ -90,14 +90,14 @@ export default function HospitalViewLayout() {
                 to={tab.path}
                 className={`relative flex items-center gap-2 px-3.5 py-3.5 text-sm font-medium whitespace-nowrap transition-colors ${
                   isActive
-                    ? 'text-blue-600'
+                    ? 'text-[#2DB37D]'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
                 <tab.icon className="w-4 h-4 shrink-0" strokeWidth={1.8} />
                 {tab.name}
                 {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2DB37D] rounded-t-full" />
                 )}
               </Link>
             );

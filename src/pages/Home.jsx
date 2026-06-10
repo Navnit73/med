@@ -1,9 +1,4 @@
-import {
-  ShieldCheck, Clock, FileText, Globe, HeartPulse, Brain,
-  Bone, Baby, Sun, Microscope, Scissors, ArrowRight,
-  CheckCircle2, Activity, Shield, Users, Stethoscope, ChevronRight,
-  FileCheck2, Building2, Star, Search, MapPin, Video
-} from 'lucide-react';
+import { Search, MapPin, Building2, Stethoscope, Video, FileText, ChevronRight, ShieldCheck, Clock, Globe, HeartPulse, Brain, Bone, Baby, Sun, Microscope, Scissors, Activity, Star, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Home() {
@@ -61,12 +56,12 @@ export default function Home() {
           {/* Feature cards row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-10">
             {[
-              { icon: Video,       label: 'Video Consult',    sub: 'Instant appointment',  color: 'bg-purple-50', iconColor: 'text-purple-500' },
-              { icon: Building2,   label: 'Find a Hospital',  sub: 'Near you',             color: 'bg-blue-50',   iconColor: 'text-blue-500'   },
-              { icon: Stethoscope, label: 'Find a Doctor',    sub: 'All specialities',     color: 'bg-[#edf9f4]', iconColor: 'text-[#2DB37D]'  },
-              { icon: FileText,    label: 'Second Opinion',   sub: 'Expert review',        color: 'bg-amber-50',  iconColor: 'text-amber-500'  },
+              { icon: Video,       label: 'Video Consult',    sub: 'Instant appointment',  color: 'bg-purple-50', iconColor: 'text-purple-500', to: '/find-doctors' },
+              { icon: Building2,   label: 'Find a Hospital',  sub: 'Near you',             color: 'bg-blue-50',   iconColor: 'text-blue-500',   to: '/hospitals' },
+              { icon: Stethoscope, label: 'Find a Doctor',    sub: 'All specialities',     color: 'bg-[#edf9f4]', iconColor: 'text-[#2DB37D]',  to: '/find-doctors' },
+              { icon: FileText,    label: 'Second Opinion',   sub: 'Expert review',        color: 'bg-amber-50',  iconColor: 'text-amber-500',  to: '/signin?role=patient' },
             ].map((f, i) => (
-              <Link to="/find-doctors" key={i} className="bg-white rounded-2xl p-5 border border-slate-100 hover:shadow-md hover:border-slate-200 transition-all group flex flex-col items-center text-center gap-3 cursor-pointer">
+              <Link to={f.to} key={i} className="bg-white rounded-2xl p-5 border border-slate-100 hover:shadow-md hover:border-slate-200 transition-all group flex flex-col items-center text-center gap-3 cursor-pointer">
                 <div className={`w-12 h-12 rounded-xl ${f.color} flex items-center justify-center group-hover:scale-105 transition-transform`}>
                   <f.icon className={`w-5 h-5 ${f.iconColor}`} strokeWidth={1.8} />
                 </div>

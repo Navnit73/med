@@ -26,20 +26,18 @@ export default function AdminLayout() {
   const isActive      = (path)   => location.pathname === path;
   const isActiveGroup = (prefix) => location.pathname.startsWith(prefix);
 
-  // Active: white text + indigo-700 bg
-  // Inactive: indigo-200 text + hover indigo-700/40 bg
   const navLinkClass = (active) =>
-    `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+    `flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm transition-all duration-150 ${
       active
-        ? 'bg-white/15 text-white'
-        : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+        ? 'bg-[#edf9f4] text-[#2DB37D] font-bold'
+        : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
     }`;
 
   const subLinkClass = (active) =>
-    `flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-all duration-150 ${
+    `flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm transition-all duration-150 ${
       active
-        ? 'bg-white/15 text-white font-medium'
-        : 'text-indigo-300 hover:bg-white/10 hover:text-white font-normal'
+        ? 'bg-[#edf9f4] text-[#2DB37D] font-bold'
+        : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
     }`;
 
   const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -52,18 +50,20 @@ export default function AdminLayout() {
           .replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
-    <div className="min-h-screen bg-slate-100 flex font-sans text-slate-900 antialiased">
+    <div className="min-h-screen bg-slate-50 flex font-sans text-slate-900 antialiased">
 
       {/* ── Sidebar ── */}
-      <aside className={`w-64 bg-indigo-900 flex flex-col fixed h-full z-20 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full z-20 transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
 
         {/* Logo */}
-        <div className="h-16 flex items-center px-5 border-b border-indigo-800">
-          <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
+        <div className="h-16 flex items-center px-5 border-b border-slate-100">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-7 h-7 bg-[#2DB37D] rounded-lg flex items-center justify-center">
               <Activity className="w-4 h-4 text-white" strokeWidth={2.5} />
             </div>
-            <span className="font-bold text-lg tracking-tight text-white">MedExpert</span>
+            <span className="font-extrabold text-lg text-slate-900">
+              Med<span className="text-[#2DB37D]">Expert</span>
+            </span>
           </Link>
         </div>
 
@@ -71,7 +71,7 @@ export default function AdminLayout() {
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
 
           {/* Section label */}
-          <p className="px-3 pt-1 pb-2 text-[10px] font-semibold uppercase tracking-widest text-indigo-400">
+          <p className="px-3 pt-1 pb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
             Main
           </p>
 
@@ -84,10 +84,10 @@ export default function AdminLayout() {
           <div>
             <button
               onClick={() => setHospitalsMenuOpen(!hospitalsMenuOpen)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-sm text-sm transition-all duration-150 ${
                 isActiveGroup('/admin/hospitals')
-                  ? 'bg-white/15 text-white'
-                  : 'text-indigo-200 hover:bg-white/10 hover:text-white'
+                  ? 'bg-[#edf9f4] text-[#2DB37D] font-bold'
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
               }`}
             >
               <div className="flex items-center gap-3">
@@ -95,14 +95,14 @@ export default function AdminLayout() {
                 Hospitals
               </div>
               <span className={`transition-transform duration-200 ${hospitalsMenuOpen ? 'rotate-180' : ''}`}>
-                <ChevronDown className="w-4 h-4 text-indigo-400" />
+                <ChevronDown className={`w-4 h-4 ${isActiveGroup('/admin/hospitals') ? 'text-[#2DB37D]' : 'text-slate-400'}`} />
               </span>
             </button>
 
             <div className={`overflow-hidden transition-all duration-200 ${
               hospitalsMenuOpen ? 'max-h-40 opacity-100 mt-1' : 'max-h-0 opacity-0'
             }`}>
-              <div className="ml-3 pl-3.5 border-l border-indigo-700 space-y-0.5 py-1">
+              <div className="ml-3 pl-3.5 border-l border-slate-100 space-y-0.5 py-1">
                 <Link to="/admin/hospitals" className={subLinkClass(isActive('/admin/hospitals'))}>
                   <List className="w-3.5 h-3.5 shrink-0" />
                   Hospital List
@@ -119,19 +119,19 @@ export default function AdminLayout() {
         </nav>
 
         {/* User footer */}
-        <div className="p-3 border-t border-indigo-800">
+        <div className="p-3 border-t border-slate-100">
           <div className="flex items-center gap-3 px-2 py-2 rounded-lg mb-1">
-            <div className="w-8 h-8 rounded-full bg-indigo-600 ring-2 ring-indigo-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[#edf9f4] flex items-center justify-center text-[#2DB37D] text-xs font-bold shrink-0">
               AD
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">Admin User</p>
-              <p className="text-xs text-indigo-400 truncate">admin@medexpert.com</p>
+              <p className="text-sm font-bold text-slate-900 truncate">Admin User</p>
+              <p className="text-xs text-slate-500 truncate">admin@medexpert.com</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-indigo-300 hover:bg-red-500/20 hover:text-red-300 transition-all duration-150 group"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-sm text-sm font-medium text-slate-500 hover:bg-red-50 hover:text-red-600 transition-all duration-150 group"
           >
             <LogOut className="w-4 h-4 shrink-0 transition-colors" strokeWidth={1.8} />
             Sign out
@@ -149,7 +149,7 @@ export default function AdminLayout() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-1.5 -ml-2 rounded-md text-slate-500 hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="p-1.5 -ml-2 rounded-sm text-slate-500 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30"
               aria-label="Toggle sidebar"
             >
               <Menu className="w-5 h-5" />
@@ -165,7 +165,7 @@ export default function AdminLayout() {
                     {isLast ? (
                       <span className="text-slate-600 font-medium capitalize">{seg.replace(/-/g, ' ')}</span>
                     ) : (
-                      <Link to={path} className="hover:text-indigo-600 capitalize transition-colors">
+                      <Link to={path} className="hover:text-[#2DB37D] capitalize transition-colors">
                         {seg.replace(/-/g, ' ')}
                       </Link>
                     )}
@@ -173,7 +173,7 @@ export default function AdminLayout() {
                 );
               })}
             </nav>
-            <h1 className="text-base font-semibold text-slate-900 leading-tight">{pageTitle}</h1>
+            <h1 className="text-base font-bold text-slate-900 leading-tight">{pageTitle}</h1>
             </div>
           </div>
 
@@ -184,16 +184,16 @@ export default function AdminLayout() {
               <input
                 type="text"
                 placeholder="Search…"
-                className="pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg w-52 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-slate-400 transition"
+                className="pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-sm w-52 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
               />
             </div>
 
-            <button className="relative w-9 h-9 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 transition-colors">
+            <button className="relative w-9 h-9 flex items-center justify-center rounded-sm text-slate-500 hover:bg-slate-50 transition-colors">
               <Bell className="w-4 h-4" strokeWidth={1.8} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full border-2 border-white" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#2DB37D] rounded-full border-2 border-white" />
             </button>
 
-            <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:bg-indigo-700 transition-colors ring-2 ring-indigo-200">
+            <div className="w-9 h-9 rounded-full bg-[#edf9f4] flex items-center justify-center text-[#2DB37D] text-xs font-bold cursor-pointer hover:bg-[#d1f4e5] transition-colors ring-2 ring-[#2DB37D]/20">
               AD
             </div>
           </div>

@@ -14,7 +14,7 @@ const STATUS = {
 };
 
 const TYPE_COLOR = {
-  Service:     'bg-blue-50 text-blue-700',
+  Service:     'bg-[#edf9f4] text-[#2DB37D]',
   Maintenance: 'bg-violet-50 text-violet-700',
 };
 
@@ -63,10 +63,10 @@ export default function ContractsTab() {
       <div className="grid grid-cols-3 gap-3">
         {[
           { label: 'Total Contracts', value: counts.total,    icon: FileText,    color: 'text-slate-700',   bg: 'bg-slate-50  border-slate-200' },
-          { label: 'Active',          value: counts.active,   icon: CalendarDays, color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
+          { label: 'Active',          value: counts.active,   icon: CalendarDays, color: 'text-[#2DB37D]', bg: 'bg-[#edf9f4] border-[#2DB37D]/20' },
           { label: 'Expiring Soon',   value: counts.expiring, icon: Clock,        color: 'text-amber-700',   bg: 'bg-amber-50  border-amber-200' },
         ].map(({ label, value, icon: Icon, color, bg }) => (
-          <div key={label} className={`flex items-center gap-4 px-5 py-4 rounded-xl border ${bg}`}>
+          <div key={label} className={`flex items-center gap-4 px-5 py-4 rounded-sm border ${bg}`}>
             <div className={`${color}`}>
               <Icon className="w-5 h-5" strokeWidth={1.8} />
             </div>
@@ -79,7 +79,7 @@ export default function ContractsTab() {
       </div>
 
       {/* Table card */}
-      <div className="bg-white border border-slate-200 rounded-xl  overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-sm overflow-hidden">
 
         {/* Toolbar */}
         <div className="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between gap-4">
@@ -90,12 +90,12 @@ export default function ContractsTab() {
               placeholder="Search contracts…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-lg w-60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-400 transition"
+              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-sm w-60 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
             />
           </div>
           <button
             onClick={handleAdd}
-            className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-sm font-medium rounded-lg transition-all "
+            className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#2DB37D] hover:bg-[#24a06e] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all shadow-sm"
           >
             <Plus className="w-4 h-4" />
             Add Contract
@@ -131,7 +131,7 @@ export default function ContractsTab() {
                     {/* Contract name + id */}
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-sm bg-slate-100 flex items-center justify-center shrink-0">
                           <FileText className="w-4 h-4 text-slate-400" strokeWidth={1.8} />
                         </div>
                         <div>
@@ -171,20 +171,20 @@ export default function ContractsTab() {
                     <td className="px-5 py-3.5">
                       <div className="flex items-center justify-end gap-0.5  transition-opacity">
                         <button
-                          className="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-[#2DB37D] hover:bg-[#edf9f4] transition-all"
                           title="Download PDF"
                         >
                           <Download className="w-4 h-4" />
                         </button>
                         <button
-                          className="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(c.id)}
-                          className="w-8 h-8 flex items-center justify-center rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
