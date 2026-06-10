@@ -1,0 +1,1460 @@
+openapi: 3.1.0
+info:
+  title: MedExpert API
+  description: |
+    Backend API for MedExpert - healthcare specialist network platform.
+    Provides patient booking, admin dashboard, doctor management, and analytics.
+
+    ## Quick Links
+    - [Swagger UI](https://medexpert.in/api/docs)
+    - [Postman](https://medexpert.in/api/postman)
+    - [Interactive Guide](https://github.com/medexpert/backend#readme)
+
+    ## Base URLs
+    - Production: https://api.medexpert.in/v1
+    - Staging: https://api-staging.medexpert.in/v1
+    - Local: http://localhost:8000/v1
+
+    ## Authentication
+    Bearer token required for all endpoints except public routes and auth endpoints.
+    Send `Authorization: Bearer <access_token>` in headers.
+    When token expires, call `/auth/refresh` with the refresh token cookie or header.
+
+    ## Versioning
+    All paths are versioned (e.g., `/v1/hospitals`). Breaking changes increment the version (v2, v3, etc).
+
+    ## Pagination
+    List endpoints return a paginated envelope:
+    ```json
+    {
+      "data": [/* items */],
+      "pagination": {
+        "page": 1,
+        "per_page": 20,
+        "total": 137,
+        "total_pages": 7,
+        "has_next": true,
+        "has_prev": false
+      }
+    }
+    ```
+  version: 1.0.0
+  contact:
+    name: MedExpert API Team
+    email: api@medexpert.in
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://api.medexpert.in/v1
+    description: Production
+  - url: https://api-staging.medexpert.in/v1
+    description: Staging
+  - url: http://localhost:8000/v1
+    description: Local
+tags:
+  - name: Auth
+    description: Phone + OTP authentication for patients and admins
+  - name: Patients
+    description: Patient registration and records
+  - name: Doctors
+    description: Doctor directory and management
+  - name: Hospitals
+    description: Hospital management and per-hospital data
+  - name: Departments
+    description: Specialities and department management
+  - name: Consultations
+    description: Bookings and consultations
+  - name: Documents
+    description: File uploads and document management
+  - name: Contracts
+    description: Hospital service agreements
+  - name: Analytics
+    description: Admin dashboards and reports
+  - name: Webhooks
+    description: Outbound event notifications
+  - name: Public
+    description: Publicly accessible routes (no auth required)
+
+paths:
+  # Health check
+  /healthz:
+    $ref: '#/components/responses/health_ok'
+
+  # Auth module
+  /auth/otp/request:
+    $ref: '#/components/endpoints/auth_otp_request'
+  /auth/otp/verify:
+    $ref: '#/components/endpoints/auth_otp_verify'
+  /auth/refresh:
+    $ref: '#/components/endpoints/auth_refresh'
+  /auth/logout:
+    $ref: '#/components/endpoints/auth_logout'
+  /auth/me:
+    $ref: '#/components/endpoints/auth_me'
+
+  # Public endpoints
+  /public/specialties:
+    $ref: '#/components/endpoints/public_specialties'
+  /public/states:
+    $ref: '#/components/endpoints/public_states'
+  /public/departments:
+    $ref: '#/components/endpoints/public_departments'
+
+  # Patients
+  /patients:
+    $ref: '#/components/endpoints/patients_list'
+    $ref: '#/components/endpoints/patients_create'
+  /patients/me:
+    $ref: '#/components/endpoints/patients_me'
+  /patients/{id}:
+    $ref: '#/components/endpoints/patients_get'
+    $ref: '#/components/endpoints/patients_patch'
+    $ref: '#/components/endpoints/patients_delete'
+  /patients/{id}/documents:
+    $ref: '#/components/endpoints/patient_documents'
+
+  # Doctors
+  /doctors:
+    $ref: '#/components/endpoints/doctors_list'
+    $ref: '#/components/endpoints/doctors_create'
+  /doctors/{id}:
+    $ref: '#/components/endpoints/doctors_get'
+    $ref: '#/components/endpoints/doctors_patch'
+    $ref: '#/components/endpoints/doctors_delete'
+  /doctors/{id}/booking-options:
+    $ref: '#/components/endpoints/doctor_booking_options'
+
+  # Hospitals
+  /hospitals:
+    $ref: '#/components/endpoints/hospitals_list'
+    $ref: '#/components/endpoints/hospitals_create'
+  /hospitals/{id}:
+    $ref: '#/components/endpoints/hospitals_get'
+    $ref: '#/components/endpoints/hospitals_patch'
+    $ref: '#/components/endpoints/hospitals_delete'
+  /hospitals/{id}/dashboard:
+    $ref: '#/components/endpoints/hospital_dashboard'
+
+  # Hospital sub-resources
+  /hospitals/{hospital_id}/departments:
+    $ref: '#/components/endpoints/hospital_departments_list'
+    $ref: '#/components/endpoints/department_create'
+  /hospitals/{hospital_id}/doctors:
+    $ref: '#/components/endpoints/hospital_doctors_list'
+  /hospitals/{hospital_id}/contracts:
+    $ref: '#/components/endpoints/hospital_contracts_list'
+    $ref: '#/components/endpoints/contract_create'
+  /hospitals/{hospital_id}/patients:
+    $ref: '#/components/endpoints/hospital_patients_list'
+
+  # Departments
+  /departments/{id}:
+    $ref: '#/components/endpoints/department_get'
+    $ref: '#/components/endpoints/department_patch'
+    $ref: '#/components/endpoints/department_delete'
+  /departments/{id}/doctors:
+    $ref: '#/components/endpoints/department_doctors_list'
+
+  # Contracts
+  /contracts/{id}:
+    $ref: '#/components/endpoints/contract_get'
+    $ref: '#/components/endpoints/contract_patch'
+    $ref: '#/components/endpoints/contract_delete'
+  /contracts/{id}/pdf:
+    $ref: '#/components/endpoints/contract_pdf'
+
+  # Consultations
+  /consultations:
+    $ref: '#/components/endpoints/consultations_list'
+    $ref: '#/components/endpoints/consultations_create'
+  /consultations/me:
+    $ref: '#/components/endpoints/consultations_me'
+  /consultations/{id}:
+    $ref: '#/components/endpoints/consultation_get'
+    $ref: '#/components/endpoints/consultation_patch'
+  /consultations/{id}/cancel:
+    $ref: '#/components/endpoints/consultation_cancel'
+  /consultations/{id}/payment:
+    $ref: '#/components/endpoints/consultation_payment'
+  /consultations/{id}/payment/verify:
+    $ref: '#/components/endpoints/consultation_payment_verify'
+  /consultations/{id}/summary-pdf:
+    $ref: '#/components/endpoints/consultation_summary_pdf'
+
+  # Documents & uploads
+  /uploads:
+    $ref: '#/components/endpoints/uploads_create'
+  /uploads/{id}:
+    $ref: '#/components/endpoints/uploads_get'
+    $ref: '#/components/endpoints/uploads_delete'
+  /ai/summarize:
+    $ref: '#/components/endpoints/ai_summarize'
+
+  # Analytics
+  /analytics/overview:
+    $ref: '#/components/endpoints/analytics_overview'
+  /analytics/hospital/{id}:
+    $ref: '#/components/endpoints/analytics_hospital'
+
+  # Webhooks
+  /webhooks/razorpay:
+    $ref: '#/components/endpoints/webhooks_razorpay'
+  /webhooks/sms-status:
+    $ref: '#/components/endpoints/webhooks_sms_status'
+
+components:
+  schemas:
+    # Error response
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              description: Machine-readable error code
+            message:
+              type: string
+              description: Human-readable message
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  code:
+                    type: string
+                  message:
+                    type: string
+            request_id:
+              type: string
+              description: Echo of X-Request-ID header
+
+    # Pagination
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        per_page:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 137
+        total_pages:
+          type: integer
+          example: 7
+        has_next:
+          type: boolean
+          example: true
+        has_prev:
+          type: boolean
+          example: false
+
+    # Generic list envelope
+    PaginatedEnvelope:
+      type: object
+      properties:
+        data:
+          type: array
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # Auth schemas
+    OTPRequest:
+      type: object
+      required:
+        - phone
+      properties:
+        phone:
+          type: string
+          format: phone
+          example: "+919876543210"
+          description: Phone number in E.164 format (+91 followed by 10 digits)
+          pattern: "^\\+91[1-9]\\d{9}$"
+
+    OTPVerify:
+      allOf:
+        - $ref: '#/components/schemas/OTPRequest'
+      required:
+        - otp
+        - role
+      properties:
+        otp:
+          type: string
+          minLength: 6
+          maxLength: 6
+          pattern: "^\\d{6}$"
+          example: "123456"
+        role:
+          type: string
+          enum: [patient, admin]
+          example: "patient"
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440001"
+        phone:
+          type: string
+          example: "+919876543210"
+        role:
+          type: string
+          enum: [patient, admin]
+        status:
+          type: string
+          enum: [active, disabled, pending_verification]
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          example: "john.doe@example.com"
+        last_login_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserResponse'
+        patient:
+          $ref: '#/components/schemas/PatientMinimal'
+        access_token:
+          type: string
+        access_token_expires_in:
+          type: integer
+          example: 900
+        refresh_token:
+          type: string
+        refresh_token_expires_in:
+          type: integer
+          example: 2592000
+        token_type:
+          type: string
+          example: "Bearer"
+
+    # Hospital schemas
+    HospitalStatus:
+      type: string
+      enum: [active, pending, inactive]
+
+    Hospital:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        slug:
+          type: string
+        address:
+          type: string
+          nullable: true
+        city:
+          type: string
+        state:
+          type: string
+          nullable: true
+        pincode:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        staff_count:
+          type: integer
+          nullable: true
+        departments_count:
+          type: integer
+          example: 12
+        doctors_count:
+          type: integer
+          example: 87
+        status:
+          $ref: '#/components/schemas/HospitalStatus'
+        logo_url:
+          type: string
+          nullable: true
+        consultation_fee_default:
+          type: integer
+          example: 150000
+        platform_fee:
+          type: integer
+          example: 20000
+        created_at:
+          type: string
+          format: date-time
+
+    # Doctor schemas
+    Specialty:
+      type: string
+      enum: [Cardiology, Neurology, Oncology, Orthopedics, Pediatrics, Dermatology, Radiology, General Surgery, Pathology, Endocrinology, Gastroenterology, Pulmonology, Nephrology]
+
+    DoctorStatus:
+      type: string
+      enum: [active, inactive]
+
+    Doctor:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        hospital_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+          nullable: true
+        name:
+          type: string
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        specialty:
+          $ref: '#/components/schemas/Specialty'
+        degree:
+          type: string
+        bio:
+          type: string
+          nullable: true
+        image_url:
+          type: string
+          nullable: true
+        experience:
+          type: integer
+        patients_count:
+          type: integer
+        rating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 5
+        status:
+          $ref: '#/components/schemas/DoctorStatus'
+        consultation_fee:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # Patient schemas
+    Gender:
+      type: string
+      enum: [male, female, other]
+
+    SymptomDuration:
+      type: string
+      enum: [under-1-week, 1-4-weeks, 1-3-months, 3-6-months, over-6-months]
+
+    Severity:
+      type: string
+      enum: [mild, moderate, severe]
+
+    PatientStatus:
+      type: string
+      enum: [admitted, outpatient, discharged, critical]
+
+    Ward:
+      type: string
+      enum: [icu, general, cardio, neuro]
+
+    Patient:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        mrn:
+          type: string
+          example: "MRN-10000"
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          nullable: true
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          $ref: '#/components/schemas/Gender'
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        pincode:
+          type: string
+          nullable: true
+        primary_department:
+          $ref: '#/components/schemas/Specialty'
+          nullable: true
+        chief_complaint:
+          type: string
+          nullable: true
+        symptom_duration:
+          $ref: '#/components/schemas/SymptomDuration'
+          nullable: true
+        severity:
+          $ref: '#/components/schemas/Severity'
+          nullable: true
+        allergies:
+          type: string
+          nullable: true
+        current_medications:
+          type: string
+          nullable: true
+        chronic_conditions:
+          type: string
+          nullable: true
+        surgical_history:
+          type: string
+          nullable: true
+        family_history:
+          type: string
+          nullable: true
+        earlier_opinion:
+          type: string
+          nullable: true
+        hospital_id:
+          type: string
+          format: uuid
+          nullable: true
+        ward:
+          $ref: '#/components/schemas/Ward'
+          nullable: true
+        assigned_doctor_id:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          $ref: '#/components/schemas/PatientStatus'
+        condition:
+          type: string
+          nullable: true
+        registered_at:
+          type: string
+          format: date-time
+        admitted_at:
+          type: string
+          format: date-time
+          nullable: true
+        discharged_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PatientMinimal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        mrn:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        status:
+          $ref: '#/components/schemas/PatientStatus'
+        primary_department:
+          $ref: '#/components/schemas/Specialty'
+        registered_at:
+          type: string
+          format: date-time
+
+    # Department/Contract schemas (abbreviated for space)
+    Department:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        hospital_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        head:
+          type: string
+        head_doctor_id:
+          type: string
+          format: uuid
+          nullable: true
+        patients_count:
+          type: integer
+        status:
+          type: string
+          enum: [active, inactive]
+        icon:
+          type: string
+          nullable: true
+        color:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    ContractType:
+      type: string
+      enum: [service, maintenance]
+
+    ContractStatus:
+      type: string
+      enum: [active, expiring, expired]
+
+    Contract:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        hospital_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/ContractType'
+        vendor_name:
+          type: string
+          nullable: true
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        value:
+          type: integer
+          nullable: true
+        status:
+          $ref: '#/components/schemas/ContractStatus'
+        days_remaining:
+          type: integer
+        terms:
+          type: string
+          nullable: true
+        document_url:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    # Consultation schemas
+    ConsultationIntent:
+      type: string
+      enum: [expert_opinion, caselet]
+
+    ConsultationType:
+      type: string
+      enum: [single, multiple]
+
+    ConsultationStatus:
+      type: string
+      enum: [pending_payment, paid, assigned, in_progress, completed, cancelled, refunded]
+
+    PaymentMethod:
+      type: string
+      enum: [upi, card, netbanking]
+
+    Consultation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        patient_id:
+          type: string
+          format: uuid
+        hospital_id:
+          type: string
+          format: uuid
+        intent:
+          $ref: '#/components/schemas/ConsultationIntent'
+        consult_type:
+          $ref: '#/components/schemas/ConsultationType'
+        status:
+          $ref: '#/components/schemas/ConsultationStatus'
+        doctor_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        primary_doctor_id:
+          type: string
+          format: uuid
+          nullable: true
+        assigned_at:
+          type: string
+          format: date-time
+          nullable: true
+        document_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        amount:
+          type: integer
+        doctor_fees:
+          type: integer
+        platform_fee:
+          type: integer
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethod'
+          nullable: true
+        payment_id:
+          type: string
+          nullable: true
+        ai_summary:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # Upload/Document schemas
+    UploadType:
+      type: string
+      enum: [prescription, discharge_summary, blood_report, radiology_scan, pathology_report, other]
+
+    UploadStatus:
+      type: string
+      enum: [uploaded, processing, ready, failed]
+
+    ScanStatus:
+      type: string
+      enum: [pending, clean, infected]
+
+    Upload:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        owner_user_id:
+          type: string
+          format: uuid
+        patient_id:
+          type: string
+          format: uuid
+          nullable: true
+        file_name:
+          type: string
+        title:
+          type: string
+        type:
+          $ref: '#/components/schemas/UploadType'
+        mime_type:
+          type: string
+        size_bytes:
+          type: integer
+        s3_key:
+          type: string
+        s3_bucket:
+          type: string
+        status:
+          $ref: '#/components/schemas/UploadStatus'
+        scan_status:
+          $ref: '#/components/schemas/ScanStatus'
+        ocr_text:
+          type: string
+          nullable: true
+        uploaded_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # Analytics schemas
+    Period:
+      type: string
+      enum: [1W, 1M, 3M, 6M, YTD, 1Y]
+
+    StatCard:
+      type: object
+      properties:
+        value:
+          type: integer
+        change:
+          type: number
+          nullable: true
+        direction:
+          type: string
+          enum: [up, down, same]
+          nullable: true
+        formatted:
+          type: string
+          nullable: true
+        points:
+          type: integer
+          nullable: true
+
+    SpecialtyData:
+      type: object
+      properties:
+        specialty:
+          type: string
+        patients:
+          type: integer
+        color:
+          type: string
+
+    RegionData:
+      type: object
+      properties:
+        region:
+          type: string
+        patients:
+          type: integer
+        revenue:
+          type: integer
+        change:
+          type: number
+
+    DoctorPoints:
+      type: object
+      properties:
+        rank:
+          type: integer
+        name:
+          type: string
+        specialty:
+          type: string
+        patients:
+          type: integer
+        rating:
+          type: number
+          nullable: true
+        points:
+          type: integer
+        is_top_performer:
+          type: boolean
+
+    AnalyticsOverviewResponse:
+      type: object
+      properties:
+        period:
+          $ref: '#/components/schemas/Period'
+        date_from:
+          type: string
+          format: date-time
+        date_to:
+          type: string
+          format: date-time
+        stats:
+          type: object
+          properties:
+            total_patients:
+              $ref: '#/components/schemas/StatCard'
+            total_revenue:
+              $ref: '#/components/schemas/StatCard'
+            top_specialty:
+              type: object
+              properties:
+                value:
+                  type: string
+                points:
+                  type: integer
+            active_regions:
+              $ref: '#/components/schemas/StatCard'
+        revenue_trend:
+          type: object
+          properties:
+            x_axis:
+              type: array
+              items:
+                type: string
+            opd:
+              type: array
+              items:
+                type: integer
+            ipd:
+              type: array
+              items:
+                type: integer
+        specialty_breakdown:
+          type: object
+          properties:
+            total:
+              type: integer
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/SpecialtyData'
+        region_patients:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionData'
+        top_doctors:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoctorPoints'
+
+    # AI Summary
+    AIResponse:
+      type: object
+      properties:
+        summary:
+          type: string
+        disclaimer:
+          type: string
+        key_findings:
+          type: array
+          items:
+            type: string
+        referenced_uploads:
+          type: array
+          items:
+            type: string
+            format: uuid
+        generated_at:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [processing, ready, failed]
+          example: "ready"
+
+    # Webhook payload schemas (abbreviated)
+    RazorpayEvent:
+      type: object
+      properties:
+        event:
+          type: string
+        payload:
+          type: object
+          properties:
+            payment_id:
+              type: string
+            order_id:
+              type: string
+            amount:
+              type: integer
+            status:
+              type: string
+            notes:
+              type: object
+              properties:
+                consultation_id:
+                  type: string
+                  format: uuid
+          required:
+            - payment_id
+            - order_id
+            - amount
+            - status
+          additionalProperties: true
+
+  parameters:
+    PaginationParams:
+      name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+      required: false
+      style: form
+      explode: false
+    PerPageParam:
+      name: per_page
+      in: query
+      description: Items per page (max 100)
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+      required: false
+      style: form
+      explode: false
+    SortParam:
+      name: sort
+      in: query
+      description: Sort order (field or field:asc/desc)
+      schema:
+        type: string
+        example: "created_at:desc"
+      required: false
+      style: form
+      explode: false
+    QParam:
+      name: q
+      in: query
+      description: Free-text search
+      schema:
+        type: string
+      required: false
+      style: form
+      explode: false
+    HospitalPathParam:
+      name: hospital_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440003"
+    DoctorPathParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440200"
+    PatientPathParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440002"
+    UploadPathParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: "550e8400-e29b-41d4-a716-446655440900"
+
+  headers:
+    IdempotencyHeader:
+      name: Idempotency-Key
+      description: Unique request identifier for idempotency (UUID)
+      schema:
+        type: string
+        example: "550e8400-e29b-41d4-a716-446655440999"
+      required: false
+    RequestIdHeader:
+      name: X-Request-ID
+      description: Request trace ID
+      schema:
+        type: string
+        example: "req_1a2b3c4d5e6f"
+      required: false
+
+  responses:
+    health_ok:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: "ok"
+
+    default_error:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    400:
+      $ref: '#/components/responses/default_error'
+    401:
+      $ref: '#/components/responses/default_error'
+    403:
+      $ref: '#/components/responses/default_error'
+    404:
+      $ref: '#/components/responses/default_error'
+    422:
+      $ref: '#/components/responses/default_error'
+    429:
+      description: Rate Limited
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+            description: Seconds to wait before retrying
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    500:
+      $ref: '#/components/responses/default_error'
+    502:
+      description: Upstream unavailable
+      $ref: '#/components/responses/default_error'
+
+  endpoints:
+    # Auth endpoints
+    auth_otp_request:
+      tags:
+        - Auth
+      summary: Request OTP
+      description: Send a 6-digit OTP to the phone number
+      operationId: authOtpRequest
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPRequest'
+      responses:
+        '200':
+          description: OTP sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: " OTP sent successfully. Please enter the 6-digit code."
+                  expires_in_seconds:
+                    type: integer
+                    example: 300
+        '400':
+          $ref: '#/components/responses/400'
+        '429':
+          $ref: '#/components/responses/429'
+        '422':
+          $ref: '#/components/responses/422'
+
+    auth_otp_verify:
+      tags:
+        - Auth
+      summary: Verify OTP
+      description: Verify OTP and issue JWT tokens
+      operationId: authOtpVerify
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPVerify'
+      responses:
+        '200':
+          description: JWT tokens issued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/400'
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: User not found (admin role)
+        '422':
+          $ref: '#/components/responses/422'
+        '423':
+          description: Account locked
+          $ref: '#/components/responses/422'
+
+    auth_refresh:
+      tags:
+        - Auth
+      summary: Refresh access token
+      description: Exchange refresh token for new access token
+      operationId: authRefresh
+      security: []
+      responses:
+        '200':
+          description: New access token issued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  access_token_expires_in:
+                    type: integer
+                    example: 900
+                  token_type:
+                    type: string
+                    example: "Bearer"
+        '401':
+          $ref: '#/components/responses/401'
+        '404':
+          description: Refresh token expired
+
+    auth_logout:
+      tags:
+        - Auth
+      summary: Logout
+      description: Revoke tokens
+      operationId: authLogout
+      security:
+        - Bearer: []
+      responses:
+        '204':
+          description: Successfully logged out
+
+    auth_me:
+      tags:
+        - Auth
+      summary: Get current user
+      description: Return authenticated user details
+      operationId: authMe
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Current user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/401'
+
+    # Public endpoints (abbreviated for space)
+    public_specialties:
+      tags:
+        - Public
+      summary: List all specialties
+      operationId: getSpecialties
+      security: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum: [Cardiology, Neurology, Oncology, Orthopedics, Pediatrics, Dermatology, Radiology, General Surgery, Pathology, Endocrinology, Gastroenterology, Pulmonology, Nephrology]
+
+    public_states:
+      tags:
+        - Public
+      summary: List Indian states
+      operationId: getStates
+      security: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum: [Maharashtra, Delhi, Karnataka, Tamil Nadu, West Bengal, Gujarat, Rajasthan, Uttar Pradesh, Telangana, Kerala]
+
+    public_departments:
+      tags:
+        - Public
+      summary: List departments (short version)
+      operationId: getDepartments
+      security: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum: [Cardiology, Neurology, Orthopedics, Pediatrics, Radiology, Pathology, General]
+
+    # Patient endpoints (abbreviated)
+    patients_list:
+      tags:
+        - Patients
+      summary: List patients (admin only)
+      operationId: listPatients
+      security:
+        - Bearer: []
+      parameters:
+        - $ref: '#/components/parameters/PaginationParams'
+        - $ref: '#/components/parameters/PerPageParam'
+        - $ref: '#/components/parameters/SortParam'
+        - $ref: '#/components/parameters/QParam'
+      responses:
+        '200':
+          description: List of patients
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEnvelope'
+        '403':
+          $ref: '#/components/responses/403'
+
+    patients_create:
+      tags:
+        - Patients
+      summary: Create patient (admin or self)
+      operationId: createPatient
+      security:
+        - Bearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Patient'
+      responses:
+        '201':
+          description: Patient created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        '400':
+          $ref: '#/components/responses/400'
+        '403':
+          $ref: '#/components/responses/403'
+        '409':
+          $ref: '#/components/responses/422'
+
+    # ... other endpoints follow similar pattern
+    # For brevity, only endpoint stubs are shown above
+    # The full OpenAPI spec contains all endpoints with their request/response schemas
+
+    # Example: Hospital dashboard endpoint
+    hospital_dashboard:
+      tags:
+        - Hospitals
+      summary: Get hospital dashboard analytics
+      operationId: getHospitalDashboard
+      security:
+        - Bearer: []
+      parameters:
+        - $ref: '#/components/parameters/HospitalPathParam'
+      responses:
+        '200':
+          description: Hospital dashboard data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hospital:
+                    $ref: '#/components/schemas/Hospital'
+                  period:
+                    $ref: '#/components/schemas/Period'
+                  date_from:
+                    type: string
+                    format: date-time
+                  date_to:
+                    type: string
+                    format: date-time
+                  stats:
+                    type: object
+                    properties:
+                      opd_consultations:
+                        $ref: '#/components/schemas/StatCard'
+                      ipd_conversions:
+                        $ref: '#/components/schemas/StatCard'
+                      tests_booked:
+                        $ref: '#/components/schemas/StatCard'
+                      revenue_today:
+                        $ref: '#/components/schemas/StatCard'
+                  consultation_trend:
+                    type: object
+                    properties:
+                      x_axis:
+                        type: array
+                        items:
+                          type: string
+                      opd:
+                        type: array
+                        items:
+                          type: integer
+                      ipd:
+                        type: array
+                        items:
+                          type: integer
+                  doctor_distribution:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            specialty:
+                              type: string
+                            patients:
+                              type: integer
+                            color:
+                              type: string
+                  top_doctors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DoctorPoints'
+
+security:
+  - Bearer: []
+    # Default security scheme
+    # Individual endpoints override this (e.g., no auth for public routes)
+securitySchemes:
+  Bearer:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    description: JWT access token (from /auth/otp/verify) with expiry
+
+externalDocs:
+  description: Full documentation on GitHub
+  url: https://github.com/medexpert/backend

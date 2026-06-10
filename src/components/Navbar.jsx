@@ -1,47 +1,128 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, Menu, X } from 'lucide-react';
+import { Activity, Menu, X, ChevronDown, Video, Stethoscope, Building2, FileText } from 'lucide-react';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed w-full z-50 top-0 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-slate-200/50">
+    <nav className="fixed w-full z-50 top-0 bg-white border-b border-slate-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-indigo-800 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
-              <Activity className="w-6 h-6 text-white" />
+        <div className="flex justify-between items-center h-16">
+
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 shrink-0">
+            <div className="w-8 h-8 bg-[#2DB37D] rounded-lg flex items-center justify-center">
+              <Activity className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-2xl tracking-tight text-slate-900">MedExpert</span>
+            <span className="font-extrabold text-xl tracking-tight text-slate-900">
+              Med<span className="text-[#2DB37D]">Expert</span>
+            </span>
           </Link>
-          
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Home</Link>
-            <Link to="/find-doctors" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Find Doctors</Link>
-            <Link to="/hospitals" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Hospitals</Link>
-            
+
+          {/* Desktop nav links */}
+          <div className="hidden md:flex items-center gap-1">
+            <Link to="/" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors">
+              Home
+            </Link>
+
+            {/* Find Doctors dropdown trigger */}
+            <div className="relative group">
+              <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors">
+                Find Doctors <ChevronDown className="w-3.5 h-3.5" />
+              </button>
+              {/* Dropdown */}
+              <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-xl border border-slate-100 shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
+                <Link to="/find-doctors" className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#f0faf5] transition-colors group/item">
+                  <Stethoscope className="w-4 h-4 text-[#2DB37D]" />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800 group-hover/item:text-[#2DB37D]">All Specialists</p>
+                    <p className="text-[11px] text-slate-400">Browse by specialty</p>
+                  </div>
+                </Link>
+                <Link to="/find-doctors" className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#f0faf5] transition-colors group/item">
+                  <Video className="w-4 h-4 text-purple-500" />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800 group-hover/item:text-[#2DB37D]">Video Consult</p>
+                    <p className="text-[11px] text-slate-400">Consult online now</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+
+            <Link to="/hospitals" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors flex items-center gap-1">
+              <Building2 className="w-3.5 h-3.5" /> Hospitals
+            </Link>
+
+            <Link to="/signin?role=patient" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors flex items-center gap-1">
+              <FileText className="w-3.5 h-3.5" /> Second Opinion
+            </Link>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <Link to="/signin?role=patient" className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors">Patient Login</Link>
-            <Link to="/signin?role=admin" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">Admin Sign in</Link>
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              to="/signin?role=admin"
+              className="text-sm font-semibold text-slate-600 hover:text-[#2DB37D] transition-colors"
+            >
+              Admin
+            </Link>
+            <Link
+              to="/signin?role=patient"
+              className="px-5 py-2 text-sm font-bold text-white bg-[#2DB37D] hover:bg-[#24a06e] rounded-lg transition-colors shadow-sm"
+            >
+              Login / Sign up
+            </Link>
           </div>
 
-          <button className="md:hidden p-2 text-slate-600" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <X /> : <Menu />}
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden p-2 text-slate-600 hover:text-[#2DB37D] transition-colors"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
-      {/* Mobile Menu */}
+
+      {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-6 space-y-4 shadow-lg">
-          <Link to="/" className="block text-base font-medium text-slate-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Home</Link>
-          <Link to="/find-doctors" className="block text-base font-medium text-slate-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Find Doctors</Link>
-          <Link to="/hospitals" className="block text-base font-medium text-slate-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Hospitals</Link>
-          <Link to="/second-opinion" className="block text-base font-medium text-slate-600 hover:text-blue-600" onClick={() => setIsMenuOpen(false)}>Second Opinion</Link>
-          <Link to="/signin?role=patient" className="block text-base font-medium text-indigo-600 hover:text-indigo-800 pt-2 border-t border-slate-100" onClick={() => setIsMenuOpen(false)}>Patient Login</Link>
-          <Link to="/signin?role=admin" className="block text-base font-medium text-slate-600 hover:text-slate-900" onClick={() => setIsMenuOpen(false)}>Admin Sign in</Link>
+        <div className="md:hidden bg-white border-t border-slate-100 shadow-lg">
+          <div className="px-4 py-4 space-y-1">
+            {[
+              { to: '/',                   label: 'Home'           },
+              { to: '/find-doctors',       label: 'Find Doctors'   },
+              { to: '/find-doctors',       label: 'Video Consult'  },
+              { to: '/hospitals',          label: 'Hospitals'      },
+              { to: '/signin?role=patient',label: 'Second Opinion' },
+            ].map(({ to, label }) => (
+              <Link
+                key={label}
+                to={to}
+                onClick={() => setIsMenuOpen(false)}
+                className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+          <div className="px-4 pb-4 pt-2 border-t border-slate-100 flex flex-col gap-2">
+            <Link
+              to="/signin?role=patient"
+              onClick={() => setIsMenuOpen(false)}
+              className="w-full py-2.5 text-center text-sm font-bold text-white bg-[#2DB37D] hover:bg-[#24a06e] rounded-lg transition-colors"
+            >
+              Login / Sign up
+            </Link>
+            <Link
+              to="/signin?role=admin"
+              onClick={() => setIsMenuOpen(false)}
+              className="w-full py-2.5 text-center text-sm font-semibold text-slate-600 border border-slate-200 hover:border-[#2DB37D] hover:text-[#2DB37D] rounded-lg transition-colors"
+            >
+              Admin Sign in
+            </Link>
+          </div>
         </div>
       )}
     </nav>
