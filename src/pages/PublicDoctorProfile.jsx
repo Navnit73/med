@@ -19,7 +19,7 @@ export default function PublicDoctorProfile() {
     return (
       <div className="pt-24 pb-20 min-h-[100dvh] bg-slate-50 flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold text-slate-900 mb-4">Doctor not found</h1>
-        <button onClick={() => navigate('/find-doctors')} className="px-6 py-2.5 bg-[#2DB37D] text-white rounded-xl font-medium">
+        <button onClick={() => navigate('/find-doctors')} className="px-6 py-2.5 bg-[#2DB37D] text-white rounded-sm font-medium">
           Back to Search
         </button>
       </div>
@@ -51,13 +51,12 @@ export default function PublicDoctorProfile() {
           <div className="w-full lg:flex-1 space-y-4">
 
             {/* Profile header card */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-              {/* Green top accent */}
-              <div className="h-1.5 bg-[#2DB37D]" />
+            <div className="bg-white rounded-sm border border-slate-100  overflow-hidden">
+            
               <div className="p-5 md:p-6 flex flex-col sm:flex-row gap-5">
                 {/* Avatar */}
                 <div className="shrink-0">
-                  <div className={`w-24 h-24 md:w-28 md:h-28 rounded-xl flex items-center justify-center text-2xl md:text-3xl font-extrabold text-white ${avatarClass}`}>
+                  <div className={`w-24 h-24 md:w-28 md:h-28 rounded-sm flex items-center justify-center text-2xl md:text-3xl font-extrabold text-white ${avatarClass}`}>
                     {initials(doctor.name)}
                   </div>
                 </div>
@@ -97,7 +96,7 @@ export default function PublicDoctorProfile() {
             </div>
 
             {/* Tabs + content */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-sm border border-slate-100  overflow-hidden">
               <div className="flex border-b border-slate-100 overflow-x-auto scrollbar-hide">
                 {['About', 'Education', 'Services', `Reviews (${doctor.reviews})`].map((tab, i) => (
                   <button key={tab} className={`px-5 py-3.5 text-sm whitespace-nowrap font-semibold transition-colors ${i === 0 ? 'text-[#2DB37D] border-b-2 border-[#2DB37D]' : 'text-slate-500 hover:text-slate-800'}`}>
@@ -185,7 +184,7 @@ export default function PublicDoctorProfile() {
           <div className="w-full lg:w-[340px] space-y-4">
 
             {/* Clinic info */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+            <div className="bg-white rounded-sm border border-slate-100  p-5">
               <h2 className="text-sm font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100">Clinic details</h2>
 
               <div className="flex gap-3 mb-4">
@@ -218,7 +217,7 @@ export default function PublicDoctorProfile() {
             </div>
 
             {/* Desktop booking widget */}
-            <div className="hidden lg:block bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+            <div className="hidden lg:block bg-white rounded-sm border border-slate-100  p-5">
               <h3 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-[#2DB37D]" /> Book an appointment
               </h3>
@@ -268,10 +267,10 @@ export default function PublicDoctorProfile() {
           <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wide">Fee</p>
           <p className="text-base font-extrabold text-slate-900">₹800</p>
         </div>
-        <button className="flex-1 py-3 border border-[#2DB37D] text-[#2DB37D] font-bold text-sm rounded-xl flex items-center justify-center gap-2">
+        <button className="flex-1 py-3 border border-[#2DB37D] text-[#2DB37D] font-bold text-sm rounded-sm flex items-center justify-center gap-2">
           <Video className="w-4 h-4" /> Video
         </button>
-        <button className="flex-1 py-3 bg-[#2DB37D] text-white font-bold text-sm rounded-xl">
+        <button className="flex-1 py-3 bg-[#2DB37D] text-white font-bold text-sm rounded-sm">
           Book clinic
         </button>
       </div>
