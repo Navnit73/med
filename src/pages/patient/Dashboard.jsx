@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FileText, ArrowRight, Download, Receipt, Stethoscope, Bell, ChevronRight, User, Menu, X } from "lucide-react";
+import { FileText, Download, Receipt, Stethoscope, ChevronRight, User, X } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export default function PatientDashboard() {
   const { patientData } = useAuth();
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [showPdfModal, setShowPdfModal] = useState(false);
+    const [showPdfModal, setShowPdfModal] = useState(false);
 
   const isRegistered = patientData && (patientData.firstName || patientData.name);
   const firstName = patientData?.firstName || patientData?.name || "Guest";
-  const initials = firstName.slice(0, 2).toUpperCase();
-
+  
   const actions = [
     {
       id: "caselet",

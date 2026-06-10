@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, Plus, Trash2, Edit, UserCircle, Stethoscope, GraduationCap, Clock, HeartPulse, Brain, Scan, Baby, Bone, FlaskConical, ChevronRight } from 'lucide-react';
 import DoctorForm from './DoctorForm';
 import DoctorProfile from './DoctorProfile';

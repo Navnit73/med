@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import {
   Users, IndianRupee, Stethoscope, MapPin,
-  ChevronUp, ChevronDown, ChevronRight,
-  Star, Filter, Download, Award, TrendingUp,
+  ChevronUp, ChevronDown, Star, Filter, Download, Award, TrendingUp,
 } from "lucide-react";
 
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
@@ -216,6 +215,7 @@ function CardHeader({ title, sub, action }) {
 export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
   const [activePeriod, setActivePeriod] = useState(2);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setMounted(true); }, []);
 
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Activity, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -24,7 +24,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link to="/find-doctors" className="text-slate-400 hover:text-white transition-colors">Find Doctors</Link></li>
               <li><Link to="/hospitals" className="text-slate-400 hover:text-white transition-colors">Hospitals</Link></li>
-              <li><Link to="/second-opinion" className="text-slate-400 hover:text-white transition-colors">Second Opinion</Link></li>
+              <li><Link to="/signin?role=patient" className="text-slate-400 hover:text-white transition-colors">Second Opinion</Link></li>
             </ul>
           </div>
 

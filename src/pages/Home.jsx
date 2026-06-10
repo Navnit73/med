@@ -1,9 +1,9 @@
-import React from 'react';
+
 import {
   ShieldCheck, Clock, FileText, Globe, HeartPulse, Brain,
   Bone, Baby, Sun, Microscope, Scissors, ArrowRight,
   CheckCircle2, Activity, Shield, Users, Stethoscope, ChevronRight,
-  FileCheck2, Building2, UserCircle, Star
+  FileCheck2, Building2, Star
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -40,9 +40,9 @@ export default function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-10">
-                <button className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md hover:shadow-indigo-200 hover:shadow-lg transition-all duration-200 active:scale-[0.98]">
+                <Link to="/signin?role=patient" className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-md hover:shadow-indigo-200 hover:shadow-lg transition-all duration-200 active:scale-[0.98]">
                   Request a Second Opinion <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
                 <Link to="/find-doctors" className="inline-flex items-center justify-center px-7 py-3.5 text-sm font-semibold text-slate-700 bg-white border border-slate-200 hover:border-indigo-200 hover:bg-indigo-50 rounded-xl transition-all duration-200">
                   Browse Specialists
                 </Link>
@@ -289,9 +289,9 @@ export default function Home() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center">
           <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-5">Ready for clarity?</h2>
           <p className="text-lg text-indigo-300 mb-10">Get matched with a specialist today. Your case, reviewed by an expert, in 48 hours.</p>
-          <button className="inline-flex items-center gap-2 px-8 py-4 text-base font-bold text-indigo-700 bg-white hover:bg-indigo-50 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0">
+          <Link to="/signin?role=patient" className="inline-flex items-center gap-2 px-8 py-4 text-base font-bold text-indigo-700 bg-white hover:bg-indigo-50 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0">
             Request Second Opinion <ArrowRight className="w-5 h-5" />
-          </button>
+          </Link>
         </div>
       </section>
     </main>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Save, Building2, UserCircle, Users, Activity } from 'lucide-react';
 
 export default function DepartmentForm({ department, onSave, onCancel }) {
@@ -14,6 +14,7 @@ export default function DepartmentForm({ department, onSave, onCancel }) {
 
   useEffect(() => {
     if (department) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         name: department.name || '',
         head: department.head || '',

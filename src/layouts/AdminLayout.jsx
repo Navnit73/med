@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  Activity, LayoutDashboard, FileText, Users, LogOut,
+  Activity, LayoutDashboard, LogOut,
   Building2, ChevronDown, PlusCircle, List, Bell, Search, Menu
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';

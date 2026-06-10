@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, Edit, Trash2, UserPlus, Users, UserCheck, UserX, Activity } from 'lucide-react';
 
 const INITIAL_PATIENTS = [

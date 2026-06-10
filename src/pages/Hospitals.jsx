@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapPin, Phone, Users, ChevronRight, Building2, Search, ArrowUpRight } from 'lucide-react';
+import { useState } from 'react';
+import { MapPin, Phone, Building2, Search, ArrowUpRight } from 'lucide-react';
 
 const HOSPITALS = [
   { name: 'Apollo Medical Center',       address: '120 Wellness Blvd, San Francisco', phone: '+1 415 555 0101', staff: 420, doctors: 64, status: 'active'   },

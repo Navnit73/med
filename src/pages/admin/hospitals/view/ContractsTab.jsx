@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search, Download, Edit, Trash2, Plus, FileText, CalendarDays, Clock } from 'lucide-react';
 
 const INITIAL_CONTRACTS = [

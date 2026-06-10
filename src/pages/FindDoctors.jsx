@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Briefcase, GraduationCap, ChevronRight, Star } from 'lucide-react';
 import { DOCTORS, SPECIALTIES, SPECIALTY_ICONS, DEFAULT_ICON, AVATAR_COLORS } from '../data/mockDoctors';

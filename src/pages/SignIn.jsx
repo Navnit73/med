@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Activity, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -17,6 +17,7 @@ export default function SignIn() {
 
   useEffect(() => {
     const r = searchParams.get('role') === 'patient' ? 'patient' : 'admin';
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRole(r);
     setPhoneNumber('');
     setOtpSent(false);

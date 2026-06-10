@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Save, User, Mail, Phone, Briefcase, GraduationCap, Award, Stethoscope, Hash, AlignLeft } from 'lucide-react';
 
 const SPECIALTIES = ['Cardiology', 'Neurology', 'Radiology', 'Pediatrics', 'Orthopedics', 'Pathology', 'General'];
@@ -22,6 +22,7 @@ export default function DoctorForm({ doctor, onSave, onCancel }) {
 
   useEffect(() => {
     if (doctor) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         name: doctor.name || '',
         email: doctor.email || '',

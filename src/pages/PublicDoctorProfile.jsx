@@ -1,7 +1,7 @@
-import React from 'react';
+
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, GraduationCap, Award, Star, ArrowLeft, CheckCircle2, ThumbsUp, ChevronRight, Building2, Clock, Calendar } from 'lucide-react';
-import { DOCTORS, SPECIALTY_ICONS, DEFAULT_ICON, AVATAR_COLORS } from '../data/mockDoctors';
+import { GraduationCap, Award, ArrowLeft, CheckCircle2, ThumbsUp, ChevronRight, Building2, Clock, Calendar } from 'lucide-react';
+import { DOCTORS, AVATAR_COLORS } from '../data/mockDoctors';
 
 function initials(name) {
   return name.replace('Dr. ', '').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
@@ -28,8 +28,7 @@ export default function PublicDoctorProfile() {
     );
   }
 
-  const SpecIcon = SPECIALTY_ICONS[doctor.specialty] ?? DEFAULT_ICON;
-  const avatarClass = AVATAR_COLORS[doctorIndex % AVATAR_COLORS.length];
+    const avatarClass = AVATAR_COLORS[doctorIndex % AVATAR_COLORS.length];
 
   return (
     <div className="pt-16 md:pt-24 pb-20 min-h-[100dvh] bg-[#f8f9fa] font-sans">

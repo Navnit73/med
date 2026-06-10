@@ -1,5 +1,5 @@
-import React from 'react';
-import { ArrowLeft, Edit, Trash2, Mail, Phone, MapPin, Briefcase, GraduationCap, Clock, Award, Users, Star, UserCircle } from 'lucide-react';
+
+import { ArrowLeft, Edit, Trash2, Mail, Phone, Briefcase, GraduationCap, Clock, Award, Users, Star, UserCircle } from 'lucide-react';
 
 export default function DoctorProfile({ doctor, onBack, onEdit, onDelete }) {
   if (!doctor) return null;

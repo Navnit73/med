@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { Activity, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
