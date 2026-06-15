@@ -47,7 +47,7 @@ export default function PatientDashboard() {
   const visibleActions = actions.filter((a) => a.always || isRegistered);
 
   const colorMap = {
-    teal:   { bg: "bg-teal-500",   ring: "ring-teal-200",   text: "text-teal-600",   light: "bg-teal-50",   hover: "hover:bg-teal-600" },
+    teal:   { bg: "bg-sky-600",   ring: "ring-sky-200",   text: "text-sky-700",   light: "bg-sky-50",   hover: "hover:bg-sky-700" },
     blue:   { bg: "bg-blue-500",   ring: "ring-blue-200",   text: "text-blue-600",   light: "bg-blue-50",   hover: "hover:bg-blue-600" },
     violet: { bg: "bg-violet-500", ring: "ring-violet-200", text: "text-violet-600", light: "bg-violet-50", hover: "hover:bg-violet-600" },
   };
@@ -61,7 +61,7 @@ export default function PatientDashboard() {
 
         {/* Greeting */}
         <section>
-          <p className="text-xs font-semibold text-teal-600 uppercase tracking-widest mb-1">Dashboard</p>
+          <p className="text-xs font-semibold text-sky-700 uppercase tracking-widest mb-1">Dashboard</p>
           <h1 className="text-2xl font-extrabold text-slate-900 leading-tight">
             Hello, {firstName} 👋
           </h1>
@@ -72,21 +72,7 @@ export default function PatientDashboard() {
           </p>
         </section>
 
-        {/* Status pill (only for registered) */}
-        {isRegistered && (
-          <div className="flex items-center gap-3 bg-white rounded-2xl p-4 border border-slate-100 ">
-            <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center flex-shrink-0">
-              <User size={18} className="text-teal-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-slate-400 font-medium">Active Patient</p>
-              <p className="text-sm font-semibold text-slate-800 truncate">{patientData?.name}</p>
-            </div>
-            <span className="text-xs bg-teal-50 text-teal-600 font-semibold px-2.5 py-1 rounded-full ring-1 ring-teal-100">
-              Verified
-            </span>
-          </div>
-        )}
+   
 
         {/* Action Cards */}
         <section className="space-y-3">
@@ -123,7 +109,7 @@ export default function PatientDashboard() {
         </section>
 
         {/* Info strip */}
-        <div className="rounded-2xl bg-gradient-to-r from-teal-500 to-emerald-500 p-4 text-white flex items-center gap-4 shadow-md shadow-teal-200">
+        <div className="rounded-2xl bg-sky-600 p-4 text-white flex items-center gap-4 shadow-md shadow-sky-200">
           <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
             <FileText size={18} className="text-white" />
           </div>

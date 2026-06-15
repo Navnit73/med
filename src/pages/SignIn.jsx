@@ -114,14 +114,14 @@ export default function SignIn() {
         {/* Top bar */}
         <div className="flex items-center justify-between px-8 py-5 border-b border-slate-100">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-[#2DB37D] rounded-lg flex items-center justify-center">
+            <div className="w-7 h-7 bg-[#0284c7] rounded-lg flex items-center justify-center">
               <Activity className="w-4 h-4 text-white" />
             </div>
             <span className="font-extrabold text-lg text-slate-900">
-              Med<span className="text-[#2DB37D]">Expert</span>
+              Med<span className="text-[#0284c7]">Expert</span>
             </span>
           </Link>
-          <Link to="/" className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-[#2DB37D] transition-colors">
+          <Link to="/" className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-[#0284c7] transition-colors">
             <ArrowLeft className="w-3.5 h-3.5" /> Back to home
           </Link>
         </div>
@@ -148,7 +148,7 @@ export default function SignIn() {
                   onClick={() => { setRole(r); setOtpSent(false); setError(''); setPhoneNumber(''); setOtp(''); }}
                   className={`flex-1 py-2 text-sm font-bold rounded-lg capitalize transition-all ${
                     role === r
-                      ? 'bg-white text-[#2DB37D] shadow-sm border border-slate-100'
+                      ? 'bg-white text-[#0284c7] shadow-sm border border-slate-100'
                       : 'text-slate-500 hover:text-slate-700'
                   }`}
                 >
@@ -177,7 +177,7 @@ export default function SignIn() {
                       type="button"
                       disabled={otpSent}
                       onClick={() => { if (!otpSent) setDropdownOpen(v => !v); }}
-                      className="flex items-center gap-1.5 px-3 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 hover:border-[#2DB37D] hover:bg-[#f0faf5] transition-colors disabled:opacity-60 disabled:cursor-not-allowed min-w-[90px]"
+                      className="flex items-center gap-1.5 px-3 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-semibold text-slate-700 hover:border-[#0284c7] hover:bg-[#e0f2fe] transition-colors disabled:opacity-60 disabled:cursor-not-allowed min-w-[90px]"
                     >
                       <span className="text-base leading-none">{selectedCountry.flag}</span>
                       <span className="text-xs font-mono">{selectedCountry.dial}</span>
@@ -205,15 +205,15 @@ export default function SignIn() {
                               <button
                                 type="button"
                                 onClick={() => handleCountrySelect(c)}
-                                className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#f0faf5] transition-colors ${
-                                  selectedCountry.code === c.code ? 'bg-[#edf9f4]' : ''
+                                className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#e0f2fe] transition-colors ${
+                                  selectedCountry.code === c.code ? 'bg-[#f0f9ff]' : ''
                                 }`}
                               >
                                 <span className="text-base leading-none shrink-0">{c.flag}</span>
                                 <span className="text-sm text-slate-700 flex-1 font-medium text-left">{c.name}</span>
                                 <span className="text-xs text-slate-400 font-mono shrink-0">{c.dial}</span>
                                 {selectedCountry.code === c.code && (
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-[#2DB37D] shrink-0" />
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-[#0284c7] shrink-0" />
                                 )}
                               </button>
                             </li>
@@ -231,7 +231,7 @@ export default function SignIn() {
                       type="tel"
                       value={phoneNumber}
                       onChange={handlePhoneChange}
-                      className="w-full px-4 py-3 pr-16 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-all placeholder-slate-400 disabled:bg-slate-50 disabled:text-slate-400"
+                      className="w-full px-4 py-3 pr-16 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all placeholder-slate-400 disabled:bg-slate-50 disabled:text-slate-400"
                       placeholder={`${selectedCountry.maxLen}-digit number`}
                       required
                       disabled={otpSent}
@@ -240,7 +240,7 @@ export default function SignIn() {
                     />
                     {phoneNumber.length > 0 && !otpSent && (
                       <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-bold tabular-nums pointer-events-none ${
-                        phoneNumber.length === selectedCountry.maxLen ? 'text-[#2DB37D]' : 'text-slate-400'
+                        phoneNumber.length === selectedCountry.maxLen ? 'text-[#0284c7]' : 'text-slate-400'
                       }`}>
                         {phoneNumber.length}/{selectedCountry.maxLen}
                       </span>
@@ -263,7 +263,7 @@ export default function SignIn() {
                     <button
                       type="button"
                       onClick={() => { setOtpSent(false); setOtp(''); setError(''); }}
-                      className="text-xs font-semibold text-[#2DB37D] hover:underline"
+                      className="text-xs font-semibold text-[#0284c7] hover:underline"
                     >
                       Change number
                     </button>
@@ -273,7 +273,7 @@ export default function SignIn() {
                       type="text"
                       value={otp}
                       onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] transition-all tracking-[0.4em] placeholder-slate-400"
+                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all tracking-[0.4em] placeholder-slate-400"
                       placeholder="• • • • • •"
                       required
                       maxLength={6}
@@ -283,12 +283,12 @@ export default function SignIn() {
                     <button
                       type="button"
                       onClick={() => setOtp('123456')}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#2DB37D] hover:text-[#24a06e] bg-white px-2 py-1 rounded"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-[#0284c7] hover:text-[#0369a1] bg-white px-2 py-1 rounded"
                     >
                       Resend
                     </button>
                   </div>
-                  <p className="text-xs text-[#2DB37D] mt-1.5 flex items-center gap-1">
+                  <p className="text-xs text-[#0284c7] mt-1.5 flex items-center gap-1">
                     <CheckCircle2 className="w-3 h-3" />
                     OTP sent to {selectedCountry.dial} {phoneNumber}
                   </p>
@@ -300,14 +300,14 @@ export default function SignIn() {
                   type="button"
                   onClick={handleGetOtp}
                   disabled={phoneNumber.length < selectedCountry.maxLen}
-                  className="w-full py-3 bg-[#2DB37D] hover:bg-[#24a06e] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
+                  className="w-full py-3 bg-[#0284c7] hover:bg-[#0369a1] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
                 >
                   Send OTP
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="w-full py-3 bg-[#2DB37D] hover:bg-[#24a06e] text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
+                  className="w-full py-3 bg-[#0284c7] hover:bg-[#0369a1] text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
                 >
                   Verify & Sign in
                 </button>
@@ -316,8 +316,8 @@ export default function SignIn() {
 
             <p className="text-[11px] text-slate-400 text-center mt-6 leading-relaxed">
               By continuing, you agree to our{' '}
-              <a href="#" className="text-[#2DB37D] hover:underline">Terms of Service</a> and{' '}
-              <a href="#" className="text-[#2DB37D] hover:underline">Privacy Policy</a>.
+              <a href="#" className="text-[#0284c7] hover:underline">Terms of Service</a> and{' '}
+              <a href="#" className="text-[#0284c7] hover:underline">Privacy Policy</a>.
             </p>
           </div>
         </div>
@@ -331,7 +331,7 @@ export default function SignIn() {
               { icon: Clock,        label: '48h Response'     },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-                <Icon className="w-3.5 h-3.5 text-[#2DB37D]" /> {label}
+                <Icon className="w-3.5 h-3.5 text-[#0284c7]" /> {label}
               </div>
             ))}
           </div>
@@ -339,12 +339,12 @@ export default function SignIn() {
       </div>
 
       {/* ── Right: info panel ── */}
-      <div className="hidden lg:flex flex-1 bg-[#f0faf5] items-center justify-center p-16 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#2DB37D]/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#2DB37D]/8 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+      <div className="hidden lg:flex flex-1 bg-[#e0f2fe] items-center justify-center p-16 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0284c7]/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#0284c7]/8 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none" />
 
         <div className="max-w-md relative z-10">
-          <div className="w-14 h-14 bg-[#2DB37D] rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-[#2DB37D]/25">
+          <div className="w-14 h-14 bg-[#0284c7] rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-[#0284c7]/25">
             <Activity className="w-7 h-7 text-white" />
           </div>
           <h2 className="text-3xl font-extrabold text-slate-900 leading-snug mb-4">
@@ -359,23 +359,23 @@ export default function SignIn() {
               { value: '98%',  label: 'Satisfaction' },
               { value: '500+', label: 'Hospitals'    },
             ].map(s => (
-              <div key={s.label} className="bg-white rounded-xl p-4 border border-[#2DB37D]/15 text-center shadow-sm">
-                <p className="text-xl font-extrabold text-[#2DB37D]">{s.value}</p>
+              <div key={s.label} className="bg-white rounded-xl p-4 border border-[#0284c7]/15 text-center shadow-sm">
+                <p className="text-xl font-extrabold text-[#0284c7]">{s.value}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{s.label}</p>
               </div>
             ))}
           </div>
-          <div className="bg-white rounded-2xl p-5 border border-[#2DB37D]/15 shadow-sm">
+          <div className="bg-white rounded-2xl p-5 border border-[#0284c7]/15 shadow-sm">
             <div className="flex gap-0.5 mb-3">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-[#2DB37D] text-[#2DB37D]" />
+                <Star key={i} className="w-3.5 h-3.5 fill-[#0284c7] text-[#0284c7]" />
               ))}
             </div>
             <p className="text-sm text-slate-700 leading-relaxed mb-4 italic">
               "MedExpert connected me with a leading oncologist within two days. The clarity I received changed my treatment path entirely."
             </p>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#edf9f4] flex items-center justify-center text-[#2DB37D] text-xs font-bold">R</div>
+              <div className="w-8 h-8 rounded-full bg-[#f0f9ff] flex items-center justify-center text-[#0284c7] text-xs font-bold">R</div>
               <div>
                 <p className="text-xs font-bold text-slate-800">Rachel M.</p>
                 <p className="text-[11px] text-slate-400">Patient, Boston</p>

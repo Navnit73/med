@@ -21,7 +21,7 @@ const Input = ({ icon: Icon, className = '', ...props }) => (
     {Icon && <Icon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />}
     <input
       {...props}
-      className={`w-full ${Icon ? 'pl-10' : 'px-4'} pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all ${className}`}
+      className={`w-full ${Icon ? 'pl-10' : 'px-4'} pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all ${className}`}
     />
   </div>
 );
@@ -31,7 +31,7 @@ const Select = ({ icon: Icon, children, ...props }) => (
     {Icon && <Icon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />}
     <select
       {...props}
-      className={`w-full appearance-none ${Icon ? 'pl-10' : 'px-4'} pr-8 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition-all`}
+      className={`w-full appearance-none ${Icon ? 'pl-10' : 'px-4'} pr-8 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all`}
     >
       {children}
     </select>
@@ -42,7 +42,7 @@ const Select = ({ icon: Icon, children, ...props }) => (
 const Textarea = (props) => (
   <textarea
     {...props}
-    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent resize-none transition-all"
+    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent resize-none transition-all"
   />
 );
 
@@ -78,17 +78,17 @@ const StepBar = ({ step, total }) => (
   <div className="mb-4">
     {/* Mobile pill */}
     <div className="sm:hidden flex items-center gap-3 bg-white border border-slate-100 rounded-2xl px-4 py-3 shadow-sm">
-      <div className="w-8 h-8 rounded-full bg-teal-500 text-white text-xs font-black flex items-center justify-center shrink-0">
+      <div className="w-8 h-8 rounded-full bg-sky-600 text-white text-xs font-black flex items-center justify-center shrink-0">
         {step}
       </div>
       <div className="flex-1">
         <div className="flex justify-between text-[11px] font-bold mb-1">
-          <span className="text-teal-700">{STEPS[step - 1]}</span>
+          <span className="text-sky-800">{STEPS[step - 1]}</span>
           <span className="text-slate-400">Step {step} of {total}</span>
         </div>
         <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-teal-500 rounded-full transition-all duration-500"
+            className="h-full bg-sky-600 rounded-full transition-all duration-500"
             style={{ width: `${((step - 1) / (total - 1)) * 100}%` }}
           />
         </div>
@@ -99,7 +99,7 @@ const StepBar = ({ step, total }) => (
     <div className="hidden sm:flex items-center relative px-2">
       <div className="absolute inset-x-6 top-3.5 h-0.5 bg-slate-100" />
       <div
-        className="absolute left-6 top-3.5 h-0.5 bg-teal-400 transition-all duration-500"
+        className="absolute left-6 top-3.5 h-0.5 bg-sky-500 transition-all duration-500"
         style={{ width: `calc(${((step - 1) / (total - 1)) * 100}% - 3rem + 24px)` }}
       />
       {STEPS.map((label, i) => {
@@ -109,13 +109,13 @@ const StepBar = ({ step, total }) => (
         return (
           <div key={s} className="flex-1 flex flex-col items-center relative z-10">
             <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold border-2 transition-all ${
-              done ? 'bg-teal-500 border-teal-500 text-white' :
-              active ? 'bg-white border-teal-500 text-teal-600 shadow-md' :
+              done ? 'bg-sky-600 border-sky-600 text-white' :
+              active ? 'bg-white border-sky-600 text-sky-700 shadow-md' :
               'bg-white border-slate-200 text-slate-400'
             }`}>
               {done ? <CheckCircle2 size={13} /> : s}
             </div>
-            <span className={`text-[10px] mt-1 font-semibold ${active ? 'text-teal-600' : done ? 'text-teal-400' : 'text-slate-400'}`}>
+            <span className={`text-[10px] mt-1 font-semibold ${active ? 'text-sky-700' : done ? 'text-sky-500' : 'text-slate-400'}`}>
               {label}
             </span>
           </div>
@@ -139,7 +139,7 @@ const NavButtons = ({ onBack, onNext, nextLabel = 'Continue', nextDisabled = fal
     <button
       onClick={onNext}
       disabled={nextDisabled}
-      className="ml-auto flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-all active:scale-95 shadow-sm shadow-teal-200"
+      className="ml-auto flex items-center gap-2 px-6 py-3 bg-sky-700 hover:bg-sky-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl transition-all active:scale-95 shadow-sm shadow-sky-200"
     >
       {nextLabel} <ChevronRight size={16} />
     </button>
@@ -159,21 +159,11 @@ export default function RegistrationWizard() {
     lastName: patientData?.lastName || '',
     phone: patientData?.phone || '',
     email: patientData?.email || '',
-    dob: patientData?.dob || '',
-    gender: patientData?.gender || '',
-    city: patientData?.city || '',
-    state: patientData?.state || '',
-    pincode: patientData?.pincode || '',
-    department: '',
-    chiefComplaint: '',
-    symptomDuration: '',
-    severity: '',
-    allergies: '',
-    currentMedications: '',
-    chronicConditions: '',
-    surgicalHistory: '',
-    familyHistory: '',
-    earlierOpinion: '',
+   
+   
+   
+  
+   
     intent: '',
     consultType: '',
     documents: [],
@@ -247,94 +237,21 @@ export default function RegistrationWizard() {
                   <Input name="email" type="email" value={formData.email} onChange={handle} placeholder="jane@email.com" icon={Mail} />
                 </Field>
                 <Row2>
-                  <Field label="Date of Birth">
-                    <Input name="dob" type="date" value={formData.dob} onChange={handle} icon={Calendar} />
-                  </Field>
-                  <Field label="Gender">
-                    <Select name="gender" value={formData.gender} onChange={handle}>
-                      <option value="">Select</option>
-                      <option>Male</option><option>Female</option><option>Other</option>
-                    </Select>
-                  </Field>
+             
+                
                 </Row2>
               </Section>
 
-              <Section icon={MapPin} title="Location">
-                <Field label="City" required>
-                  <Input name="city" value={formData.city} onChange={handle} placeholder="Mumbai" icon={MapPin} />
-                </Field>
-                <Row2>
-                  <Field label="State">
-                    <Select name="state" value={formData.state} onChange={handle}>
-                      <option value="">Select State</option>
-                      {['Maharashtra','Delhi','Karnataka','Tamil Nadu','West Bengal','Gujarat','Rajasthan','Uttar Pradesh','Telangana','Kerala'].map(s => (
-                        <option key={s}>{s}</option>
-                      ))}
-                    </Select>
-                  </Field>
-                  <Field label="Pincode">
-                    <Input name="pincode" value={formData.pincode} onChange={handle} placeholder="400001" inputMode="numeric" maxLength={6} />
-                  </Field>
-                </Row2>
-              </Section>
+          
 
-              <Section icon={Building2} title="Speciality Needed">
-                <Field label="Department" required>
-                  <Select name="department" value={formData.department} onChange={handle} icon={Building2}>
-                    <option value="">Choose Department</option>
-                    <option>Cardiology</option><option>Oncology</option>
-                    <option>Neurology</option><option>Orthopedics</option>
-                    <option>Endocrinology</option><option>Nephrology</option>
-                    <option>Pulmonology</option><option>Gastroenterology</option>
-                  </Select>
-                </Field>
-              </Section>
 
-              <Section icon={ClipboardList} title="Medical History">
-                <Field label="Main Symptom / Chief Complaint" required>
-                  <Textarea name="chiefComplaint" value={formData.chiefComplaint} onChange={handle} rows={3} placeholder="What's bothering you most? Describe briefly..." />
-                </Field>
-                <Row2>
-                  <Field label="How Long?">
-                    <Select name="symptomDuration" value={formData.symptomDuration} onChange={handle}>
-                      <option value="">Duration</option>
-                      <option>Under 1 week</option><option>1–4 weeks</option>
-                      <option>1–3 months</option><option>3–6 months</option>
-                      <option>Over 6 months</option>
-                    </Select>
-                  </Field>
-                  <Field label="Severity">
-                    <Select name="severity" value={formData.severity} onChange={handle}>
-                      <option value="">Level</option>
-                      <option>Mild</option><option>Moderate</option><option>Severe</option>
-                    </Select>
-                  </Field>
-                </Row2>
-                <Field label="Allergies" hint="e.g. Penicillin, Shellfish, Dust">
-                  <Input name="allergies" value={formData.allergies} onChange={handle} placeholder="List any known allergies" icon={AlertCircle} />
-                </Field>
-                <Field label="Current Medications" hint="Name and dosage if known">
-                  <Input name="currentMedications" value={formData.currentMedications} onChange={handle} placeholder="e.g. Metformin 500mg" icon={Pill} />
-                </Field>
-                <Field label="Ongoing Conditions">
-                  <Input name="chronicConditions" value={formData.chronicConditions} onChange={handle} placeholder="e.g. Diabetes, Hypertension" icon={Heart} />
-                </Field>
-                <Field label="Past Surgeries">
-                  <Input name="surgicalHistory" value={formData.surgicalHistory} onChange={handle} placeholder="e.g. Appendectomy 2015" />
-                </Field>
-                <Field label="Family Medical History">
-                  <Input name="familyHistory" value={formData.familyHistory} onChange={handle} placeholder="e.g. Father – Cardiac, Mother – Diabetes" />
-                </Field>
-                <Field label="Previous Consultations">
-                  <Textarea name="earlierOpinion" value={formData.earlierOpinion} onChange={handle} rows={2} placeholder="Any prior diagnosis or specialist visits?" />
-                </Field>
-              </Section>
+             
 
               <NavButtons
                 showBack={false}
                 onNext={next}
                 nextLabel="Next Step"
-                nextDisabled={!formData.firstName || !formData.phone || !formData.department || !formData.chiefComplaint}
+                nextDisabled={!formData.firstName || !formData.phone }
               />
             </div>
           )}
@@ -368,22 +285,22 @@ export default function RegistrationWizard() {
                       key={opt.val}
                       onClick={() => set('intent', opt.val)}
                       className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-4 ${
-                        active ? 'border-teal-500 bg-teal-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'
+                        active ? 'border-sky-600 bg-sky-50/50' : 'border-slate-100 hover:border-slate-200 bg-white'
                       }`}
                     >
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-teal-500 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${active ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-500'}`}>
                         <Icon size={20} />
                       </div>
                       <div className="flex-1 min-w-0 pt-0.5">
                         <div className="flex items-center gap-2 flex-wrap mb-0.5">
                           <span className="text-sm font-bold text-slate-900">{opt.title}</span>
                           {opt.badge && (
-                            <span className="text-[10px] font-bold bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full">{opt.badge}</span>
+                            <span className="text-[10px] font-bold bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full">{opt.badge}</span>
                           )}
                         </div>
                         <p className="text-xs text-slate-500 leading-relaxed">{opt.desc}</p>
                       </div>
-                      <div className={`w-5 h-5 rounded-full border-2 shrink-0 mt-0.5 flex items-center justify-center transition-all ${active ? 'border-teal-500 bg-teal-500' : 'border-slate-300'}`}>
+                      <div className={`w-5 h-5 rounded-full border-2 shrink-0 mt-0.5 flex items-center justify-center transition-all ${active ? 'border-sky-600 bg-sky-600' : 'border-slate-300'}`}>
                         {active && <div className="w-2 h-2 rounded-full bg-white" />}
                       </div>
                     </button>
@@ -413,18 +330,19 @@ export default function RegistrationWizard() {
                 <Field label="Document Type">
                   <Select value={docInput.type} onChange={e => setDocInput(d => ({ ...d, type: e.target.value }))}>
                     <option>Prescription</option>
-                    <option>Discharge Summary</option>
-                    <option>Blood Report</option>
                     <option>Radiology Scan</option>
-                    <option>Pathology Report</option>
-                    <option>Other</option>
+                    <option> Report</option>
+                   
+                    <option>Blood Report</option>
+                 
+                    <option>Other Report</option>
                   </Select>
                 </Field>
                 <Field label="File">
                   <input
                     type="file"
                     onChange={e => setDocInput(d => ({ ...d, file: e.target.files[0] }))}
-                    className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer bg-white border border-slate-200 rounded-xl p-2"
+                    className="w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-50 file:text-sky-800 hover:file:bg-sky-100 cursor-pointer bg-white border border-slate-200 rounded-xl p-2"
                   />
                 </Field>
                 <button
@@ -440,8 +358,8 @@ export default function RegistrationWizard() {
                 <div className="space-y-2 mb-4">
                   {formData.documents.map(doc => (
                     <div key={doc.id} className="flex items-center gap-3 bg-white border border-slate-100 rounded-xl px-3 py-3 shadow-sm">
-                      <div className="w-9 h-9 bg-teal-50 rounded-xl flex items-center justify-center shrink-0">
-                        <File size={15} className="text-teal-600" />
+                      <div className="w-9 h-9 bg-sky-50 rounded-xl flex items-center justify-center shrink-0">
+                        <File size={15} className="text-sky-700" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-slate-800 truncate">{doc.title}</p>
@@ -523,7 +441,7 @@ export default function RegistrationWizard() {
                   <button
                     key={val}
                     onClick={() => setFormData(f => ({ ...f, consultType: val, selectedDoctors: [] }))}
-                    className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${formData.consultType === val ? 'bg-white shadow text-teal-700' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`flex-1 py-2.5 text-xs font-bold rounded-lg transition-all ${formData.consultType === val ? 'bg-white shadow text-sky-800' : 'text-slate-500 hover:text-slate-700'}`}
                   >
                     {label}
                   </button>
@@ -545,10 +463,10 @@ export default function RegistrationWizard() {
                       disabled={!formData.consultType}
                       className={`w-full flex items-center gap-3 p-3.5 rounded-2xl border-2 transition-all text-left ${
                         !formData.consultType ? 'opacity-40 cursor-not-allowed border-slate-100 bg-slate-50' :
-                        active ? 'border-teal-500 bg-teal-50/60' : 'border-slate-100 hover:border-slate-200 bg-white'
+                        active ? 'border-sky-600 bg-sky-50/60' : 'border-slate-100 hover:border-slate-200 bg-white'
                       }`}
                     >
-                      <div className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-extrabold shrink-0 ${active ? 'bg-teal-500 text-white' : 'bg-teal-50 text-teal-700'}`}>
+                      <div className={`w-11 h-11 rounded-full flex items-center justify-center text-sm font-extrabold shrink-0 ${active ? 'bg-sky-600 text-white' : 'bg-sky-50 text-sky-800'}`}>
                         {initials}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -559,9 +477,9 @@ export default function RegistrationWizard() {
                         <div className="flex items-center gap-1 text-amber-500 text-xs font-bold">
                           <Star size={11} fill="currentColor" /> {doc.rating}
                         </div>
-                        <p className="text-xs font-bold text-teal-600">₹{doc.fee}</p>
+                        <p className="text-xs font-bold text-sky-700">₹{doc.fee}</p>
                       </div>
-                      <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ml-1 ${active ? 'border-teal-500 bg-teal-500' : 'border-slate-300'}`}>
+                      <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ml-1 ${active ? 'border-sky-600 bg-sky-600' : 'border-slate-300'}`}>
                         {active && <div className="w-2 h-2 rounded-full bg-white" />}
                       </div>
                     </button>
@@ -570,9 +488,9 @@ export default function RegistrationWizard() {
               </div>
 
               {formData.selectedDoctors.length > 0 && (
-                <div className="mt-3 bg-teal-50 border border-teal-100 rounded-xl px-4 py-2.5 flex justify-between items-center">
-                  <span className="text-xs text-teal-700 font-semibold">{formData.selectedDoctors.length} doctor{formData.selectedDoctors.length > 1 ? 's' : ''} selected</span>
-                  <span className="text-sm font-extrabold text-teal-700">₹{formData.selectedDoctors.length * 1500 + 200}</span>
+                <div className="mt-3 bg-sky-50 border border-sky-100 rounded-xl px-4 py-2.5 flex justify-between items-center">
+                  <span className="text-xs text-sky-800 font-semibold">{formData.selectedDoctors.length} doctor{formData.selectedDoctors.length > 1 ? 's' : ''} selected</span>
+                  <span className="text-sm font-extrabold text-sky-800">₹{formData.selectedDoctors.length * 1500 + 200}</span>
                 </div>
               )}
 
@@ -609,12 +527,12 @@ export default function RegistrationWizard() {
                 </div>
                 <div className="bg-white border-t border-slate-100 px-4 py-3 flex justify-between items-center">
                   <span className="font-bold text-slate-900">Total</span>
-                  <span className="text-2xl font-extrabold text-teal-600">₹{formData.selectedDoctors.length * 1500 + 200}</span>
+                  <span className="text-2xl font-extrabold text-sky-700">₹{formData.selectedDoctors.length * 1500 + 200}</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-xs text-slate-400 mb-5">
-                <ShieldCheck size={14} className="text-teal-500 shrink-0" />
+                <ShieldCheck size={14} className="text-sky-600 shrink-0" />
                 <span>Secured by 256-bit SSL. Your data is never shared without consent.</span>
               </div>
 
@@ -647,14 +565,14 @@ export default function RegistrationWizard() {
               </p>
 
               {formData.intent === 'expert' && (
-                <div className="flex items-center gap-2 bg-teal-50 border border-teal-100 rounded-xl px-4 py-2.5 text-xs text-teal-700 font-semibold mb-6">
+                <div className="flex items-center gap-2 bg-sky-50 border border-sky-100 rounded-xl px-4 py-2.5 text-xs text-sky-800 font-semibold mb-6">
                   <CalendarClock size={14} className="shrink-0" /> You'll be notified via SMS & Email
                 </div>
               )}
 
               <button
                 onClick={() => navigate('/patient')}
-                className="w-full max-w-xs py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm rounded-2xl shadow-md transition-all active:scale-95"
+                className="w-full max-w-xs py-3.5 bg-sky-700 hover:bg-sky-800 text-white font-bold text-sm rounded-2xl shadow-md transition-all active:scale-95"
               >
                 Go to Dashboard
               </button>

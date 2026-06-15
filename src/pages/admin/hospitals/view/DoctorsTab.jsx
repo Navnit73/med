@@ -158,7 +158,7 @@ export default function DoctorsTab() {
               placeholder="Search doctors…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-8 pr-4 py-1.5 text-sm bg-white border border-slate-200 rounded-sm w-52 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
+              className="pl-8 pr-4 py-1.5 text-sm bg-white border border-slate-200 rounded-sm w-52 focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] placeholder-slate-400 transition"
             />
           </div>
 
@@ -166,7 +166,7 @@ export default function DoctorsTab() {
           <select
             value={specialtyFilter}
             onChange={e => setSpecialty(e.target.value)}
-            className="py-1.5 pl-3 pr-8 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 text-slate-600 transition appearance-none"
+            className="py-1.5 pl-3 pr-8 text-sm bg-white border border-slate-200 rounded-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 text-slate-600 transition appearance-none"
           >
             {SPECIALTIES.map(s => <option key={s}>{s}</option>)}
           </select>
@@ -189,7 +189,7 @@ export default function DoctorsTab() {
 
         <button
           onClick={openAddForm}
-          className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#2DB37D] hover:bg-[#24a06e] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all shadow-sm shrink-0"
+          className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0284c7] hover:bg-[#0369a1] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all shadow-sm shrink-0"
         >
           <Plus className="w-4 h-4" />
           Add Doctor
@@ -229,7 +229,7 @@ export default function DoctorsTab() {
                   {/* Name + specialty */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-sm font-semibold text-slate-900 group-hover:text-[#2DB37D] transition-colors">{doc.name}</h3>
+                      <h3 className="text-sm font-semibold text-slate-900 group-hover:text-[#0284c7] transition-colors">{doc.name}</h3>
                       <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium ring-1 ring-inset capitalize ${scfg.badge}`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${scfg.dot}`} />
                         {doc.status}
@@ -277,7 +277,7 @@ export default function DoctorsTab() {
                 {/* Rating + View profile button */}
                 <div className="flex items-center justify-between">
                   <Stars rating={doc.rating} />
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-[#2DB37D] group-hover:text-[#24a06e]">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-[#0284c7] group-hover:text-[#0369a1]">
                     View Profile
                     <ChevronRight className="w-3.5 h-3.5" />
                   </span>

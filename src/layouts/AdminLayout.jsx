@@ -29,14 +29,14 @@ export default function AdminLayout() {
   const navLinkClass = (active) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm transition-all duration-150 ${
       active
-        ? 'bg-[#edf9f4] text-[#2DB37D] font-bold'
+        ? 'bg-[#f0f9ff] text-[#0284c7] font-bold'
         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
     }`;
 
   const subLinkClass = (active) =>
     `flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm transition-all duration-150 ${
       active
-        ? 'bg-[#edf9f4] text-[#2DB37D] font-bold'
+        ? 'bg-[#f0f9ff] text-[#0284c7] font-bold'
         : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
     }`;
 
@@ -58,11 +58,11 @@ export default function AdminLayout() {
         {/* Logo */}
         <div className="h-16 flex items-center px-5 border-b border-slate-100">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-[#2DB37D] rounded-lg flex items-center justify-center">
+            <div className="w-7 h-7 bg-[#0284c7] rounded-lg flex items-center justify-center">
               <Activity className="w-4 h-4 text-white" strokeWidth={2.5} />
             </div>
             <span className="font-extrabold text-lg text-slate-900">
-              Med<span className="text-[#2DB37D]">Expert</span>
+              Med<span className="text-[#0284c7]">Expert</span>
             </span>
           </Link>
         </div>
@@ -86,7 +86,7 @@ export default function AdminLayout() {
               onClick={() => setHospitalsMenuOpen(!hospitalsMenuOpen)}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-sm text-sm transition-all duration-150 ${
                 isActiveGroup('/admin/hospitals')
-                  ? 'bg-[#edf9f4] text-[#2DB37D] font-bold'
+                  ? 'bg-[#f0f9ff] text-[#0284c7] font-bold'
                   : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900 font-medium'
               }`}
             >
@@ -95,7 +95,7 @@ export default function AdminLayout() {
                 Hospitals
               </div>
               <span className={`transition-transform duration-200 ${hospitalsMenuOpen ? 'rotate-180' : ''}`}>
-                <ChevronDown className={`w-4 h-4 ${isActiveGroup('/admin/hospitals') ? 'text-[#2DB37D]' : 'text-slate-400'}`} />
+                <ChevronDown className={`w-4 h-4 ${isActiveGroup('/admin/hospitals') ? 'text-[#0284c7]' : 'text-slate-400'}`} />
               </span>
             </button>
 
@@ -121,7 +121,7 @@ export default function AdminLayout() {
         {/* User footer */}
         <div className="p-3 border-t border-slate-100">
           <div className="flex items-center gap-3 px-2 py-2 rounded-lg mb-1">
-            <div className="w-8 h-8 rounded-full bg-[#edf9f4] flex items-center justify-center text-[#2DB37D] text-xs font-bold shrink-0">
+            <div className="w-8 h-8 rounded-full bg-[#f0f9ff] flex items-center justify-center text-[#0284c7] text-xs font-bold shrink-0">
               AD
             </div>
             <div className="flex-1 min-w-0">
@@ -149,7 +149,7 @@ export default function AdminLayout() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-1.5 -ml-2 rounded-sm text-slate-500 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30"
+              className="p-1.5 -ml-2 rounded-sm text-slate-500 hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30"
               aria-label="Toggle sidebar"
             >
               <Menu className="w-5 h-5" />
@@ -165,7 +165,7 @@ export default function AdminLayout() {
                     {isLast ? (
                       <span className="text-slate-600 font-medium capitalize">{seg.replace(/-/g, ' ')}</span>
                     ) : (
-                      <Link to={path} className="hover:text-[#2DB37D] capitalize transition-colors">
+                      <Link to={path} className="hover:text-[#0284c7] capitalize transition-colors">
                         {seg.replace(/-/g, ' ')}
                       </Link>
                     )}
@@ -184,16 +184,16 @@ export default function AdminLayout() {
               <input
                 type="text"
                 placeholder="Search…"
-                className="pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-sm w-52 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
+                className="pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-sm w-52 focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] placeholder-slate-400 transition"
               />
             </div>
 
             <button className="relative w-9 h-9 flex items-center justify-center rounded-sm text-slate-500 hover:bg-slate-50 transition-colors">
               <Bell className="w-4 h-4" strokeWidth={1.8} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#2DB37D] rounded-full border-2 border-white" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#0284c7] rounded-full border-2 border-white" />
             </button>
 
-            <div className="w-9 h-9 rounded-full bg-[#edf9f4] flex items-center justify-center text-[#2DB37D] text-xs font-bold cursor-pointer hover:bg-[#d1f4e5] transition-colors ring-2 ring-[#2DB37D]/20">
+            <div className="w-9 h-9 rounded-full bg-[#f0f9ff] flex items-center justify-center text-[#0284c7] text-xs font-bold cursor-pointer hover:bg-[#bae6fd] transition-colors ring-2 ring-[#0284c7]/20">
               AD
             </div>
           </div>

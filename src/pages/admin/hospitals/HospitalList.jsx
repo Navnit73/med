@@ -18,7 +18,7 @@ const STATUS_CONFIG = {
 };
 
 const AVATAR_COLORS = [
-  'bg-[#edf9f4] text-[#2DB37D]',
+  'bg-[#f0f9ff] text-[#0284c7]',
   'bg-violet-100 text-violet-700',
   'bg-pink-100 text-pink-700',
   'bg-teal-100 text-teal-700',
@@ -55,8 +55,8 @@ export default function HospitalList() {
 
   const SortIcon = ({ col }) => (
     <span className="ml-1 inline-flex flex-col gap-px opacity-40">
-      <ChevronUp className={`w-2.5 h-2.5 ${sortKey === col && sortDir === 'asc' ? 'opacity-100 text-[#2DB37D]' : ''}`} />
-      <ChevronDown className={`w-2.5 h-2.5 -mt-1 ${sortKey === col && sortDir === 'desc' ? 'opacity-100 text-[#2DB37D]' : ''}`} />
+      <ChevronUp className={`w-2.5 h-2.5 ${sortKey === col && sortDir === 'asc' ? 'opacity-100 text-[#0284c7]' : ''}`} />
+      <ChevronDown className={`w-2.5 h-2.5 -mt-1 ${sortKey === col && sortDir === 'desc' ? 'opacity-100 text-[#0284c7]' : ''}`} />
     </span>
   );
 
@@ -78,7 +78,7 @@ export default function HospitalList() {
         </div>
         <Link
           to="/admin/hospitals/add"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-[#2DB37D] hover:bg-[#24a06e] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all "
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all "
         >
           <Plus className="w-4 h-4" />
           Add Hospital
@@ -120,7 +120,7 @@ export default function HospitalList() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search by name or city…"
-              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-sm w-64 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
+              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-sm w-64 focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] placeholder-slate-400 transition"
             />
           </div>
           <span className="text-xs text-slate-400">{filtered.length} result{filtered.length !== 1 ? 's' : ''}</span>
@@ -173,7 +173,7 @@ export default function HospitalList() {
                       </div>
                       <Link
                         to={`/admin/hospitals/${hospital.id}`}
-                        className="text-sm font-medium text-slate-800 hover:text-[#2DB37D] transition-colors"
+                        className="text-sm font-medium text-slate-800 hover:text-[#0284c7] transition-colors"
                       >
                         {hospital.name}
                       </Link>
@@ -206,7 +206,7 @@ export default function HospitalList() {
                       <Link
                         to={`/admin/hospitals/${hospital.id}`}
                         title="View"
-                        className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-[#2DB37D] hover:bg-[#edf9f4] transition-all"
+                        className="w-8 h-8 flex items-center justify-center rounded-sm text-slate-400 hover:text-[#0284c7] hover:bg-[#f0f9ff] transition-all"
                       >
                         <Eye className="w-4 h-4" />
                       </Link>
@@ -240,7 +240,7 @@ export default function HospitalList() {
             <button className="w-7 h-7 flex items-center justify-center rounded-sm border border-slate-200 text-slate-400 hover:bg-slate-100 disabled:opacity-40 transition-colors" disabled>
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
-            <span className="text-xs px-2.5 py-1 rounded-sm bg-[#2DB37D] text-white font-medium">1</span>
+            <span className="text-xs px-2.5 py-1 rounded-sm bg-[#0284c7] text-white font-medium">1</span>
             <button className="w-7 h-7 flex items-center justify-center rounded-sm border border-slate-200 text-slate-400 hover:bg-slate-100 disabled:opacity-40 transition-colors" disabled>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>

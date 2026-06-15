@@ -10,9 +10,9 @@ const STATS = [
     delta: '+18',
     up: true,
     icon: Users,
-    bg: 'bg-[#edf9f4]',
-    icon_c: 'text-[#2DB37D]',
-    val_c: 'text-[#2DB37D]',
+    bg: 'bg-[#f0f9ff]',
+    icon_c: 'text-[#0284c7]',
+    val_c: 'text-[#0284c7]',
     sub: 'patients today',
   },
   {
@@ -58,7 +58,7 @@ const admissionSeries = [
 const admissionOptions = {
   chart: { type: 'area', toolbar: { show: false }, fontFamily: 'inherit', background: 'transparent' },
   stroke: { curve: 'smooth', width: 2.5 },
-  colors: ['#2DB37D', '#10b981'],
+  colors: ['#0284c7', '#10b981'],
   fill: {
     type: 'gradient',
     gradient: { shadeIntensity: 1, opacityFrom: 0.18, opacityTo: 0.01, stops: [0, 100] },
@@ -83,7 +83,7 @@ const admissionOptions = {
 
 // ─── DOCTOR PATIENT DISTRIBUTION ─────────────────────────────────────────────
 const DOCTORS = [
-  { name: 'Dr. Sharma',    dept: 'Cardiology',  patients: 58, color: '#2DB37D' },
+  { name: 'Dr. Sharma',    dept: 'Cardiology',  patients: 58, color: '#0284c7' },
   { name: 'Dr. Mehta',     dept: 'Neurology',   patients: 44, color: '#0ea5e9' },
   { name: 'Dr. Kapoor',    dept: 'Orthopedics', patients: 39, color: '#f59e0b' },
   { name: 'Dr. Verma',     dept: 'Pediatrics',  patients: 35, color: '#ec4899' },

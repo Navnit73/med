@@ -40,11 +40,11 @@ export default function Footer() {
           {/* Brand col */}
           <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-[#2DB37D] rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-[#0284c7] rounded-lg flex items-center justify-center">
                 <Activity className="w-5 h-5 text-white" />
               </div>
               <span className="font-extrabold text-xl text-slate-900">
-                Med<span className="text-[#2DB37D]">Expert</span>
+                Med<span className="text-[#0284c7]">Expert</span>
               </span>
             </div>
             <p className="text-sm text-slate-500 leading-relaxed max-w-xs mb-5">
@@ -56,7 +56,7 @@ export default function Footer() {
                 <a
                   key={i}
                   href="#"
-                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-[#2DB37D] hover:text-[#2DB37D] transition-colors"
+                  className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-[#0284c7] hover:text-[#0284c7] transition-colors"
                 >
                   <Icon className="w-3.5 h-3.5" />
                 </a>
@@ -75,7 +75,7 @@ export default function Footer() {
                 { to: '/find-doctors',        label: 'Video Consult'   },
               ].map(({ to, label }) => (
                 <li key={label}>
-                  <Link to={to} className="text-sm text-slate-500 hover:text-[#2DB37D] transition-colors">
+                  <Link to={to} className="text-sm text-slate-500 hover:text-[#0284c7] transition-colors">
                     {label}
                   </Link>
                 </li>
@@ -89,7 +89,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {['About us', 'Careers', 'Press', 'Blog', 'Contact'].map(label => (
                 <li key={label}>
-                  <a href="#" className="text-sm text-slate-500 hover:text-[#2DB37D] transition-colors">{label}</a>
+                  <a href="#" className="text-sm text-slate-500 hover:text-[#0284c7] transition-colors">{label}</a>
                 </li>
               ))}
             </ul>
@@ -100,19 +100,19 @@ export default function Footer() {
             <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-4">Legal</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-sm text-slate-500 hover:text-[#2DB37D] transition-colors">Privacy Policy</a>
+                <a href="#" className="text-sm text-slate-500 hover:text-[#0284c7] transition-colors">Privacy Policy</a>
               </li>
               <li>
-                <a href="#" className="text-sm text-slate-500 hover:text-[#2DB37D] transition-colors">Terms of Service</a>
+                <a href="#" className="text-sm text-slate-500 hover:text-[#0284c7] transition-colors">Terms of Service</a>
               </li>
               <li>
-                <a href="#" className="text-sm text-slate-500 hover:text-[#2DB37D] transition-colors flex items-center gap-1.5">
+                <a href="#" className="text-sm text-slate-500 hover:text-[#0284c7] transition-colors flex items-center gap-1.5">
                   HIPAA Compliance
-                  <Shield className="w-3.5 h-3.5 text-[#2DB37D]" />
+                  <Shield className="w-3.5 h-3.5 text-[#0284c7]" />
                 </a>
               </li>
               <li>
-                <a href="#" className="text-sm text-slate-500 hover:text-[#2DB37D] transition-colors">Cookie Policy</a>
+                <a href="#" className="text-sm text-slate-500 hover:text-[#0284c7] transition-colors">Cookie Policy</a>
               </li>
             </ul>
           </div>
@@ -121,7 +121,7 @@ export default function Footer() {
         {/* Trust badges */}
         <div className="flex flex-wrap gap-3 mb-8 pb-8 border-b border-slate-100">
           {[
-            { label: 'HIPAA Compliant',     color: 'text-[#2DB37D]', bg: 'bg-[#edf9f4] border-[#2DB37D]/20' },
+            { label: 'HIPAA Compliant',     color: 'text-[#0284c7]', bg: 'bg-[#f0f9ff] border-[#0284c7]/20' },
             { label: 'ISO 27001 Certified', color: 'text-blue-600',  bg: 'bg-blue-50 border-blue-100'        },
             { label: 'SOC 2 Type II',       color: 'text-purple-600',bg: 'bg-purple-50 border-purple-100'    },
           ].map(({ label, color, bg }) => (
@@ -136,7 +136,7 @@ export default function Footer() {
           <p>© 2026 MedExpert Inc. All rights reserved.</p>
           <p className="text-center">
             Not a substitute for professional medical advice.{' '}
-            <a href="#" className="underline hover:text-[#2DB37D] transition-colors">Learn more</a>
+            <a href="#" className="underline hover:text-[#0284c7] transition-colors">Learn more</a>
           </p>
         </div>
       </div>

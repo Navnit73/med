@@ -36,7 +36,7 @@ export default function HospitalViewLayout() {
         <div className="px-7 pt-6 pb-5 flex items-start gap-5">
 
           {/* Avatar */}
-          <div className="w-14 h-14 rounded-sm bg-[#2DB37D] flex items-center justify-center shrink-0 shadow-sm shadow-[#2DB37D]/20">
+          <div className="w-14 h-14 rounded-sm bg-[#0284c7] flex items-center justify-center shrink-0 shadow-sm shadow-[#0284c7]/20">
             <span className="text-white text-lg font-bold tracking-tight">AM</span>
           </div>
 
@@ -90,14 +90,14 @@ export default function HospitalViewLayout() {
                 to={tab.path}
                 className={`relative flex items-center gap-2 px-3.5 py-3.5 text-sm font-medium whitespace-nowrap transition-colors ${
                   isActive
-                    ? 'text-[#2DB37D]'
+                    ? 'text-[#0284c7]'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
                 <tab.icon className="w-4 h-4 shrink-0" strokeWidth={1.8} />
                 {tab.name}
                 {isActive && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#2DB37D] rounded-t-full" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#0284c7] rounded-t-full" />
                 )}
               </Link>
             );

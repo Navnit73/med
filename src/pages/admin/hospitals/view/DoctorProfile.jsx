@@ -57,7 +57,7 @@ export default function DoctorProfile({ doctor, onBack, onEdit, onDelete }) {
               </span>
             </div>
             
-            <p className="text-lg text-[#2DB37D] font-medium">{doctor.specialty}</p>
+            <p className="text-lg text-[#0284c7] font-medium">{doctor.specialty}</p>
             
             <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mt-2">
               <div className="flex items-center gap-1.5">
@@ -100,8 +100,8 @@ export default function DoctorProfile({ doctor, onBack, onEdit, onDelete }) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-4 rounded-sm border border-slate-100 shadow-sm text-center">
                   <div className="flex justify-center mb-2">
-                    <div className="p-2 bg-[#edf9f4] rounded-sm">
-                      <Users className="w-5 h-5 text-[#2DB37D]" />
+                    <div className="p-2 bg-[#f0f9ff] rounded-sm">
+                      <Users className="w-5 h-5 text-[#0284c7]" />
                     </div>
                   </div>
                   <div className="text-xl font-bold text-slate-800">{doctor.patients}</div>

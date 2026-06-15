@@ -106,7 +106,7 @@ export default function DepartmentsTab() {
               placeholder="Search specialities…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-8 pr-4 py-1.5 text-sm bg-white border border-slate-200 rounded-sm w-56 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
+              className="pl-8 pr-4 py-1.5 text-sm bg-white border border-slate-200 rounded-sm w-56 focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] placeholder-slate-400 transition"
             />
           </div>
 
@@ -130,7 +130,7 @@ export default function DepartmentsTab() {
 
         <button
           onClick={openAddForm}
-          className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#2DB37D] hover:bg-[#24a06e] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0284c7] hover:bg-[#0369a1] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all shadow-sm"
         >
           <Plus className="w-4 h-4" />
           Add Speciality
@@ -215,14 +215,14 @@ export default function DepartmentsTab() {
                 </div>
 
                 {/* Stats / Patients */}
-                <div className="bg-[#edf9f4] border border-[#2DB37D]/20 rounded-sm p-3 flex items-center justify-between mt-auto">
+                <div className="bg-[#f0f9ff] border border-[#0284c7]/20 rounded-sm p-3 flex items-center justify-between mt-auto">
                   <div className="flex items-center gap-2">
                     <div className="p-1.5 bg-white rounded-sm shadow-sm">
-                      <Activity className="w-4 h-4 text-[#2DB37D]" />
+                      <Activity className="w-4 h-4 text-[#0284c7]" />
                     </div>
                     <span className="text-xs font-medium text-slate-800">Total Patients</span>
                   </div>
-                  <span className="text-lg font-bold text-[#2DB37D]">{dept.patients}</span>
+                  <span className="text-lg font-bold text-[#0284c7]">{dept.patients}</span>
                 </div>
 
               </div>

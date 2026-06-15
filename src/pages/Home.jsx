@@ -10,17 +10,17 @@ export default function Home() {
     <main className="pt-16 font-sans bg-white">
 
       {/* ── Hero ── */}
-      <section className="bg-gradient-to-b from-[#f0faf5] to-white pt-14 pb-16 px-2">
+      <section className="bg-gradient-to-b from-[#e0f2fe] to-white pt-14 pb-16 px-2">
         <div className="max-w-4xl mx-auto text-center">
 
           {/* badge */}
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#edf9f4] border border-[#2DB37D]/30 text-[#2DB37D] text-xs font-semibold mb-5">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f0f9ff] border border-[#0284c7]/30 text-[#0284c7] text-xs font-semibold mb-5">
             <Zap className="w-3 h-3" /> Response in 20 minutes
           </span>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight mb-4">
             Understand your medical<br />
-            <span className="text-[#2DB37D]">reports in plain language</span>
+            <span className="text-[#0284c7]">reports in plain language</span>
           </h1>
 
           <p className="text-slate-500 text-base sm:text-lg leading-relaxed mb-8 max-w-xl mx-auto">
@@ -31,13 +31,13 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/signin?role=patient"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#2DB37D] hover:bg-[#24a06e] text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#0284c7] hover:bg-[#0369a1] text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
             >
               Get my Caselet <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               to="/find-doctors"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white border border-slate-200 hover:border-[#2DB37D] hover:text-[#2DB37D] text-slate-700 text-sm font-semibold rounded-xl transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white border border-slate-200 hover:border-[#0284c7] hover:text-[#0284c7] text-slate-700 text-sm font-semibold rounded-xl transition-colors"
             >
               <Stethoscope className="w-4 h-4" /> Browse Specialists
             </Link>
@@ -70,7 +70,7 @@ export default function Home() {
       </section>
 
       {/* ── What is a Caselet ── */}
-      <section className="py-16 px-4 bg-[#f0faf5]">
+      <section className="py-16 px-4 bg-[#e0f2fe]">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-2">What is a Caselet?</h2>
@@ -81,11 +81,11 @@ export default function Home() {
 
           <div className="grid sm:grid-cols-2 gap-5">
             {/* Patient Caselet */}
-            <div className="bg-white rounded-2xl border border-[#2DB37D]/20 p-6">
-              <div className="w-10 h-10 rounded-xl bg-[#edf9f4] flex items-center justify-center mb-4">
-                <BookOpen className="w-5 h-5 text-[#2DB37D]" strokeWidth={1.8} />
+            <div className="bg-white rounded-2xl border border-[#0284c7]/20 p-6">
+              <div className="w-10 h-10 rounded-xl bg-[#f0f9ff] flex items-center justify-center mb-4">
+                <BookOpen className="w-5 h-5 text-[#0284c7]" strokeWidth={1.8} />
               </div>
-              <p className="text-xs font-bold uppercase tracking-widest text-[#2DB37D] mb-1">For You (Patient)</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#0284c7] mb-1">For You (Patient)</p>
               <h3 className="text-base font-bold text-slate-900 mb-3">Easy-to-understand summary</h3>
               <ul className="space-y-2">
                 {[
@@ -96,7 +96,7 @@ export default function Home() {
                   'Next steps clearly laid out',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#2DB37D] mt-0.5 shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#0284c7] mt-0.5 shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -143,11 +143,11 @@ export default function Home() {
 
           <div className="relative">
             {/* Vertical line — desktop only */}
-            <div className="hidden sm:block absolute left-7 top-8 bottom-8 w-px border-l-2 border-dashed border-[#2DB37D]/25" />
+            <div className="hidden sm:block absolute left-7 top-8 bottom-8 w-px border-l-2 border-dashed border-[#0284c7]/25" />
 
             <div className="space-y-6">
               {[
-                { step: '01', icon: Upload,       title: 'Upload your reports',      desc: 'Share your lab results, scans, discharge summaries — anything your doctors gave you. All securely encrypted.',            color: 'bg-[#edf9f4]', iconColor: 'text-[#2DB37D]', border: 'border-[#2DB37D]/20' },
+                { step: '01', icon: Upload,       title: 'Upload your reports',      desc: 'Share your lab results, scans, discharge summaries — anything your doctors gave you. All securely encrypted.',            color: 'bg-[#f0f9ff]', iconColor: 'text-[#0284c7]', border: 'border-[#0284c7]/20' },
                 { step: '02', icon: Stethoscope,  title: 'Doctor reviews your case', desc: 'A verified specialist reads every document — not an algorithm. They analyse your complete picture.',                      color: 'bg-purple-50',  iconColor: 'text-purple-500', border: 'border-purple-100' },
                 { step: '03', icon: FileText,      title: 'Your Caselet is built',    desc: 'Two documents created: a plain-language summary for you, and a clinical brief your specialist can use in consultation.',   color: 'bg-amber-50',   iconColor: 'text-amber-500',  border: 'border-amber-100' },
                 { step: '04', icon: MessageCircleQuestion, title: 'Ask the right questions', desc: 'Go into your next appointment knowing exactly what to ask. Use your caselet to guide the conversation.',           color: 'bg-blue-50',    iconColor: 'text-blue-500',   border: 'border-blue-100' },
@@ -169,7 +169,7 @@ export default function Home() {
       </section>
 
       {/* ── Stats strip ── */}
-      <section className="bg-[#2DB37D] py-10 px-4">
+      <section className="bg-[#0284c7] py-10 px-4">
         <div className="max-w-3xl mx-auto">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
             {[
@@ -180,7 +180,7 @@ export default function Home() {
             ].map((s, i) => (
               <div key={i}>
                 <p className="text-2xl sm:text-3xl font-extrabold text-white">{s.value}</p>
-                <p className="text-xs text-green-100 mt-1">{s.label}</p>
+                <p className="text-xs text-sky-100 mt-1">{s.label}</p>
               </div>
             ))}
           </div>
@@ -201,7 +201,7 @@ export default function Home() {
             <div className="grid grid-cols-3 bg-slate-50 border-b border-slate-100">
               <div className="p-3 text-xs font-bold text-slate-500 uppercase tracking-wide"></div>
               <div className="p-3 text-center text-xs font-bold text-slate-700 border-l border-slate-100">AI Chatbot</div>
-              <div className="p-3 text-center text-xs font-bold text-[#2DB37D] border-l border-slate-100">MedExpert Caselet</div>
+              <div className="p-3 text-center text-xs font-bold text-[#0284c7] border-l border-slate-100">MedExpert Caselet</div>
             </div>
             {[
               { label: 'Reads YOUR reports',       ai: false, us: true  },
@@ -219,7 +219,7 @@ export default function Home() {
                   :                   <span className="text-sm">{row.ai}</span>}
                 </div>
                 <div className="p-3 border-l border-slate-100 flex items-center justify-center">
-                  {row.us ? <CheckCircle2 className="w-4 h-4 text-[#2DB37D]" /> : <span className="text-slate-300 text-lg">✕</span>}
+                  {row.us ? <CheckCircle2 className="w-4 h-4 text-[#0284c7]" /> : <span className="text-slate-300 text-lg">✕</span>}
                 </div>
               </div>
             ))}
@@ -238,7 +238,7 @@ export default function Home() {
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { icon: ShieldCheck, title: 'HIPAA compliant',    desc: 'End-to-end encrypted. Your records are never shared without consent.', color: 'text-blue-600', bg: 'bg-blue-50' },
-              { icon: Brain,       title: 'Doctor-verified',    desc: 'Every caselet is reviewed by a board-certified specialist — not an algorithm.', color: 'text-[#2DB37D]', bg: 'bg-[#edf9f4]' },
+              { icon: Brain,       title: 'Doctor-verified',    desc: 'Every caselet is reviewed by a board-certified specialist — not an algorithm.', color: 'text-[#0284c7]', bg: 'bg-[#f0f9ff]' },
               { icon: Clock,       title: '20-minute delivery', desc: 'From upload to caselet in under 20 minutes. No waiting days for clarity.', color: 'text-amber-600', bg: 'bg-amber-50' },
             ].map((f, i) => (
               <div key={i} className="bg-white p-5 rounded-2xl border border-slate-100">
@@ -267,15 +267,15 @@ export default function Home() {
               { text: "After months of confusion from online searches, one caselet gave me a clear picture. My oncologist said it was the best-prepared patient brief he'd seen.", name: "David K.", title: "Cancer patient, Toronto"       },
               { text: "My mother doesn't speak medical language. Her patient caselet was so simple she could explain her own condition to the family. Life-changing.", name: "Amir R.",  title: "Family caregiver, London"    },
             ].map((t, i) => (
-              <div key={i} className="bg-[#f0faf5] p-5 rounded-2xl border border-[#2DB37D]/10 flex flex-col">
+              <div key={i} className="bg-[#e0f2fe] p-5 rounded-2xl border border-[#0284c7]/10 flex flex-col">
                 <div className="flex gap-0.5 mb-3">
                   {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="w-3.5 h-3.5 fill-[#2DB37D] text-[#2DB37D]" />
+                    <Star key={j} className="w-3.5 h-3.5 fill-[#0284c7] text-[#0284c7]" />
                   ))}
                 </div>
                 <p className="text-slate-600 text-xs leading-relaxed mb-4 flex-grow">"{t.text}"</p>
-                <div className="flex items-center gap-2.5 pt-3 border-t border-[#2DB37D]/10">
-                  <div className="w-8 h-8 rounded-full bg-[#edf9f4] border border-[#2DB37D]/20 flex items-center justify-center text-[#2DB37D] font-bold text-xs">
+                <div className="flex items-center gap-2.5 pt-3 border-t border-[#0284c7]/10">
+                  <div className="w-8 h-8 rounded-full bg-[#f0f9ff] border border-[#0284c7]/20 flex items-center justify-center text-[#0284c7] font-bold text-xs">
                     {t.name[0]}
                   </div>
                   <div>
@@ -297,7 +297,7 @@ export default function Home() {
               <h2 className="text-xl lg:text-2xl font-bold text-slate-900 mb-1">Caselets across specialties</h2>
               <p className="text-slate-500 text-xs">40+ specialties covered</p>
             </div>
-            <Link to="/find-doctors" className="text-[#2DB37D] font-semibold hover:underline flex items-center gap-1 text-xs">
+            <Link to="/find-doctors" className="text-[#0284c7] font-semibold hover:underline flex items-center gap-1 text-xs">
               View all <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -308,7 +308,7 @@ export default function Home() {
               <Link
                 key={s}
                 to="/find-doctors"
-                className="px-3 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-medium text-slate-600 hover:border-[#2DB37D] hover:text-[#2DB37D] transition-colors"
+                className="px-3 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-medium text-slate-600 hover:border-[#0284c7] hover:text-[#0284c7] transition-colors"
               >
                 {s}
               </Link>
@@ -320,17 +320,17 @@ export default function Home() {
       {/* ── Double CTA ── */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-[#2DB37D] rounded-3xl p-8 sm:p-12 text-center mb-5">
+          <div className="bg-[#0284c7] rounded-3xl p-8 sm:p-12 text-center mb-5">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-3">
               Stop guessing. Start knowing.
             </h2>
-            <p className="text-green-100 mb-8 text-sm leading-relaxed max-w-md mx-auto">
+            <p className="text-sky-100 mb-8 text-sm leading-relaxed max-w-md mx-auto">
               Upload your reports today. A doctor reviews them and delivers your Caselet — a clear, plain-language summary — in under 20 minutes.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
                 to="/signin?role=patient"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-bold text-[#2DB37D] bg-white hover:bg-green-50 rounded-xl shadow-md transition-all"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 text-sm font-bold text-[#0284c7] bg-white hover:bg-sky-50 rounded-xl shadow-md transition-all"
               >
                 Get my Caselet <ArrowRight className="w-4 h-4" />
               </Link>

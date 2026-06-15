@@ -10,7 +10,7 @@ const INITIAL_PATIENTS = [
 ];
 
 const STATUS = {
-  admitted:   { label: 'Admitted',    dot: 'bg-[#2DB37D]',    badge: 'bg-[#edf9f4] text-[#2DB37D] ring-[#2DB37D]/30' },
+  admitted:   { label: 'Admitted',    dot: 'bg-[#0284c7]',    badge: 'bg-[#f0f9ff] text-[#0284c7] ring-[#0284c7]/30' },
   outpatient: { label: 'Outpatient',  dot: 'bg-violet-400',  badge: 'bg-violet-50 text-violet-700 ring-violet-200' },
   discharged: { label: 'Discharged',  dot: 'bg-slate-400',   badge: 'bg-slate-100 text-slate-500 ring-slate-200' },
   critical:   { label: 'Critical',    dot: 'bg-red-500',     badge: 'bg-red-50 text-red-700 ring-red-200' },
@@ -33,7 +33,7 @@ function avatar(name) {
 }
 
 const AVATAR_COLORS = [
-  'bg-[#edf9f4] text-[#2DB37D]',
+  'bg-[#f0f9ff] text-[#0284c7]',
   'bg-teal-100 text-teal-700',
   'bg-violet-100 text-violet-700',
   'bg-orange-100 text-orange-700',
@@ -76,7 +76,7 @@ export default function PatientsTab() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { key: 'all',        label: 'Total Patients', icon: Users,      bg: 'bg-slate-50  border-slate-200',   text: 'text-slate-700'  },
-          { key: 'admitted',   label: 'Admitted',       icon: Activity,   bg: 'bg-[#edf9f4] border-[#2DB37D]/20',text: 'text-[#2DB37D]'  },
+          { key: 'admitted',   label: 'Admitted',       icon: Activity,   bg: 'bg-[#f0f9ff] border-[#0284c7]/20',text: 'text-[#0284c7]'  },
           { key: 'outpatient', label: 'Outpatients',    icon: UserCheck,  bg: 'bg-violet-50 border-violet-200',  text: 'text-violet-700' },
           { key: 'discharged', label: 'Discharged',     icon: UserX,      bg: 'bg-slate-50  border-slate-200',   text: 'text-slate-500'  },
         ].map(({ key, label, icon: Icon, bg, text }) => (
@@ -84,7 +84,7 @@ export default function PatientsTab() {
             key={key}
             onClick={() => setFilter(key)}
             className={`flex items-center gap-4 px-5 py-4 rounded-sm border text-left transition-all ${bg} ${
-              filter === key ? 'ring-2 ring-offset-1 ring-[#2DB37D]/50' : 'hover:opacity-90'
+              filter === key ? 'ring-2 ring-offset-1 ring-[#0284c7]/50' : 'hover:opacity-90'
             }`}
           >
             <Icon className={`w-5 h-5 shrink-0 ${text}`} strokeWidth={1.8} />
@@ -108,14 +108,14 @@ export default function PatientsTab() {
               placeholder="Search by name, MRN, doctor…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-sm w-64 focus:outline-none focus:ring-2 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] placeholder-slate-400 transition"
+              className="pl-8 pr-4 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-sm w-64 focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] placeholder-slate-400 transition"
             />
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs text-slate-400">{filtered.length} result{filtered.length !== 1 ? 's' : ''}</span>
             <button
               onClick={handleAdd}
-              className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#2DB37D] hover:bg-[#24a06e] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#0284c7] hover:bg-[#0369a1] active:scale-[0.98] text-white text-sm font-medium rounded-sm transition-all shadow-sm"
             >
               <UserPlus className="w-4 h-4" />
               Register Patient

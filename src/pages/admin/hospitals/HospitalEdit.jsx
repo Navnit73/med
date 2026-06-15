@@ -61,7 +61,7 @@ export default function HospitalEdit() {
      focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
       errors[field]
         ? 'border-red-300 focus:ring-red-400'
-        : 'border-slate-200 focus:ring-[#2DB37D]/30 focus:border-[#2DB37D] hover:border-slate-300'
+        : 'border-slate-200 focus:ring-[#0284c7]/30 focus:border-[#0284c7] hover:border-slate-300'
     }`;
 
   return (
@@ -149,7 +149,7 @@ export default function HospitalEdit() {
                     key={val}
                     className={`flex items-center gap-2.5 px-3.5 py-3 rounded-sm border cursor-pointer transition-all ${
                       formData.status === val
-                        ? 'border-[#2DB37D] bg-[#edf9f4] ring-2 ring-[#2DB37D]/30'
+                        ? 'border-[#0284c7] bg-[#f0f9ff] ring-2 ring-[#0284c7]/30'
                         : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >
@@ -162,11 +162,11 @@ export default function HospitalEdit() {
                       className="sr-only"
                     />
                     <span className={`w-2 h-2 rounded-full shrink-0 ${cfg.dot}`} />
-                    <span className={`text-sm font-medium ${formData.status === val ? 'text-[#2DB37D]' : 'text-slate-600'}`}>
+                    <span className={`text-sm font-medium ${formData.status === val ? 'text-[#0284c7]' : 'text-slate-600'}`}>
                       {cfg.label}
                     </span>
                     {formData.status === val && (
-                      <CheckCircle className="w-3.5 h-3.5 text-[#2DB37D] ml-auto" />
+                      <CheckCircle className="w-3.5 h-3.5 text-[#0284c7] ml-auto" />
                     )}
                   </label>
                 ))}
@@ -192,7 +192,7 @@ export default function HospitalEdit() {
                 className={`inline-flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-sm transition-all shadow-sm active:scale-[0.98] ${
                   saved
                     ? 'bg-emerald-500 text-white cursor-default'
-                    : 'bg-[#2DB37D] hover:bg-[#24a06e] text-white'
+                    : 'bg-[#0284c7] hover:bg-[#0369a1] text-white'
                 }`}
               >
                 {saved ? (

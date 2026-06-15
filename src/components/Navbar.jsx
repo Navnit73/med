@@ -12,49 +12,49 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 bg-[#2DB37D] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-[#0284c7] rounded-lg flex items-center justify-center">
               <Activity className="w-5 h-5 text-white" />
             </div>
             <span className="font-extrabold text-xl tracking-tight text-slate-900">
-              Med<span className="text-[#2DB37D]">Expert</span>
+              Med<span className="text-[#0284c7]">Expert</span>
             </span>
           </Link>
 
           {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-1">
-            <Link to="/" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors">
+            <Link to="/" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#0284c7] hover:bg-[#e0f2fe] rounded-lg transition-colors">
               Home
             </Link>
 
             {/* Find Doctors dropdown trigger */}
             <div className="relative group">
-              <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors">
+              <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#0284c7] hover:bg-[#e0f2fe] rounded-lg transition-colors">
                 Find Doctors <ChevronDown className="w-3.5 h-3.5" />
               </button>
               {/* Dropdown */}
               <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-xl border border-slate-100 shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 z-50">
-                <Link to="/find-doctors" className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#f0faf5] transition-colors group/item">
-                  <Stethoscope className="w-4 h-4 text-[#2DB37D]" />
+                <Link to="/find-doctors" className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#e0f2fe] transition-colors group/item">
+                  <Stethoscope className="w-4 h-4 text-[#0284c7]" />
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 group-hover/item:text-[#2DB37D]">All Specialists</p>
+                    <p className="text-sm font-semibold text-slate-800 group-hover/item:text-[#0284c7]">All Specialists</p>
                     <p className="text-[11px] text-slate-400">Browse by specialty</p>
                   </div>
                 </Link>
-                <Link to="/find-doctors" className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#f0faf5] transition-colors group/item">
+                <Link to="/find-doctors" className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#e0f2fe] transition-colors group/item">
                   <Video className="w-4 h-4 text-purple-500" />
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 group-hover/item:text-[#2DB37D]">Video Consult</p>
+                    <p className="text-sm font-semibold text-slate-800 group-hover/item:text-[#0284c7]">Video Consult</p>
                     <p className="text-[11px] text-slate-400">Consult online now</p>
                   </div>
                 </Link>
               </div>
             </div>
 
-            <Link to="/hospitals" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors flex items-center gap-1">
+            <Link to="/hospitals" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#0284c7] hover:bg-[#e0f2fe] rounded-lg transition-colors flex items-center gap-1">
               <Building2 className="w-3.5 h-3.5" /> Hospitals
             </Link>
 
-            <Link to="/signin?role=patient" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors flex items-center gap-1">
+            <Link to="/signin?role=patient" className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-[#0284c7] hover:bg-[#e0f2fe] rounded-lg transition-colors flex items-center gap-1">
               <FileText className="w-3.5 h-3.5" /> Second Opinion
             </Link>
           </div>
@@ -63,13 +63,13 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/signin?role=admin"
-              className="text-sm font-semibold text-slate-600 hover:text-[#2DB37D] transition-colors"
+              className="text-sm font-semibold text-slate-600 hover:text-[#0284c7] transition-colors"
             >
               Admin
             </Link>
             <Link
               to="/signin?role=patient"
-              className="px-5 py-2 text-sm font-bold text-white bg-[#2DB37D] hover:bg-[#24a06e] rounded-lg transition-colors shadow-sm"
+              className="px-5 py-2 text-sm font-bold text-white bg-[#0284c7] hover:bg-[#0369a1] rounded-lg transition-colors shadow-sm"
             >
               Login / Sign up
             </Link>
@@ -77,7 +77,7 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 text-slate-600 hover:text-[#2DB37D] transition-colors"
+            className="md:hidden p-2 text-slate-600 hover:text-[#0284c7] transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -101,7 +101,7 @@ export default function Navbar() {
                 key={label}
                 to={to}
                 onClick={() => setIsMenuOpen(false)}
-                className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:text-[#2DB37D] hover:bg-[#f0faf5] rounded-lg transition-colors"
+                className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:text-[#0284c7] hover:bg-[#e0f2fe] rounded-lg transition-colors"
               >
                 {label}
               </Link>
@@ -111,14 +111,14 @@ export default function Navbar() {
             <Link
               to="/signin?role=patient"
               onClick={() => setIsMenuOpen(false)}
-              className="w-full py-2.5 text-center text-sm font-bold text-white bg-[#2DB37D] hover:bg-[#24a06e] rounded-lg transition-colors"
+              className="w-full py-2.5 text-center text-sm font-bold text-white bg-[#0284c7] hover:bg-[#0369a1] rounded-lg transition-colors"
             >
               Login / Sign up
             </Link>
             <Link
               to="/signin?role=admin"
               onClick={() => setIsMenuOpen(false)}
-              className="w-full py-2.5 text-center text-sm font-semibold text-slate-600 border border-slate-200 hover:border-[#2DB37D] hover:text-[#2DB37D] rounded-lg transition-colors"
+              className="w-full py-2.5 text-center text-sm font-semibold text-slate-600 border border-slate-200 hover:border-[#0284c7] hover:text-[#0284c7] rounded-lg transition-colors"
             >
               Admin Sign in
             </Link>

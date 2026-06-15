@@ -18,14 +18,14 @@ export default function PatientLayout() {
       {/* Simple Header */}
       <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
         <Link to="/patient" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-sky-700 rounded-lg flex items-center justify-center">
             <Activity className="w-4 h-4 text-white" strokeWidth={2.5} />
           </div>
           <span className="font-bold text-lg tracking-tight text-slate-900">MedExpert Patient</span>
         </Link>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 text-xs font-bold uppercase">
+            <div className="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center text-sky-800 text-xs font-bold uppercase">
               {patientData ? patientData.firstName?.charAt(0) || 'P' : 'P'}
             </div>
             <span className="text-sm font-medium text-slate-700 hidden sm:block">

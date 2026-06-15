@@ -10,34 +10,49 @@ function initials(name) {
 export default function FindDoctors() {
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
+  const [locationSearch, setLocationSearch] = useState('');
   const navigate = useNavigate();
 
-  const filtered = DOCTORS.filter(d =>
-    (filter === 'All' || d.specialty === filter) &&
-    (d.name.toLowerCase().includes(search.toLowerCase()) ||
-      d.hospital.toLowerCase().includes(search.toLowerCase()))
-  );
+  const filtered = DOCTORS.filter(d => {
+    const matchSpecialty = filter === 'All' || d.specialty === filter;
+    const matchSearch = d.name.toLowerCase().includes(search.toLowerCase()) || 
+                        d.hospital.toLowerCase().includes(search.toLowerCase()) ||
+                        d.specialty.toLowerCase().includes(search.toLowerCase());
+    const matchLocation = locationSearch === '' || d.hospital.toLowerCase().includes(locationSearch.toLowerCase());
+    
+    return matchSpecialty && matchSearch && matchLocation;
+  });
 
   return (
     <div className="min-h-[100dvh] bg-slate-50 pt-16 pb-10">
 
       {/* Top search bar (Practo green header) */}
-      <div className="bg-[#2DB37D] pt-8 pb-14">
+      <div className="bg-[#0284c7] pt-8 pb-14">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-2xl md:text-3xl font-extrabold text-white mb-1">Find the right specialist</h1>
-          <p className="text-green-100 text-sm mb-6">Search by doctor, specialty or hospital name</p>
-          <div className="bg-white rounded-xl shadow-md flex overflow-hidden max-w-2xl mx-auto">
+          <p className="text-sky-100 text-sm mb-6">Search by doctor, specialty or hospital name</p>
+          <div className="bg-white rounded-xl shadow-md flex flex-col md:flex-row overflow-hidden max-w-3xl mx-auto divide-y md:divide-y-0 md:divide-x divide-slate-200">
             <div className="flex items-center gap-2 px-4 flex-1">
+              <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
+              <input
+                type="text"
+                placeholder="Location"
+                value={locationSearch}
+                onChange={e => setLocationSearch(e.target.value)}
+                className="w-full py-3 text-sm text-slate-700 bg-transparent outline-none placeholder-slate-400"
+              />
+            </div>
+            <div className="flex items-center gap-2 px-4 flex-[2]">
               <Search className="w-4 h-4 text-slate-400 shrink-0" />
               <input
                 type="text"
-                placeholder="Search doctors or hospitals…"
+                placeholder="Search doctors, clinics, hospitals, etc."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="w-full py-3 text-sm text-slate-700 bg-transparent outline-none placeholder-slate-400"
               />
             </div>
-            <button className="px-6 py-3 bg-[#2DB37D] hover:bg-[#24a06e] text-white text-sm font-semibold transition-colors">
+            <button className="px-8 py-3 bg-[#0284c7] hover:bg-[#0369a1] text-white text-sm font-semibold transition-colors shrink-0">
               Search
             </button>
           </div>
@@ -54,8 +69,8 @@ export default function FindDoctors() {
                 key={s}
                 onClick={() => setFilter(s)}
                 className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${filter === s
-                  ? 'bg-[#2DB37D] text-white shadow-sm'
-                  : 'bg-slate-50 text-slate-600 border border-slate-200 hover:border-[#2DB37D] hover:text-[#2DB37D]'
+                  ? 'bg-[#0284c7] text-white shadow-sm'
+                  : 'bg-slate-50 text-slate-600 border border-slate-200 hover:border-[#0284c7] hover:text-[#0284c7]'
                   }`}
               >
                 {s}
@@ -80,7 +95,7 @@ export default function FindDoctors() {
               <div
                 key={i}
                 onClick={() => navigate(`/find-doctors/${doc.id}`)}
-                className="bg-white rounded-xl border border-slate-100 hover:border-[#2DB37D]/40 hover:shadow-md transition-all duration-200 cursor-pointer group overflow-hidden"
+                className="bg-white rounded-xl border border-slate-100 hover:border-[#0284c7]/40 hover:shadow-md transition-all duration-200 cursor-pointer group overflow-hidden"
               >
                 <div className="p-5 flex flex-col sm:flex-row gap-5">
 
@@ -94,10 +109,10 @@ export default function FindDoctors() {
                   {/* Main info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
-                      <h3 className="text-base font-bold text-slate-900 group-hover:text-[#2DB37D] transition-colors">{doc.name}</h3>
-                      <div className="flex items-center gap-1.5 bg-[#edf9f4] px-2.5 py-1 rounded-md">
-                        <ThumbsUp className="w-3 h-3 text-[#2DB37D] fill-[#2DB37D]" />
-                        <span className="text-xs font-bold text-[#2DB37D]">{doc.rating}%</span>
+                      <h3 className="text-base font-bold text-slate-900 group-hover:text-[#0284c7] transition-colors">{doc.name}</h3>
+                      <div className="flex items-center gap-1.5 bg-[#f0f9ff] px-2.5 py-1 rounded-md">
+                        <ThumbsUp className="w-3 h-3 text-[#0284c7] fill-[#0284c7]" />
+                        <span className="text-xs font-bold text-[#0284c7]">{doc.rating}%</span>
                         <span className="text-[10px] text-slate-400">({doc.reviews})</span>
                       </div>
                     </div>
@@ -137,13 +152,13 @@ export default function FindDoctors() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={e => { e.stopPropagation(); navigate(`/find-doctors/${doc.id}`); }}
-                          className="flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold text-[#2DB37D] border border-[#2DB37D] rounded-lg hover:bg-[#2DB37D] hover:text-white transition-colors"
+                          className="flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold text-[#0284c7] border border-[#0284c7] rounded-lg hover:bg-[#0284c7] hover:text-white transition-colors"
                         >
                           <Video className="w-3.5 h-3.5" /> Video consult
                         </button>
                         <button
                           onClick={e => { e.stopPropagation(); navigate(`/find-doctors/${doc.id}`); }}
-                          className="flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold bg-[#2DB37D] text-white rounded-lg hover:bg-[#24a06e] transition-colors"
+                          className="flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold bg-[#0284c7] text-white rounded-lg hover:bg-[#0369a1] transition-colors"
                         >
                           Book clinic visit <ChevronRight className="w-3.5 h-3.5" />
                         </button>
@@ -164,7 +179,7 @@ export default function FindDoctors() {
               <p className="text-sm text-slate-500 mb-5">Try adjusting your search or filters.</p>
               <button
                 onClick={() => { setSearch(''); setFilter('All'); }}
-                className="px-6 py-2.5 bg-[#2DB37D] text-white text-sm font-semibold rounded-lg hover:bg-[#24a06e] transition-colors"
+                className="px-6 py-2.5 bg-[#0284c7] text-white text-sm font-semibold rounded-lg hover:bg-[#0369a1] transition-colors"
               >
                 Clear filters
               </button>

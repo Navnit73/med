@@ -7,9 +7,9 @@ import {
 
 // ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
 const T = {
-  primary:     "#2DB37D",
-  primaryLight:"#edf9f4",
-  primaryMid:  "#24a06e",
+  primary:     "#0284c7",
+  primaryLight:"#f0f9ff",
+  primaryMid:  "#0369a1",
   emerald:     "#10b981",
   emeraldLight:"#d1fae5",
   amber:       "#f59e0b",
