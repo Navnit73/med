@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FileText, Download, Receipt, Stethoscope, ChevronRight, User, X } from "lucide-react";
+import { FileText, Download, Receipt, Stethoscope, ChevronRight, User, X, Users } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 export default function PatientDashboard() {
   const { patientData } = useAuth();
   const navigate = useNavigate();
     const [showPdfModal, setShowPdfModal] = useState(false);
+    const [showDoctorCaseletPdfModal, setShowDoctorCaseletPdfModal] = useState(false);
 
   const isRegistered = patientData && (patientData.firstName || patientData.name);
   const firstName = patientData?.firstName || patientData?.name || "Guest";
@@ -20,6 +21,26 @@ export default function PatientDashboard() {
       color: "teal",
       onClick: () => navigate("/patient/registration"),
       cta: "Get Started",
+      always: true,
+    },
+       {
+      id: "caselet",
+      label: "Doctor Caselet",
+      desc: "View your doctor caselets.",
+      icon: Stethoscope,
+      color: "teal",
+            onClick: () => setShowDoctorCaseletPdfModal(true),
+      cta: "Get Started",
+      always: true,
+    },
+    {
+      id: "second_opinion",
+      label: "Second Opinion",
+      desc: "Request a second opinion from another expert.",
+      icon: Users,
+      color: "blue",
+      onClick: () => alert("Initiating Second Opinion flow..."),
+      cta: "Request",
       always: true,
     },
     {
@@ -122,6 +143,36 @@ export default function PatientDashboard() {
           </button>
         </div>
       </main>
+
+      {/* Doctor Caselet PDF Viewer Modal */}
+      {showDoctorCaseletPdfModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-xl p-4 md:p-6 w-full max-w-4xl h-[85vh] flex flex-col shadow-2xl relative animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center mb-4 md:mb-6">
+              <h3 className="text-lg md:text-xl font-bold text-slate-900 font-sora">Doctor Caselet Summary</h3>
+              <div className="flex items-center gap-2 md:gap-3">
+                <a 
+                  href="/doctor_summary.pdf" 
+                  download 
+                  className="px-3 py-1.5 md:px-4 md:py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold rounded-xl flex items-center gap-2 transition-colors text-sm md:text-base"
+                >
+                  <Download size={16} /> <span className="hidden sm:inline">Download</span>
+                </a>
+                <button onClick={() => setShowDoctorCaseletPdfModal(false)} className="text-slate-400 hover:text-slate-900 bg-slate-100 rounded-full p-1.5 md:p-2 transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
+              <iframe 
+                src="/doctor_summary.pdf" 
+                className="w-full h-full border-0"
+                title="Doctor Summary PDF"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* PDF Viewer Modal */}
       {showPdfModal && (
