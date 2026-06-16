@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import { Activity, ArrowLeft, CheckCircle2, Shield, Clock, Star, ChevronDown, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { authApi } from '../api/auth';
 
 const COUNTRIES = [
   { code: 'IN', name: 'India',          dial: '+91',  flag: '🇮🇳', maxLen: 10 },
@@ -28,15 +29,15 @@ const COUNTRIES = [
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const initialRole = searchParams.get('role') === 'patient' ? 'patient' : 'admin';
+  const { roleParam } = useParams();
+  const role = roleParam === 'admin' ? 'admin' : 'patient';
 
   const { login } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
-  const [role, setRole] = useState(initialRole);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -60,14 +61,11 @@ export default function SignIn() {
   }, []);
 
   useEffect(() => {
-    const r = searchParams.get('role') === 'patient' ? 'patient' : 'admin';
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setRole(r);
     setPhoneNumber('');
     setOtpSent(false);
     setOtp('');
     setError('');
-  }, [searchParams]);
+  }, [role]);
 
   const handlePhoneChange = (e) => {
     const digits = e.target.value.replace(/\D/g, '');
@@ -85,24 +83,40 @@ export default function SignIn() {
     setError('');
   };
 
-  const handleGetOtp = () => {
+  const handleGetOtp = async () => {
     if (phoneNumber.length < selectedCountry.maxLen) {
       setError(`Please enter a valid ${selectedCountry.maxLen}-digit number for ${selectedCountry.name}`);
       return;
     }
     setError('');
-    setOtpSent(true);
+    setLoading(true);
+    try {
+      await authApi.sendOtp(phoneNumber, role);
+      setOtpSent(true);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to send OTP. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     if (!/^\d{6}$/.test(otp.trim())) {
       setError('Please enter a valid 6-digit OTP');
       return;
     }
     setError('');
-    login(role);
-    navigate(role === 'patient' ? '/patient' : '/admin');
+    setLoading(true);
+    try {
+      await authApi.verifyOtp(phoneNumber, otp, role);
+      login(role);
+      navigate(role === 'patient' ? '/patient' : '/admin');
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Invalid OTP. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -145,7 +159,7 @@ export default function SignIn() {
                 <button
                   key={r}
                   type="button"
-                  onClick={() => { setRole(r); setOtpSent(false); setError(''); setPhoneNumber(''); setOtp(''); }}
+                  onClick={() => navigate(`/signin/${r}`)}
                   className={`flex-1 py-2 text-sm font-bold rounded-lg capitalize transition-all ${
                     role === r
                       ? 'bg-white text-[#0284c7] shadow-sm border border-slate-100'
@@ -299,16 +313,19 @@ export default function SignIn() {
                 <button
                   type="button"
                   onClick={handleGetOtp}
-                  disabled={phoneNumber.length < selectedCountry.maxLen}
-                  className="w-full py-3 bg-[#0284c7] hover:bg-[#0369a1] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
+                  disabled={phoneNumber.length < selectedCountry.maxLen || loading}
+                  className="w-full py-3 bg-[#0284c7] hover:bg-[#0369a1] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition-colors shadow-sm flex justify-center items-center gap-2"
                 >
+                  {loading && <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>}
                   Send OTP
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="w-full py-3 bg-[#0284c7] hover:bg-[#0369a1] text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
+                  disabled={loading}
+                  className="w-full py-3 bg-[#0284c7] hover:bg-[#0369a1] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition-colors shadow-sm flex justify-center items-center gap-2"
                 >
+                  {loading && <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>}
                   Verify & Sign in
                 </button>
               )}

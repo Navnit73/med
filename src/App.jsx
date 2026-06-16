@@ -42,7 +42,8 @@ export default function App() {
               <Route path="hospitals" element={<Hospitals />} />
             </Route>
             {/* Auth Route without Navbar/Footer */}
-            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signin" element={<Navigate to="/signin/patient" replace />} />
+            <Route path="/signin/:roleParam" element={<SignIn />} />
           </Route>
 
           {/* Admin Routes protected by AuthGuard (redirects guests to signin) */}
