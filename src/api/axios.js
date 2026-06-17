@@ -10,11 +10,10 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // You can add auth tokens here
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    const token = localStorage.getItem('medexpert_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -30,7 +29,13 @@ api.interceptors.response.use(
   (error) => {
     // Handle global errors here
     if (error.response && error.response.status === 401) {
-      // e.g., redirect to login or refresh token
+      localStorage.removeItem('medexpert_auth');
+      localStorage.removeItem('medexpert_role');
+      localStorage.removeItem('medexpert_token');
+      // Using window.location to force a hard reload and clear any state
+      if (window.location.pathname !== '/') {
+        window.location.href = '/';
+      }
     }
     return Promise.reject(error);
   }

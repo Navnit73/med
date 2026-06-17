@@ -109,8 +109,8 @@ export default function SignIn() {
     setError('');
     setLoading(true);
     try {
-      await authApi.verifyOtp(phoneNumber, otp, role);
-      login(role);
+      const response = await authApi.verifyOtp(phoneNumber, otp, role);
+      login(role, response.access_token);
       navigate(role === 'patient' ? '/patient' : '/admin');
     } catch (err) {
       setError(err.response?.data?.detail || 'Invalid OTP. Please try again.');

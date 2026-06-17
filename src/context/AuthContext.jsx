@@ -11,14 +11,22 @@ export const AuthProvider = ({ children }) => {
     return localStorage.getItem('medexpert_role') || 'admin';
   });
 
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem('medexpert_token') || null;
+  });
+
   const [patientData, setPatientData] = useState(() => {
     const data = localStorage.getItem('medexpert_patient');
     return data ? JSON.parse(data) : null;
   });
 
-  const login = (role = 'admin') => {
+  const login = (role = 'admin', accessToken = null) => {
     localStorage.setItem('medexpert_auth', 'true');
     localStorage.setItem('medexpert_role', role);
+    if (accessToken) {
+      localStorage.setItem('medexpert_token', accessToken);
+      setToken(accessToken);
+    }
     setIsAuthenticated(true);
     setUserRole(role);
   };
@@ -26,8 +34,10 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('medexpert_auth');
     localStorage.removeItem('medexpert_role');
+    localStorage.removeItem('medexpert_token');
     setIsAuthenticated(false);
     setUserRole('admin');
+    setToken(null);
   };
 
   const savePatientData = (data) => {
@@ -36,7 +46,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userRole, patientData, login, logout, savePatientData }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, patientData, token, login, logout, savePatientData }}>
       {children}
     </AuthContext.Provider>
   );
