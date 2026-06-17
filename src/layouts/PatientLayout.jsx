@@ -26,10 +26,10 @@ export default function PatientLayout() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center text-sky-800 text-xs font-bold uppercase">
-              {patientData ? patientData.firstName?.charAt(0) || 'P' : 'P'}
+              {patientData ? (patientData.first_name || patientData.firstName)?.charAt(0)?.toUpperCase() || 'P' : 'P'}
             </div>
             <span className="text-sm font-medium text-slate-700 hidden sm:block">
-              {patientData ? `${patientData.firstName} ${patientData.lastName}` : 'Guest'}
+              {patientData ? `${patientData.first_name || patientData.firstName || ''} ${patientData.last_name || patientData.lastName || ''}`.trim() : 'Guest'}
             </span>
           </div>
           <button
