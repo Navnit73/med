@@ -91,7 +91,7 @@ export default function SignIn() {
     setError('');
     setLoading(true);
     try {
-      await authApi.sendOtp(phoneNumber, role);
+      await authApi.sendOtp(phoneNumber, selectedCountry.dial, role);
       setOtpSent(true);
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to send OTP. Please try again.');
@@ -109,7 +109,7 @@ export default function SignIn() {
     setError('');
     setLoading(true);
     try {
-      const response = await authApi.verifyOtp(phoneNumber, otp, role);
+      const response = await authApi.verifyOtp(phoneNumber, selectedCountry.dial, otp, role);
       login(role, response.access_token);
       navigate(role === 'patient' ? '/patient' : '/admin');
     } catch (err) {

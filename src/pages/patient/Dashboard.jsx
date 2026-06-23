@@ -1,64 +1,45 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { FileText, Download, Receipt, Stethoscope, ChevronRight, User, X, Users, Plus, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { FileText, Download, Receipt, Stethoscope, ChevronRight, X, Users, Loader2, Settings } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { patientApi } from "../../api/patient";
+import ProfileSettingsModal from "./ProfileSettingsModal";
 
 export default function PatientDashboard() {
   const { savePatientData } = useAuth();
   const navigate = useNavigate();
-  const { patientId } = useParams();
 
-  const [patients, setPatients] = useState([]);
-  const [loadingPatients, setLoadingPatients] = useState(true);
-  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [showDoctorCaseletPdfModal, setShowDoctorCaseletPdfModal] = useState(false);
+  const [showProfileSettings, setShowProfileSettings] = useState(false);
 
   useEffect(() => {
-    fetchPatients();
+    fetchData();
   }, []);
 
-  useEffect(() => {
-    if (patients.length > 0) {
-      if (patientId) {
-        const found = patients.find(p => p.patient_id.toString() === patientId);
-        if (found) {
-          setSelectedPatient(found);
-          savePatientData(found);
-        } else {
-          navigate('/patient');
-        }
-      } else {
-        setSelectedPatient(null);
-      }
-    }
-  }, [patientId, patients, navigate, savePatientData]);
-
-  const fetchPatients = async () => {
-    setLoadingPatients(true);
+  const fetchData = async () => {
+    setLoading(true);
     try {
-      const data = await patientApi.getPatients();
-      setPatients(data);
-      if (data.length === 0 && !patientId) {
-        navigate('/patient/register');
+      const profileData = await patientApi.getProfile();
+      setUserProfile(profileData);
+      savePatientData(profileData);
+      
+      if (!profileData.first_name) {
+        setShowProfileSettings(true);
       }
     } catch (error) {
-      console.error("Failed to fetch patients", error);
+      console.error("Failed to fetch data", error);
     } finally {
-      setLoadingPatients(false);
+      setLoading(false);
     }
-  };
-
-  const handlePatientSelect = (patient) => {
-    savePatientData(patient);
-    navigate(`/patient/${patient.patient_id}/dashboard`);
   };
 
   // ----- Conditional Render Views -----
 
-  if (loadingPatients) {
+  if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50">
         <Loader2 className="animate-spin text-sky-600 w-10 h-10" />
@@ -66,49 +47,9 @@ export default function PatientDashboard() {
     );
   }
 
-  if (!selectedPatient) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col">
-        <main className="flex-1 w-full max-w-lg mx-auto px-4 pt-8 pb-28 space-y-6">
-          <section>
-            <p className="text-xs font-bold text-sky-700 uppercase tracking-widest mb-1">Select Profile</p>
-            <h1 className="text-2xl font-extrabold text-slate-900 leading-tight mb-6">
-              Who is this consultation for?
-            </h1>
-            <div className="space-y-3">
-              {patients.map(p => (
-                <button 
-                  key={p.patient_id} 
-                  onClick={() => handlePatientSelect(p)} 
-                  className="w-full bg-white p-4 rounded-2xl border border-slate-200 hover:border-sky-400 hover:shadow-md hover:ring-2 hover:ring-sky-50 text-left flex items-center gap-4 transition-all group"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center text-sky-700 font-extrabold text-lg">
-                    {p.first_name?.[0]?.toUpperCase()}{p.last_name?.[0]?.toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-bold text-slate-900 text-base">{p.first_name} {p.last_name}</h3>
-                    <p className="text-sm text-slate-500 mt-0.5">{p.age} years • {p.gender}</p>
-                  </div>
-                  <ChevronRight className="text-slate-300 group-hover:text-sky-500 transition-colors" />
-                </button>
-              ))}
-              
-              <button 
-                onClick={() => navigate('/patient/register')} 
-                className="w-full bg-slate-50 p-4 rounded-2xl border-2 border-dashed border-slate-300 hover:border-sky-500 hover:bg-sky-50 text-sky-700 flex justify-center items-center gap-2 font-bold transition-all mt-4"
-              >
-                <Plus size={20} /> Add New Patient Profile
-              </button>
-            </div>
-          </section>
-        </main>
-      </div>
-    );
-  }
-
   // ----- Dashboard View -----
 
-  const firstName = selectedPatient?.first_name || "Guest";
+  const firstName = userProfile?.first_name || "Guest";
   
   const actions = [
     {
@@ -167,7 +108,7 @@ export default function PatientDashboard() {
   return (
     <div className="bg-slate-50 min-h-screen">
       <main className="max-w-lg mx-auto px-4 pt-6 pb-28 space-y-6">
-        {/* Header with back button to patient selection */}
+        {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <section>
             <p className="text-xs font-semibold text-sky-700 uppercase tracking-widest mb-1">Dashboard</p>
@@ -179,10 +120,10 @@ export default function PatientDashboard() {
             </p>
           </section>
           <button 
-            onClick={() => navigate('/patient')}
-            className="text-xs font-bold bg-white text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition shadow-sm flex items-center gap-1.5"
+            onClick={() => setShowProfileSettings(true)}
+            className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-sky-600 hover:border-sky-200 hover:bg-sky-50 transition-colors shadow-sm"
           >
-            <Users size={14} /> Switch Profile
+            <Settings size={20} />
           </button>
         </div>
 
@@ -272,6 +213,14 @@ export default function PatientDashboard() {
           </div>
         </div>
       )}
+
+      {/* Profile Settings Modal */}
+      <ProfileSettingsModal 
+        isOpen={showProfileSettings} 
+        onClose={() => setShowProfileSettings(false)} 
+        userProfile={userProfile} 
+        onProfileUpdated={(updated) => setUserProfile(updated)} 
+      />
     </div>
   );
 }

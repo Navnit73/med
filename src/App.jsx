@@ -26,7 +26,6 @@ import DoctorsTab from './pages/admin/hospitals/view/DoctorsTab';
 // Patient View Imports
 import PatientLayout from './layouts/PatientLayout';
 import PatientDashboard from './pages/patient/Dashboard';
-import CreatePatientProfile from './pages/patient/CreatePatientProfile';
 import PatientRegistration from './pages/patient/Registration';
 
 export default function App() {
@@ -71,7 +70,6 @@ export default function App() {
           <Route path="/patient" element={<AuthGuard />}>
             <Route element={<PatientLayout />}>
               <Route index element={<PatientDashboard />} />
-              <Route path="register" element={<CreatePatientProfile />} />
               <Route path=":patientId/dashboard" element={<PatientDashboard />} />
               <Route path="registration/*" element={<PatientRegistration />} />
               <Route path="second_opinion/*" element={<PatientRegistration />} />

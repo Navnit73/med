@@ -1,13 +1,23 @@
 import api from './axios';
 
 export const patientApi = {
-  getPatients: async () => {
-    const response = await api.get('/patients');
+  getProfile: async () => {
+    const response = await api.get('/patient/profile');
     return response.data;
   },
 
-  createPatient: async (patientData) => {
-    const response = await api.post('/patients', patientData);
+  updateProfile: async (data) => {
+    const response = await api.patch('/patient/profile', data);
+    return response.data;
+  },
+
+  deleteProfile: async () => {
+    const response = await api.delete('/patient/profile');
+    return response.data;
+  },
+
+  hardDeleteProfile: async () => {
+    const response = await api.delete('/patient/profile/hard-delete');
     return response.data;
   }
 };
