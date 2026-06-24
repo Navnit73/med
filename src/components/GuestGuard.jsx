@@ -8,6 +8,8 @@ export default function GuestGuard() {
   if (isAuthenticated) {
     if (userRole === 'patient') {
       return <Navigate to="/patient" replace />;
+    } else if (userRole === 'doctor') {
+      return <Navigate to="/doctor" replace />;
     }
     return <Navigate to="/admin" replace />;
   }

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://195.35.20.217:8010/',
+  baseURL: import.meta.env.VITE_API_URL || '',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -29,13 +29,8 @@ api.interceptors.response.use(
   (error) => {
     // Handle global errors here
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem('medexpert_auth');
-      localStorage.removeItem('medexpert_role');
-      localStorage.removeItem('medexpert_token');
-      // Using window.location to force a hard reload and clear any state
-      if (window.location.pathname !== '/') {
-        window.location.href = '/';
-      }
+      // Dispatch event for AuthContext to handle graceful logout
+      window.dispatchEvent(new Event('auth:unauthorized'));
     }
     return Promise.reject(error);
   }

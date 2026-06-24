@@ -11,6 +11,7 @@ export default function PatientDashboard() {
 
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [showDoctorCaseletPdfModal, setShowDoctorCaseletPdfModal] = useState(false);
@@ -22,6 +23,7 @@ export default function PatientDashboard() {
 
   const fetchData = async () => {
     setLoading(true);
+    setError(null);
     try {
       const profileData = await patientApi.getProfile();
       setUserProfile(profileData);
@@ -30,8 +32,9 @@ export default function PatientDashboard() {
       if (!profileData.first_name) {
         setShowProfileSettings(true);
       }
-    } catch (error) {
-      console.error("Failed to fetch data", error);
+    } catch (err) {
+      console.error("Failed to fetch data", err);
+      setError(err.response?.data?.detail || "Failed to load dashboard data. Please try refreshing.");
     } finally {
       setLoading(false);
     }
@@ -43,6 +46,26 @@ export default function PatientDashboard() {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50">
         <Loader2 className="animate-spin text-sky-600 w-10 h-10" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col h-screen items-center justify-center bg-slate-50 p-6 text-center">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 mb-2">Oops, something went wrong</h2>
+        <p className="text-sm text-slate-500 mb-6">{error}</p>
+        <button 
+          onClick={fetchData} 
+          className="px-6 py-2.5 bg-sky-600 text-white rounded-xl font-bold shadow-sm hover:bg-sky-700 transition-colors"
+        >
+          Try Again
+        </button>
       </div>
     );
   }

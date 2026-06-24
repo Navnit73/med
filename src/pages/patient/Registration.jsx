@@ -51,6 +51,7 @@ export default function RegistrationWizard() {
   }, [stepId, basePath, navigate]);
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const [form, setForm] = useState({
     firstName: patientData?.first_name || patientData?.firstName || '',
@@ -92,6 +93,7 @@ export default function RegistrationWizard() {
     setForm(f => ({ ...f, documents: [...f.documents, newDoc] }));
 
     setUploadingId(newDoc.id);
+    setError(null);
     try {
       const fd = new FormData();
       fd.append('patient_id', patientData?.patient_id || '');
@@ -103,14 +105,17 @@ export default function RegistrationWizard() {
       await api.post('/registration/document', fd, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-    } catch (err) {
-      console.error('Document upload failed:', err);
-    } finally {
-      setUploadingId(null);
+
       setForm(f => ({
         ...f,
         documents: f.documents.map(d => d.id === newDoc.id ? { ...d, uploaded: true } : d),
       }));
+    } catch (err) {
+      console.error('Document upload failed:', err);
+      setError(err.response?.data?.detail || 'Document upload failed. Please try again.');
+      setForm(f => ({ ...f, documents: f.documents.filter(d => d.id !== newDoc.id) }));
+    } finally {
+      setUploadingId(null);
     }
   };
 
@@ -132,6 +137,7 @@ export default function RegistrationWizard() {
   /* ── API Submission Handlers ── */
   const handleStep1 = async () => {
     setLoading(true);
+    setError(null);
     try {
       await api.post('/registration/step-1', {
         patient_id: patientData?.patient_id,
@@ -141,26 +147,36 @@ export default function RegistrationWizard() {
         phone_number: form.phone,
         email: form.email
       });
-    } catch (err) { console.error('Step 1 API Error:', err); }
-    setLoading(false);
-    next();
+      next();
+    } catch (err) {
+      console.error('Step 1 API Error:', err);
+      setError(err.response?.data?.detail || 'Failed to save patient details. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleStep3 = async () => {
     setLoading(true);
+    setError(null);
     try {
       await api.post('/registration/step-3', {
         patient_id: patientData?.patient_id,
         step_id: 3,
         intent: form.intent
       });
-    } catch (err) { console.error('Step 3 API Error:', err); }
-    setLoading(false);
-    form.intent === 'caselet' ? navigate(`${basePath}/payment`) : next();
+      form.intent === 'caselet' ? navigate(`${basePath}/payment`) : next();
+    } catch (err) {
+      console.error('Step 3 API Error:', err);
+      setError(err.response?.data?.detail || 'Failed to save service selection. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleStep4 = async () => {
     setLoading(true);
+    setError(null);
     try {
       await api.post('/registration/step-4', {
         patient_id: patientData?.patient_id,
@@ -168,13 +184,18 @@ export default function RegistrationWizard() {
         consult_type: form.consultType,
         selected_doctor_ids: form.selectedDoctors.map(d => d.id)
       });
-    } catch (err) { console.error('Step 4 API Error:', err); }
-    setLoading(false);
-    next();
+      next();
+    } catch (err) {
+      console.error('Step 4 API Error:', err);
+      setError(err.response?.data?.detail || 'Failed to save doctor selection. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePaymentSubmit = async () => {
     setLoading(true);
+    setError(null);
     try {
       await api.post('/registration/payment', {
         patient_id: patientData?.patient_id,
@@ -183,9 +204,13 @@ export default function RegistrationWizard() {
         currency: 'INR',
         intent: form.intent
       });
-    } catch (err) { console.error('Payment API Error:', err); }
-    setLoading(false);
-    next();
+      next();
+    } catch (err) {
+      console.error('Payment API Error:', err);
+      setError(err.response?.data?.detail || 'Payment failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const totalAmount = form.selectedDoctors.length * 1500 + 200;
@@ -209,6 +234,16 @@ export default function RegistrationWizard() {
           {step < 6 && (
             <div className="px-5 pt-6 pb-3 sm:px-7 border-b border-slate-50">
               <StepBar step={step} total={totalSteps} />
+              {error && (
+                <div className="mt-4 p-3 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm font-semibold flex items-start gap-2">
+                  <div className="shrink-0 mt-0.5">
+                    <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">{error}</div>
+                </div>
+              )}
             </div>
           )}
 

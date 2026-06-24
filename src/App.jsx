@@ -28,6 +28,10 @@ import PatientLayout from './layouts/PatientLayout';
 import PatientDashboard from './pages/patient/Dashboard';
 import PatientRegistration from './pages/patient/Registration';
 
+// Doctor View Imports
+import DoctorLayout from './layouts/DoctorLayout';
+import DoctorProfile from './pages/doctor/Profile';
+
 export default function App() {
   return (
     <AuthProvider>
@@ -47,7 +51,7 @@ export default function App() {
           </Route>
 
           {/* Admin Routes protected by AuthGuard (redirects guests to signin) */}
-          <Route path="/admin" element={<AuthGuard />}>
+          <Route path="/admin" element={<AuthGuard allowedRoles={['admin']} />}>
             <Route element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="hospitals" element={<HospitalList />} />
@@ -67,13 +71,21 @@ export default function App() {
           </Route>
 
           {/* Patient Routes protected by AuthGuard */}
-          <Route path="/patient" element={<AuthGuard />}>
+          <Route path="/patient" element={<AuthGuard allowedRoles={['patient']} />}>
             <Route element={<PatientLayout />}>
               <Route index element={<PatientDashboard />} />
               <Route path=":patientId/dashboard" element={<PatientDashboard />} />
               <Route path="registration/*" element={<PatientRegistration />} />
               <Route path="second_opinion/*" element={<PatientRegistration />} />
               <Route path="second_openion/*" element={<PatientRegistration />} />
+            </Route>
+          </Route>
+
+          {/* Doctor Routes protected by AuthGuard */}
+          <Route path="/doctor" element={<AuthGuard allowedRoles={['doctor']} />}>
+            <Route element={<DoctorLayout />}>
+              <Route index element={<Navigate to="profile" replace />} />
+              <Route path="profile" element={<DoctorProfile />} />
             </Route>
           </Route>
 

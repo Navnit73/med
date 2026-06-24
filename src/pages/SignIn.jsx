@@ -3,6 +3,7 @@ import { useNavigate, Link, useParams } from 'react-router-dom';
 import { Activity, ArrowLeft, CheckCircle2, Shield, Clock, Star, ChevronDown, Search } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { authApi } from '../api/auth';
+import { doctorApi } from '../api/doctor';
 
 const COUNTRIES = [
   { code: 'IN', name: 'India',          dial: '+91',  flag: '🇮🇳', maxLen: 10 },
@@ -30,7 +31,7 @@ const COUNTRIES = [
 export default function SignIn() {
   const navigate = useNavigate();
   const { roleParam } = useParams();
-  const role = roleParam === 'admin' ? 'admin' : 'patient';
+  const role = ['admin', 'doctor', 'patient'].includes(roleParam) ? roleParam : 'patient';
 
   const { login } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -38,6 +39,14 @@ export default function SignIn() {
   const [otpSent, setOtpSent] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [regData, setRegData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    registration_number: ''
+  });
 
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -65,6 +74,7 @@ export default function SignIn() {
     setOtpSent(false);
     setOtp('');
     setError('');
+    setIsRegistering(false);
   }, [role]);
 
   const handlePhoneChange = (e) => {
@@ -81,6 +91,31 @@ export default function SignIn() {
     setCountrySearch('');
     setOtpSent(false);
     setError('');
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (phoneNumber.length < selectedCountry.maxLen) {
+      setError(`Please enter a valid ${selectedCountry.maxLen}-digit number for ${selectedCountry.name}`);
+      return;
+    }
+    setError('');
+    setLoading(true);
+    try {
+      await doctorApi.onboard({
+        ...regData,
+        country_code: selectedCountry.dial,
+        phone_number: phoneNumber,
+      });
+      // Registration successful, switch to OTP flow
+      setIsRegistering(false);
+      await authApi.sendOtp(phoneNumber, selectedCountry.dial, role);
+      setOtpSent(true);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to register. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGetOtp = async () => {
@@ -111,13 +146,25 @@ export default function SignIn() {
     try {
       const response = await authApi.verifyOtp(phoneNumber, selectedCountry.dial, otp, role);
       login(role, response.access_token);
-      navigate(role === 'patient' ? '/patient' : '/admin');
+      if (role === 'doctor') {
+        navigate('/admin/doctors/profile'); // Wait, Doctor layout will have a different path. We'll use /doctor/profile
+      } else {
+        navigate(role === 'patient' ? '/patient' : '/admin');
+      }
     } catch (err) {
       setError(err.response?.data?.detail || 'Invalid OTP. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+
+  const handleFormSubmit = (e) => {
+    if (isRegistering) {
+      handleRegister(e);
+    } else {
+      handleSignIn(e);
+    }
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-50">
@@ -145,17 +192,19 @@ export default function SignIn() {
           <div className="max-w-sm mx-auto w-full">
 
             <h1 className="text-2xl font-extrabold text-slate-900 mb-1">
-              {role === 'patient' ? 'Sign in / Register' : 'Admin sign in'}
+              {role === 'patient' ? 'Sign in / Register' : role === 'doctor' ? (isRegistering ? 'Doctor Registration' : 'Doctor Sign In') : 'Admin sign in'}
             </h1>
             <p className="text-sm text-slate-500 mb-7">
               {role === 'patient'
                 ? 'Your health journey starts here. Enter your phone number to continue.'
-                : 'Enter your credentials to access the admin panel.'}
+                : role === 'doctor'
+                  ? (isRegistering ? 'Join our network of specialists.' : 'Sign in to your doctor account.')
+                  : 'Enter your credentials to access the admin panel.'}
             </p>
 
             {/* Role toggle */}
             <div className="flex bg-slate-100 p-1 rounded-xl mb-7">
-              {['patient', 'admin'].map(r => (
+              {['patient', 'doctor', 'admin'].map(r => (
                 <button
                   key={r}
                   type="button"
@@ -166,15 +215,66 @@ export default function SignIn() {
                       : 'text-slate-500 hover:text-slate-700'
                   }`}
                 >
-                  {r === 'patient' ? 'Patient' : 'Admin'}
+                  {r === 'patient' ? 'Patient' : r === 'doctor' ? 'Doctor' : 'Admin'}
                 </button>
               ))}
             </div>
 
-            <form onSubmit={handleSignIn} className="space-y-5">
+            <form onSubmit={handleFormSubmit} className="space-y-5">
               {error && (
                 <div className="p-3 text-xs font-medium text-red-600 bg-red-50 rounded-lg border border-red-100 flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" /> {error}
+                </div>
+              )}
+
+              {isRegistering && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">First Name</label>
+                      <input
+                        type="text"
+                        value={regData.first_name}
+                        onChange={(e) => setRegData({...regData, first_name: e.target.value})}
+                        className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                        required
+                        placeholder="John"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Last Name</label>
+                      <input
+                        type="text"
+                        value={regData.last_name}
+                        onChange={(e) => setRegData({...regData, last_name: e.target.value})}
+                        className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                        required
+                        placeholder="Doe"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Email</label>
+                    <input
+                      type="email"
+                      value={regData.email}
+                      onChange={(e) => setRegData({...regData, email: e.target.value})}
+                      className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                      required
+                      placeholder="john.doe@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Registration Number</label>
+                    <input
+                      type="text"
+                      value={regData.registration_number}
+                      onChange={(e) => setRegData({...regData, registration_number: e.target.value})}
+                      className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                      required
+                      placeholder="e.g. 454333445"
+                    />
+                  </div>
                 </div>
               )}
 
@@ -309,7 +409,16 @@ export default function SignIn() {
                 </div>
               )}
 
-              {!otpSent ? (
+              {isRegistering ? (
+                <button
+                  type="submit"
+                  disabled={phoneNumber.length < selectedCountry.maxLen || loading}
+                  className="w-full py-3 bg-[#0284c7] hover:bg-[#0369a1] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white text-sm font-bold rounded-lg transition-colors shadow-sm flex justify-center items-center gap-2"
+                >
+                  {loading && <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>}
+                  Register
+                </button>
+              ) : !otpSent ? (
                 <button
                   type="button"
                   onClick={handleGetOtp}
@@ -328,6 +437,18 @@ export default function SignIn() {
                   {loading && <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>}
                   Verify & Sign in
                 </button>
+              )}
+              
+              {role === 'doctor' && !otpSent && (
+                <div className="text-center mt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsRegistering(!isRegistering)}
+                    className="text-xs font-bold text-[#0284c7] hover:text-[#0369a1] hover:underline"
+                  >
+                    {isRegistering ? "Already have an account? Sign In" : "Don't have an account? Register"}
+                  </button>
+                </div>
               )}
             </form>
 
