@@ -32,6 +32,12 @@ import PatientRegistration from './pages/patient/Registration';
 import DoctorLayout from './layouts/DoctorLayout';
 import DoctorProfile from './pages/doctor/Profile';
 
+// Hospital Own View Imports
+import HospitalOwnLayout from './layouts/HospitalLayout';
+import HospitalDashboard from './pages/hospital/Dashboard';
+import HospitalProfile from './pages/hospital/Profile';
+import HospitalDepartments from './pages/hospital/Departments';
+
 export default function App() {
   return (
     <AuthProvider>
@@ -86,6 +92,15 @@ export default function App() {
             <Route element={<DoctorLayout />}>
               <Route index element={<Navigate to="profile" replace />} />
               <Route path="profile" element={<DoctorProfile />} />
+            </Route>
+          </Route>
+
+          {/* Hospital Routes protected by AuthGuard */}
+          <Route path="/hospital" element={<AuthGuard allowedRoles={['hospital']} />}>
+            <Route element={<HospitalOwnLayout />}>
+              <Route index element={<HospitalDashboard />} />
+              <Route path="profile" element={<HospitalProfile />} />
+              <Route path="departments" element={<HospitalDepartments />} />
             </Route>
           </Route>
 

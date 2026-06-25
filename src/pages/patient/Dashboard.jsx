@@ -77,22 +77,14 @@ export default function PatientDashboard() {
   const actions = [
     {
       id: "caselet",
-      label: "New Caselet / Consult",
+      label: "Caselet",
       desc: "Start a consultation, upload records, connect with experts.",
       icon: Stethoscope,
       color: "teal",
       onClick: () => navigate("/patient/registration"),
       cta: "Get Started"
     },
-    {
-      id: "doctor_caselet",
-      label: "Doctor Caselet",
-      desc: "View your doctor caselets.",
-      icon: Stethoscope,
-      color: "teal",
-      onClick: () => setShowDoctorCaseletPdfModal(true),
-      cta: "Get Started"
-    },
+  
     {
       id: "second_opinion",
       label: "Second Opinion",
@@ -102,24 +94,24 @@ export default function PatientDashboard() {
       onClick: () => navigate("/patient/second_opinion"),
       cta: "Request"
     },
-    {
-      id: "download",
-      label: "Download Caselet",
-      desc: "Secure PDF of your submitted medical caselet and history.",
-      icon: Download,
-      color: "blue",
-      onClick: () => setShowPdfModal(true),
-      cta: "Download"
-    },
-    {
-      id: "receipts",
-      label: "Receipts",
-      desc: "View and download invoices for past expert consultations.",
-      icon: Receipt,
-      color: "violet",
-      onClick: () => alert("Opening Receipts..."),
-      cta: "View All"
-    },
+    // {
+    //   id: "download",
+    //   label: "Download Caselet",
+    //   desc: "Secure PDF of your submitted medical caselet and history.",
+    //   icon: Download,
+    //   color: "blue",
+    //   onClick: () => setShowPdfModal(true),
+    //   cta: "Download"
+    // },
+    // {
+    //   id: "receipts",
+    //   label: "Receipts",
+    //   desc: "View and download invoices for past expert consultations.",
+    //   icon: Receipt,
+    //   color: "violet",
+    //   onClick: () => alert("Opening Receipts..."),
+    //   cta: "View All"
+    // },
   ];
 
   const colorMap = {

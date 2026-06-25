@@ -13,6 +13,7 @@ export default function AuthGuard({ allowedRoles = [] }) {
     // Redirect authenticated users trying to access unauthorized roles back to their default dashboard
     if (userRole === 'patient') return <Navigate to="/patient" replace />;
     if (userRole === 'doctor') return <Navigate to="/doctor/profile" replace />;
+    if (userRole === 'hospital') return <Navigate to="/hospital" replace />;
     return <Navigate to="/admin" replace />;
   }
 

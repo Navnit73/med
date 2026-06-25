@@ -4,6 +4,7 @@ import { Activity, ArrowLeft, CheckCircle2, Shield, Clock, Star, ChevronDown, Se
 import { useAuth } from '../context/AuthContext';
 import { authApi } from '../api/auth';
 import { doctorApi } from '../api/doctor';
+import { hospitalApi } from '../api/hospital';
 
 const COUNTRIES = [
   { code: 'IN', name: 'India',          dial: '+91',  flag: '🇮🇳', maxLen: 10 },
@@ -31,7 +32,7 @@ const COUNTRIES = [
 export default function SignIn() {
   const navigate = useNavigate();
   const { roleParam } = useParams();
-  const role = ['admin', 'doctor', 'patient'].includes(roleParam) ? roleParam : 'patient';
+  const role = ['admin', 'doctor', 'patient', 'hospital'].includes(roleParam) ? roleParam : 'patient';
 
   const { login } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -45,7 +46,8 @@ export default function SignIn() {
     first_name: '',
     last_name: '',
     email: '',
-    registration_number: ''
+    registration_number: '',
+    name: ''
   });
 
   const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
@@ -102,11 +104,23 @@ export default function SignIn() {
     setError('');
     setLoading(true);
     try {
-      await doctorApi.onboard({
-        ...regData,
-        country_code: selectedCountry.dial,
-        phone_number: phoneNumber,
-      });
+      if (role === 'hospital') {
+        await hospitalApi.onboard({
+          name: regData.name,
+          email: regData.email,
+          country_code: selectedCountry.dial,
+          phone_number: phoneNumber,
+        });
+      } else {
+        await doctorApi.onboard({
+          first_name: regData.first_name,
+          last_name: regData.last_name,
+          email: regData.email,
+          registration_number: regData.registration_number,
+          country_code: selectedCountry.dial,
+          phone_number: phoneNumber,
+        });
+      }
       // Registration successful, switch to OTP flow
       setIsRegistering(false);
       await authApi.sendOtp(phoneNumber, selectedCountry.dial, role);
@@ -147,7 +161,9 @@ export default function SignIn() {
       const response = await authApi.verifyOtp(phoneNumber, selectedCountry.dial, otp, role);
       login(role, response.access_token);
       if (role === 'doctor') {
-        navigate('/admin/doctors/profile'); // Wait, Doctor layout will have a different path. We'll use /doctor/profile
+        navigate('/doctor/profile');
+      } else if (role === 'hospital') {
+        navigate('/hospital/profile');
       } else {
         navigate(role === 'patient' ? '/patient' : '/admin');
       }
@@ -192,30 +208,35 @@ export default function SignIn() {
           <div className="max-w-sm mx-auto w-full">
 
             <h1 className="text-2xl font-extrabold text-slate-900 mb-1">
-              {role === 'patient' ? 'Sign in / Register' : role === 'doctor' ? (isRegistering ? 'Doctor Registration' : 'Doctor Sign In') : 'Admin sign in'}
+              {role === 'patient' ? 'Sign in / Register' 
+                : role === 'doctor' ? (isRegistering ? 'Doctor Registration' : 'Doctor Sign In') 
+                : role === 'hospital' ? (isRegistering ? 'Hospital Registration' : 'Hospital Sign In')
+                : 'Admin sign in'}
             </h1>
             <p className="text-sm text-slate-500 mb-7">
               {role === 'patient'
                 ? 'Your health journey starts here. Enter your phone number to continue.'
                 : role === 'doctor'
                   ? (isRegistering ? 'Join our network of specialists.' : 'Sign in to your doctor account.')
+                  : role === 'hospital'
+                    ? (isRegistering ? 'Register your hospital.' : 'Sign in to your hospital account.')
                   : 'Enter your credentials to access the admin panel.'}
             </p>
 
             {/* Role toggle */}
-            <div className="flex bg-slate-100 p-1 rounded-xl mb-7">
-              {['patient', 'doctor', 'admin'].map(r => (
+            <div className="flex bg-slate-100 p-1 rounded-xl mb-7 overflow-x-auto">
+              {['patient', 'doctor', 'hospital', 'admin'].map(r => (
                 <button
                   key={r}
                   type="button"
                   onClick={() => navigate(`/signin/${r}`)}
-                  className={`flex-1 py-2 text-sm font-bold rounded-lg capitalize transition-all ${
+                  className={`flex-1 min-w-[80px] py-2 text-sm font-bold rounded-lg capitalize transition-all ${
                     role === r
                       ? 'bg-white text-[#0284c7] shadow-sm border border-slate-100'
                       : 'text-slate-500 hover:text-slate-700'
                   }`}
                 >
-                  {r === 'patient' ? 'Patient' : r === 'doctor' ? 'Doctor' : 'Admin'}
+                  {r === 'patient' ? 'Patient' : r === 'doctor' ? 'Doctor' : r === 'hospital' ? 'Hospital' : 'Admin'}
                 </button>
               ))}
             </div>
@@ -229,52 +250,81 @@ export default function SignIn() {
 
               {isRegistering && (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">First Name</label>
-                      <input
-                        type="text"
-                        value={regData.first_name}
-                        onChange={(e) => setRegData({...regData, first_name: e.target.value})}
-                        className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
-                        required
-                        placeholder="John"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Last Name</label>
-                      <input
-                        type="text"
-                        value={regData.last_name}
-                        onChange={(e) => setRegData({...regData, last_name: e.target.value})}
-                        className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
-                        required
-                        placeholder="Doe"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Email</label>
-                    <input
-                      type="email"
-                      value={regData.email}
-                      onChange={(e) => setRegData({...regData, email: e.target.value})}
-                      className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
-                      required
-                      placeholder="john.doe@example.com"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Registration Number</label>
-                    <input
-                      type="text"
-                      value={regData.registration_number}
-                      onChange={(e) => setRegData({...regData, registration_number: e.target.value})}
-                      className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
-                      required
-                      placeholder="e.g. 454333445"
-                    />
-                  </div>
+                  {role === 'doctor' ? (
+                    <>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">First Name</label>
+                          <input
+                            type="text"
+                            value={regData.first_name}
+                            onChange={(e) => setRegData({...regData, first_name: e.target.value})}
+                            className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                            required={role === 'doctor'}
+                            placeholder="John"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Last Name</label>
+                          <input
+                            type="text"
+                            value={regData.last_name}
+                            onChange={(e) => setRegData({...regData, last_name: e.target.value})}
+                            className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                            required={role === 'doctor'}
+                            placeholder="Doe"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Email</label>
+                        <input
+                          type="email"
+                          value={regData.email}
+                          onChange={(e) => setRegData({...regData, email: e.target.value})}
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                          required
+                          placeholder="john.doe@example.com"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Registration Number</label>
+                        <input
+                          type="text"
+                          value={regData.registration_number}
+                          onChange={(e) => setRegData({...regData, registration_number: e.target.value})}
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                          required={role === 'doctor'}
+                          placeholder="e.g. 454333445"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Hospital Name</label>
+                        <input
+                          type="text"
+                          value={regData.name}
+                          onChange={(e) => setRegData({...regData, name: e.target.value})}
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                          required={role === 'hospital'}
+                          placeholder="General Hospital"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">Email</label>
+                        <input
+                          type="email"
+                          value={regData.email}
+                          onChange={(e) => setRegData({...regData, email: e.target.value})}
+                          className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7] transition-all"
+                          required={role === 'hospital'}
+                          placeholder="contact@hospital.com"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -439,7 +489,7 @@ export default function SignIn() {
                 </button>
               )}
               
-              {role === 'doctor' && !otpSent && (
+              {(role === 'doctor' || role === 'hospital') && !otpSent && (
                 <div className="text-center mt-4">
                   <button
                     type="button"
