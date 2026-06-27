@@ -27,6 +27,8 @@ import DoctorsTab from './pages/admin/hospitals/view/DoctorsTab';
 import PatientLayout from './layouts/PatientLayout';
 import PatientDashboard from './pages/patient/Dashboard';
 import PatientRegistration from './pages/patient/Registration';
+import SelectDoctor from './pages/patient/SelectDoctor';
+import Checkout from './pages/patient/Checkout';
 
 // Doctor View Imports
 import DoctorLayout from './layouts/DoctorLayout';
@@ -82,6 +84,8 @@ export default function App() {
               <Route index element={<PatientDashboard />} />
               <Route path=":patientId/dashboard" element={<PatientDashboard />} />
               <Route path="registration/*" element={<PatientRegistration />} />
+              <Route path="select-doctor" element={<SelectDoctor />} />
+              <Route path="checkout/:doctorId" element={<Checkout />} />
               <Route path="second_opinion/*" element={<PatientRegistration />} />
               <Route path="second_openion/*" element={<PatientRegistration />} />
             </Route>

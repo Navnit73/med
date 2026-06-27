@@ -19,5 +19,18 @@ export const patientApi = {
   hardDeleteProfile: async () => {
     const response = await api.delete('/patient/profile/hard-delete');
     return response.data;
+  },
+
+  createIntent: async (intentType = 'expert') => {
+    const response = await api.post('/intent/', {
+      intent_type: intentType
+    });
+    return response.data;
+  },
+
+  getDoctors: async () => {
+    // Modify this endpoint according to the new API requirement
+    const response = await api.get('/patient/doctors');
+    return response.data;
   }
 };

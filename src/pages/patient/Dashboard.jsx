@@ -91,7 +91,21 @@ export default function PatientDashboard() {
       desc: "Request a second opinion from another expert.",
       icon: Users,
       color: "blue",
-      onClick: () => navigate("/patient/second_opinion"),
+      onClick: async () => {
+        try {
+          setLoading(true);
+          const intentData = await patientApi.createIntent('expert');
+          if (intentData?.intent_id) {
+            localStorage.setItem('current_intent_id', intentData.intent_id);
+          }
+          navigate('/patient/select-doctor');
+        } catch (err) {
+          console.error('Failed to create intent', err);
+          navigate('/patient/select-doctor');
+        } finally {
+          setLoading(false);
+        }
+      },
       cta: "Request"
     },
     // {
