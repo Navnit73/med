@@ -33,7 +33,10 @@ export default function ServiceSelection({ intent, setIntent, onNext, onBack }) 
           return (
             <button
               key={opt.val}
-              onClick={() => setIntent(opt.val)}
+              onClick={() => {
+                setIntent(opt.val);
+                onNext(opt.val);
+              }}
               className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-4 ${
                 active
                   ? opt.color === 'sky' ? 'border-sky-500 bg-sky-50/60' : 'border-violet-400 bg-violet-50/50'
@@ -68,12 +71,15 @@ export default function ServiceSelection({ intent, setIntent, onNext, onBack }) 
         })}
       </div>
 
-      <NavButtons
-        onBack={onBack}
-        onNext={onNext}
-        nextLabel={intent === 'caselet' ? 'Create Summary' : 'Choose Doctors'}
-        nextDisabled={!intent}
-      />
+      {/* NavButtons hidden since clicking an option auto-advances, but we still need a back button */}
+      <div className="mt-6">
+        <button
+          onClick={onBack}
+          className="text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors"
+        >
+          Back
+        </button>
+      </div>
     </div>
   );
 }

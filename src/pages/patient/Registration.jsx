@@ -4,7 +4,6 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { StepBar, apiCall } from './registration/SharedComponents';
 import api from '../../api/axios';
-import PatientDetail from './registration/PatientDetail';
 import MedicalRecordUpload from './registration/MedicalRecordUpload';
 import ServiceSelection from './registration/ServiceSelection';
 import DoctorSelection from './registration/DoctorSelection';
@@ -12,17 +11,15 @@ import Payment from './registration/Payment';
 import Thanks from './registration/Thanks';
 
 const STEPS_MAP = {
-  'patient_details': 1,
-  'medical_record_upload': 2,
-  'service_selection': 3,
-  'doctor_selection': 4,
-  'payment': 5,
-  'thanks': 6
+  'medical_record_upload': 1,
+  'service_selection': 2,
+  'doctor_selection': 3,
+  'payment': 4,
+  'thanks': 5
 };
 
 const STEP_URLS = [
   '',
-  'patient_details',
   'medical_record_upload',
   'service_selection',
   'doctor_selection',
@@ -38,7 +35,7 @@ export default function RegistrationWizard() {
 
   const stepId = currentPath || '';
   const step = STEPS_MAP[stepId] || 1;
-  const totalSteps = 6;
+  const totalSteps = 5;
 
   const basePath = location.pathname.startsWith('/patient/second_opinion') 
     ? '/patient/second_opinion' 
@@ -46,9 +43,35 @@ export default function RegistrationWizard() {
 
   useEffect(() => {
     if (!stepId || !STEPS_MAP[stepId]) {
-      navigate(`${basePath}/patient_details`, { replace: true });
+      navigate(`${basePath}/medical_record_upload`, { replace: true });
     }
   }, [stepId, basePath, navigate]);
+
+  useEffect(() => {
+    const fetchExistingDocs = async () => {
+      try {
+        const intentId = localStorage.getItem('current_intent_id');
+        if (!intentId) return;
+        
+        const res = await api.get(`/document/patient/intent?intent_id=${intentId}`);
+        if (res.data && Array.isArray(res.data)) {
+          const fetchedDocs = res.data.map(d => ({
+            id: d.document_id,
+            serverId: d.document_id,
+            title: d.document_description,
+            type: d.document_type,
+            fileName: d.file_url?.split('/').pop()?.split('?')[0] || 'document',
+            fileUrl: d.file_url,
+            uploaded: true
+          }));
+          setForm(f => ({ ...f, documents: fetchedDocs }));
+        }
+      } catch (err) {
+        console.error('Error fetching existing docs:', err);
+      }
+    };
+    fetchExistingDocs();
+  }, []);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -72,7 +95,7 @@ export default function RegistrationWizard() {
 
   const next = () => navigate(`${basePath}/${STEP_URLS[Math.min(step + 1, totalSteps)]}`);
   const prev = () => {
-    if (step === 5 && form.intent === 'caselet') {
+    if (step === 4 && form.intent === 'caselet') {
       navigate(`${basePath}/service_selection`);
     } else {
       navigate(`${basePath}/${STEP_URLS[Math.max(step - 1, 1)]}`);
@@ -96,19 +119,21 @@ export default function RegistrationWizard() {
     setError(null);
     try {
       const fd = new FormData();
-      fd.append('patient_id', patientData?.patient_id || '');
-      fd.append('step_id', 2);
-      fd.append('title', local.title);
-      fd.append('type', local.type);
+      const intentId = localStorage.getItem('current_intent_id') || '';
+      fd.append('intent_id', intentId);
+      fd.append('document_type', local.type);
+      fd.append('document_description', local.title);
+      fd.append('consent_given', 'true');
       fd.append('file', local.file);
 
-      await api.post('/registration/document', fd, {
+      const res = await api.post('/document/patient/upload', fd, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+      const data = res.data;
 
       setForm(f => ({
         ...f,
-        documents: f.documents.map(d => d.id === newDoc.id ? { ...d, uploaded: true } : d),
+        documents: f.documents.map(d => d.id === newDoc.id ? { ...d, uploaded: true, serverId: data.document_id, fileUrl: data.file_url } : d),
       }));
     } catch (err) {
       console.error('Document upload failed:', err);
@@ -119,7 +144,17 @@ export default function RegistrationWizard() {
     }
   };
 
-  const removeDoc = (id) => setForm(f => ({ ...f, documents: f.documents.filter(d => d.id !== id) }));
+  const removeDoc = async (id) => {
+    const doc = form.documents.find(d => d.id === id);
+    if (doc?.serverId) {
+      try {
+        await api.delete(`/document/patient/delete?document_id=${doc.serverId}`);
+      } catch (err) {
+        console.error('Failed to delete document from server:', err);
+      }
+    }
+    setForm(f => ({ ...f, documents: f.documents.filter(d => d.id !== id) }));
+  };
 
   /* ── Doctor helpers ── */
   const toggleDoc = (doc) => {
@@ -139,48 +174,44 @@ export default function RegistrationWizard() {
     setLoading(true);
     setError(null);
     try {
-      await api.post('/registration/step-1', {
-        patient_id: patientData?.patient_id,
-        step_id: 1,
-        first_name: form.firstName,
-        last_name: form.lastName,
-        phone_number: form.phone,
-        email: form.email
+      const intentIdStr = localStorage.getItem('current_intent_id');
+      const intentId = intentIdStr ? parseInt(intentIdStr, 10) : 10;
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/flexreport/trigger`, {
+        method: 'POST',
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ intent_id: intentId })
       });
+      const data = await res.json();
+      localStorage.setItem('flexreport_response', JSON.stringify(data));
       next();
     } catch (err) {
-      console.error('Step 1 API Error:', err);
-      setError(err.response?.data?.detail || 'Failed to save patient details. Please try again.');
+      console.error('Flexreport API Error:', err);
+      setError('Failed to trigger flex report. Please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleStep2 = async (selectedIntent) => {
+    const finalIntent = typeof selectedIntent === 'string' ? selectedIntent : form.intent;
+    if (typeof selectedIntent === 'string') {
+      set('intent', finalIntent);
+    }
+
+    // Backend intent is already created or managed elsewhere, so we just advance UI.
+    finalIntent === 'caselet' ? navigate(`${basePath}/payment`) : next();
   };
 
   const handleStep3 = async () => {
     setLoading(true);
     setError(null);
     try {
-      await api.post('/registration/step-3', {
-        patient_id: patientData?.patient_id,
-        step_id: 3,
-        intent: form.intent
-      });
-      form.intent === 'caselet' ? navigate(`${basePath}/payment`) : next();
-    } catch (err) {
-      console.error('Step 3 API Error:', err);
-      setError(err.response?.data?.detail || 'Failed to save service selection. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleStep4 = async () => {
-    setLoading(true);
-    setError(null);
-    try {
       await api.post('/registration/step-4', {
         patient_id: patientData?.patient_id,
-        step_id: 4,
+        step_id: 3,
         consult_type: form.consultType,
         selected_doctor_ids: form.selectedDoctors.map(d => d.id)
       });
@@ -199,7 +230,7 @@ export default function RegistrationWizard() {
     try {
       await api.post('/registration/payment', {
         patient_id: patientData?.patient_id,
-        step_id: 5,
+        step_id: 4,
         amount: totalAmount,
         currency: 'INR',
         intent: form.intent
@@ -220,7 +251,7 @@ export default function RegistrationWizard() {
       {/* ── Wizard Card ── */}
       <div className="w-full max-w-[500px]">
         {/* Header (close button) */}
-        {step < 6 && (
+        {step < 5 && (
           <div className="flex justify-end mb-4 pr-1">
             <button onClick={() => navigate('/patient')} className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
               <X size={16} />
@@ -231,7 +262,7 @@ export default function RegistrationWizard() {
         <div className="bg-white rounded-[24px] shadow-sm shadow-slate-200/50 border border-slate-100 overflow-hidden">
           
           {/* Progress / Steps (hide on success) */}
-          {step < 6 && (
+          {step < 5 && (
             <div className="px-5 pt-6 pb-3 sm:px-7 border-b border-slate-50">
               <StepBar step={step} total={totalSteps} />
               {error && (
@@ -247,18 +278,8 @@ export default function RegistrationWizard() {
             </div>
           )}
 
-          {/* ══ STEP 1: Patient ══ */}
+          {/* ══ STEP 1: Records ══ */}
           {step === 1 && (
-            <PatientDetail
-              form={form}
-              handle={handle}
-              onNext={handleStep1}
-              loading={loading}
-            />
-          )}
-
-          {/* ══ STEP 2: Records ══ */}
-          {step === 2 && (
             <MedicalRecordUpload
               form={form}
               uploadingId={uploadingId}
@@ -266,24 +287,25 @@ export default function RegistrationWizard() {
               removeDoc={removeDoc}
               showAiModal={showAiModal}
               setShowAiModal={setShowAiModal}
-              onNext={next}
-              onBack={prev}
-            />
-          )}
-
-          {/* ══ STEP 3: Service Selection ══ */}
-          {step === 3 && (
-            <ServiceSelection
-              intent={form.intent}
-              setIntent={(val) => set('intent', val)}
-              onNext={handleStep3}
+              onNext={handleStep1}
               onBack={prev}
               loading={loading}
             />
           )}
 
-          {/* ══ STEP 4: Doctors ══ */}
-          {step === 4 && (
+          {/* ══ STEP 2: Service Selection ══ */}
+          {step === 2 && (
+            <ServiceSelection
+              intent={form.intent}
+              setIntent={(val) => set('intent', val)}
+              onNext={handleStep2}
+              onBack={prev}
+              loading={loading}
+            />
+          )}
+
+          {/* ══ STEP 3: Doctors ══ */}
+          {step === 3 && (
             <DoctorSelection
               consultType={form.consultType}
               setConsultType={(val) => {
@@ -292,14 +314,14 @@ export default function RegistrationWizard() {
               }}
               selectedDoctors={form.selectedDoctors}
               toggleDoctor={toggleDoc}
-              onNext={handleStep4}
+              onNext={handleStep3}
               onBack={prev}
               loading={loading}
             />
           )}
 
-          {/* ══ STEP 5: Payment ══ */}
-          {step === 5 && (
+          {/* ══ STEP 4: Payment ══ */}
+          {step === 4 && (
             <Payment
               intent={form.intent}
               selectedDoctors={form.selectedDoctors}
@@ -310,8 +332,8 @@ export default function RegistrationWizard() {
             />
           )}
 
-          {/* ══ STEP 6: Success ══ */}
-          {step === 6 && (
+          {/* ══ STEP 5: Success ══ */}
+          {step === 5 && (
             <Thanks intent={form.intent} />
           )}
 

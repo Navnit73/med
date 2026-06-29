@@ -1,15 +1,38 @@
+import { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 import { NavButtons } from './SharedComponents';
 
-export const DOCTORS = [
-  { id: 1, name: 'Dr. Rajesh Kumar',  specialty: 'Oncology',      rating: 4.9, experience: '15 yrs', fee: 1500 },
-  { id: 2, name: 'Dr. Priya Sharma',  specialty: 'Cardiology',    rating: 4.8, experience: '12 yrs', fee: 1500 },
-  { id: 3, name: 'Dr. Ananya Patel',  specialty: 'Neurology',     rating: 4.9, experience: '10 yrs', fee: 1500 },
-  { id: 4, name: 'Dr. Vikram Singh',  specialty: 'Orthopedics',   rating: 4.7, experience: '18 yrs', fee: 1500 },
-  { id: 5, name: 'Dr. Meena Reddy',   specialty: 'Endocrinology', rating: 4.8, experience: '14 yrs', fee: 1500 },
-];
-
 export default function DoctorSelection({ consultType, setConsultType, selectedDoctors, toggleDoctor, onNext, onBack }) {
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/public/doctors?page=1&page_size=40`, {
+          headers: { 'accept': 'application/json' }
+        });
+        const data = await response.json();
+        if (data.doctors) {
+          const mapped = data.doctors.map(d => ({
+            id: d.doctor_id,
+            name: d.name,
+            specialty: d.speciality || 'Specialist',
+            rating: d.average_rating || '5.0',
+            experience: d.experience_years ? `${d.experience_years} yrs` : 'N/A',
+            fee: d.online_consultation_fee || 1500
+          }));
+          setDoctors(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to fetch doctors:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDoctors();
+  }, []);
+
   return (
     <div className="p-5 sm:p-7">
       <h2 className="text-xl font-extrabold text-slate-900">Choose Doctor(s)</h2>
@@ -35,12 +58,17 @@ export default function DoctorSelection({ consultType, setConsultType, selectedD
         <p className="text-xs text-center text-slate-400 mb-3">Select single or panel above to get started</p>
       )}
 
-      <div className="space-y-2">
-        {DOCTORS.map(doc => {
-          const active = !!selectedDoctors.find(d => d.id === doc.id);
-          const initials = doc.name.split(' ').slice(1).map(n => n[0]).join('');
-          return (
-            <button key={doc.id}
+      {loading ? (
+        <div className="flex justify-center items-center py-10">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600"></div>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {doctors.map(doc => {
+            const active = !!selectedDoctors.find(d => d.id === doc.id);
+            const initials = doc.name.trim() ? doc.name.split(' ').slice(-1)[0][0] : 'D';
+            return (
+              <button key={doc.id}
               onClick={() => consultType && toggleDoctor(doc)}
               disabled={!consultType}
               className={`w-full flex items-center gap-3 p-3.5 rounded-2xl border-2 transition-all text-left ${
@@ -64,10 +92,11 @@ export default function DoctorSelection({ consultType, setConsultType, selectedD
               <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ml-1 ${active ? 'border-sky-600 bg-sky-600' : 'border-slate-300'}`}>
                 {active && <div className="w-2 h-2 rounded-full bg-white" />}
               </div>
-            </button>
-          );
-        })}
-      </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {selectedDoctors.length > 0 && (
         <div className="mt-3 bg-sky-50 border border-sky-100 rounded-xl px-4 py-2.5 flex justify-between items-center">

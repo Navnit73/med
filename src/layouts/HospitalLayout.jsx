@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Building2, LayoutDashboard, LogOut,
-  Menu, Bell, Search, Users, Stethoscope, Settings
+  Menu, Bell, Search, Users, Stethoscope, Settings, FileText
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -65,6 +65,10 @@ export default function HospitalLayout() {
           <Link to="/hospital/departments" className={navLinkClass(isActive('/hospital/departments'))}>
             <Stethoscope className="w-4 h-4 shrink-0" strokeWidth={1.8} />
             Departments
+          </Link>
+          <Link to="/hospital/mou" className={navLinkClass(isActive('/hospital/mou'))}>
+            <FileText className="w-4 h-4 shrink-0" strokeWidth={1.8} />
+            MOU Upload
           </Link>
 
         

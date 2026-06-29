@@ -1,20 +1,5 @@
-import { useState } from 'react';
-import { MapPin, Phone, Building2, Search, ArrowUpRight, Users, Stethoscope, CheckCircle2 } from 'lucide-react';
-
-const HOSPITALS = [
-  { name: 'Apollo Medical Center',         address: '120 Wellness Blvd, San Francisco', phone: '+1 415 555 0101', staff: 420, doctors: 64, status: 'active'   },
-  { name: 'Mercy General Hospital',        address: '88 Lakeshore Dr, Chicago',         phone: '+1 312 555 0144', staff: 312, doctors: 48, status: 'active'   },
-  { name: 'Sunrise Specialty Clinic',      address: '55 Sunset Ave, Los Angeles',       phone: '+1 213 555 0177', staff: 145, doctors: 22, status: 'pending'  },
-  { name: 'Greenfield Hospital',           address: '200 Beacon St, Boston',            phone: '+1 617 555 0192', staff: 268, doctors: 35, status: 'inactive' },
-  { name: 'Cedar Park Medical',            address: '740 Oak Hill, Austin',             phone: '+1 512 555 0166', staff: 510, doctors: 72, status: 'active'   },
-  { name: "Northstar Children's Hospital", address: '99 Starlight Way, Seattle',        phone: '+1 206 555 0188', staff: 380, doctors: 55, status: 'active'   },
-];
-
-const STATUS = {
-  active:   { label: 'Active',   dotColor: 'bg-[#0284c7]', badge: 'bg-[#f0f9ff] text-[#075985] ring-[#0284c7]/20' },
-  pending:  { label: 'Pending',  dotColor: 'bg-amber-400', badge: 'bg-amber-50 text-amber-700 ring-amber-200'       },
-  inactive: { label: 'Inactive', dotColor: 'bg-slate-300', badge: 'bg-slate-100 text-slate-500 ring-slate-200'      },
-};
+import { useState, useEffect } from 'react';
+import { MapPin, Building2, Search, ArrowUpRight, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const AVATAR_COLORS = [
   'bg-[#0284c7]', 'bg-indigo-500', 'bg-blue-500',
@@ -22,24 +7,66 @@ const AVATAR_COLORS = [
 ];
 
 function abbr(name) {
+  if (!name) return '';
   return name.split(' ').filter(w => w.length > 3).slice(0, 2).map(w => w[0]).join('').toUpperCase() || name.slice(0, 2).toUpperCase();
 }
 
 export default function Hospitals() {
+  const [hospitals, setHospitals] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatus] = useState('all');
+  const [selectedCity, setSelectedCity] = useState('all');
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(20);
+  const [total, setTotal] = useState(0);
 
-  const filtered = HOSPITALS.filter(h =>
-    (statusFilter === 'all' || h.status === statusFilter) &&
-    h.name.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    fetchCities();
+  }, []);
 
-  const counts = {
-    all: HOSPITALS.length,
-    active: HOSPITALS.filter(h => h.status === 'active').length,
-    pending: HOSPITALS.filter(h => h.status === 'pending').length,
-    inactive: HOSPITALS.filter(h => h.status === 'inactive').length,
+  useEffect(() => {
+    fetchHospitals();
+  }, [selectedCity, page, pageSize]);
+
+  const fetchCities = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/public/hospitals/filters`, {
+        headers: { 'accept': 'application/json' }
+      });
+      const data = await response.json();
+      if (data.cities) {
+        setCities(data.cities);
+      }
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
   };
+
+  const fetchHospitals = async () => {
+    setLoading(true);
+    try {
+      let url = `${import.meta.env.VITE_API_URL}/public/hospitals?page=${page}&page_size=${pageSize}`;
+      if (selectedCity && selectedCity !== 'all') {
+        url += `&city=${encodeURIComponent(selectedCity)}`;
+      }
+      
+      const response = await fetch(url, {
+        headers: { 'accept': 'application/json' }
+      });
+      const data = await response.json();
+      setHospitals(data.hospitals || []);
+      setTotal(data.total || 0);
+    } catch (error) {
+      console.error('Error fetching hospitals:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filtered = hospitals.filter(h =>
+    h.name?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 pt-16 pb-12 font-sans">
@@ -67,117 +94,125 @@ export default function Hospitals() {
             />
           </div>
 
-          <div className="flex items-center gap-1.5">
-            {['all', 'active', 'pending', 'inactive'].map(s => (
-              <button
-                key={s}
-                onClick={() => setStatus(s)}
-                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
-                  statusFilter === s
-                    ? 'bg-[#0284c7] text-white shadow-sm'
-                    : 'bg-slate-100 text-slate-600 hover:bg-[#f0f9ff] hover:text-[#0284c7]'
-                }`}
-              >
-                {s === 'all' ? 'All' : s}
-                <span className={`text-[10px] px-1 py-0.5 rounded ${statusFilter === s ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-500'}`}>
-                  {counts[s]}
-                </span>
-              </button>
-            ))}
+          <div className="flex items-center gap-2">
+            <select
+              value={selectedCity}
+              onChange={(e) => {
+                setSelectedCity(e.target.value);
+                setPage(1); // Reset page on filter change
+              }}
+              className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/40 focus:border-[#0284c7] text-slate-600 transition min-w-[150px]"
+            >
+              <option value="all">All Cities</option>
+              {cities.map((city, idx) => (
+                <option key={idx} value={city}>{city}</option>
+              ))}
+            </select>
           </div>
         </div>
 
         {/* Result count */}
         <p className="text-xs text-slate-500 mb-4 px-1">
-          <span className="font-bold text-slate-800">{filtered.length}</span> hospital{filtered.length !== 1 ? 's' : ''} found
+          <span className="font-bold text-slate-800">{total}</span> hospital{total !== 1 ? 's' : ''} found
         </p>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((h, i) => {
-            const scfg = STATUS[h.status];
-            return (
-              <div key={i} className="bg-white rounded-sm border border-slate-100 hover:shadow-sm hover:border-[#0284c7]/30 transition-all duration-200 group overflow-hidden flex flex-col">
+        {loading ? (
+           <div className="flex justify-center items-center py-20">
+             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0284c7]"></div>
+           </div>
+        ) : (
+          <>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filtered.map((h, i) => {
+                return (
+                  <div key={h.hospital_id || i} className="bg-white rounded-sm border border-slate-100 hover:shadow-sm hover:border-[#0284c7]/30 transition-all duration-200 group overflow-hidden flex flex-col">
 
-             
-
-                <div className="p-5 flex flex-col flex-1">
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-5">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-11 h-11 rounded-sm ${AVATAR_COLORS[i % AVATAR_COLORS.length]} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
-                        {abbr(h.name)}
+                    <div className="p-5 flex flex-col flex-1">
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-5">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-11 h-11 rounded-sm ${AVATAR_COLORS[i % AVATAR_COLORS.length]} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+                            {abbr(h.name)}
+                          </div>
+                          <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#0284c7] transition-colors leading-snug">{h.name}</h3>
+                        </div>
                       </div>
-                      <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#0284c7] transition-colors leading-snug">{h.name}</h3>
+
+                      {/* Address */}
+                      <div className="space-y-2 mb-5 flex-1">
+                        <div className="flex items-start gap-2 text-xs text-slate-500">
+                          <MapPin className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" strokeWidth={1.8} />
+                          {h.address || `${h.city}, ${h.state}`}
+                        </div>
+                      </div>
+
+                      {/* Departments */}
+                      {h.departments && h.departments.length > 0 && (
+                        <div className="mb-4">
+                           <p className="text-[10px] text-slate-500 mb-1.5 font-semibold uppercase tracking-wider">Departments</p>
+                           <div className="flex flex-wrap gap-1.5">
+                             {h.departments.slice(0, 3).map((dept, idx) => (
+                               <span key={idx} className="text-[10px] px-2 py-0.5 rounded bg-slate-50 border border-slate-200 text-slate-500 font-medium">
+                                 {dept}
+                               </span>
+                             ))}
+                             {h.departments.length > 3 && (
+                               <span className="text-[10px] px-2 py-0.5 rounded bg-slate-50 border border-slate-200 text-slate-500 font-medium">
+                                 +{h.departments.length - 3} more
+                               </span>
+                             )}
+                           </div>
+                        </div>
+                      )}
+
+                      {/* CTA */}
+                      <button className="w-full mt-auto flex items-center justify-center gap-1.5 py-2.5 text-sm font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#0284c7] hover:text-white rounded-lg border border-[#0284c7]/20 hover:border-[#0284c7] transition-all duration-200 active:scale-[0.98]">
+                        View hospital <ArrowUpRight className="w-4 h-4" />
+                      </button>
                     </div>
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold ring-1 ring-inset shrink-0 ml-2 ${scfg.badge}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${scfg.dotColor}`} />
-                      {scfg.label}
-                    </span>
                   </div>
+                );
+              })}
 
-                  {/* Address + phone */}
-                  <div className="space-y-2 mb-5 flex-1">
-                    {[
-                      { icon: MapPin, text: h.address },
-                      { icon: Phone,  text: h.phone   },
-                    ].map(({ icon: Icon, text }) => (
-                      <div key={text} className="flex items-start gap-2 text-xs text-slate-500">
-                        <Icon className="w-3.5 h-3.5 text-slate-400 mt-0.5 shrink-0" strokeWidth={1.8} />
-                        {text}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-2 gap-2 mb-4">
-                    <div className="bg-[#e0f2fe] rounded-lg px-3 py-2.5 flex items-center gap-2">
-                      <Users className="w-3.5 h-3.5 text-[#0284c7] shrink-0" />
-                      <div>
-                        <p className="text-sm font-bold text-[#075985]">{h.staff}</p>
-                        <p className="text-[10px] text-slate-500">Total Staff</p>
-                      </div>
-                    </div>
-                    <div className="bg-indigo-50 rounded-lg px-3 py-2.5 flex items-center gap-2">
-                      <Stethoscope className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
-                      <div>
-                        <p className="text-sm font-bold text-indigo-700">{h.doctors}</p>
-                        <p className="text-[10px] text-slate-500">Doctors</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Accreditations */}
-                  <div className="flex items-center gap-1.5 mb-4">
-                    {['NABH', 'ISO', 'JCI'].slice(0, h.status === 'active' ? 3 : 1).map(acc => (
-                      <span key={acc} className="text-[10px] px-2 py-0.5 rounded bg-slate-50 border border-slate-200 text-slate-500 font-medium flex items-center gap-0.5">
-                        <CheckCircle2 className="w-2.5 h-2.5 text-[#0284c7]" /> {acc}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* CTA */}
-                  <button className="w-full flex items-center justify-center gap-1.5 py-2.5 text-sm font-semibold text-[#0284c7] bg-[#f0f9ff] hover:bg-[#0284c7] hover:text-white rounded-lg border border-[#0284c7]/20 hover:border-[#0284c7] transition-all duration-200 active:scale-[0.98]">
-                    View hospital <ArrowUpRight className="w-4 h-4" />
+              {filtered.length === 0 && (
+                <div className="col-span-full py-16 text-center bg-white rounded-sm border border-slate-100">
+                  <Building2 className="w-10 h-10 mx-auto mb-3 text-slate-200" />
+                  <p className="text-sm font-semibold text-slate-600">No hospitals match your search</p>
+                  <button
+                    onClick={() => { setSearch(''); setSelectedCity('all'); setPage(1); }}
+                    className="mt-4 px-5 py-2 bg-[#0284c7] text-white text-sm font-semibold rounded-lg hover:bg-[#0369a1] transition-colors"
+                  >
+                    Clear filters
                   </button>
                 </div>
-              </div>
-            );
-          })}
-
-          {filtered.length === 0 && (
-            <div className="col-span-full py-16 text-center bg-white rounded-sm border border-slate-100">
-              <Building2 className="w-10 h-10 mx-auto mb-3 text-slate-200" />
-              <p className="text-sm font-semibold text-slate-600">No hospitals match your search</p>
-              <button
-                onClick={() => { setSearch(''); setStatus('all'); }}
-                className="mt-4 px-5 py-2 bg-[#0284c7] text-white text-sm font-semibold rounded-lg hover:bg-[#0369a1] transition-colors"
-              >
-                Clear filters
-              </button>
+              )}
             </div>
-          )}
-        </div>
+
+            {/* Pagination */}
+            {total > pageSize && (
+              <div className="mt-8 flex items-center justify-center gap-2">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-sm text-slate-600 font-medium px-4">
+                  Page {page} of {Math.ceil(total / pageSize)}
+                </span>
+                <button
+                  onClick={() => setPage(p => p + 1)}
+                  disabled={page >= Math.ceil(total / pageSize)}
+                  className="p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

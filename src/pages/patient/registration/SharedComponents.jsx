@@ -51,7 +51,6 @@ export const Row2 = ({ children }) => (
 );
 
 const STEPS = [
-  { label: 'You', short: 'You' },
   { label: 'Records', short: 'Docs' },
   { label: 'Service', short: 'Service' },
   { label: 'Doctors', short: 'Doctors' },

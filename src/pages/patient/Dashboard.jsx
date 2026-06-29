@@ -81,7 +81,21 @@ export default function PatientDashboard() {
       desc: "Start a consultation, upload records, connect with experts.",
       icon: Stethoscope,
       color: "teal",
-      onClick: () => navigate("/patient/registration"),
+      onClick: async () => {
+        try {
+          setLoading(true);
+          const intentData = await patientApi.createIntent('caselet');
+          if (intentData?.intent_id) {
+            localStorage.setItem('current_intent_id', intentData.intent_id);
+          }
+          navigate("/patient/registration");
+        } catch (err) {
+          console.error('Failed to create intent', err);
+          navigate("/patient/registration");
+        } finally {
+          setLoading(false);
+        }
+      },
       cta: "Get Started"
     },
   

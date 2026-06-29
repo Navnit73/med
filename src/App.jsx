@@ -39,6 +39,7 @@ import HospitalOwnLayout from './layouts/HospitalLayout';
 import HospitalDashboard from './pages/hospital/Dashboard';
 import HospitalProfile from './pages/hospital/Profile';
 import HospitalDepartments from './pages/hospital/Departments';
+import HospitalMOU from './pages/hospital/MOU';
 
 export default function App() {
   return (
@@ -105,6 +106,7 @@ export default function App() {
               <Route index element={<HospitalDashboard />} />
               <Route path="profile" element={<HospitalProfile />} />
               <Route path="departments" element={<HospitalDepartments />} />
+              <Route path="mou" element={<HospitalMOU />} />
             </Route>
           </Route>
 

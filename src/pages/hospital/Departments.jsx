@@ -4,6 +4,7 @@ import { Loader2, Plus, Edit2, Trash2, X, Check } from 'lucide-react';
 
 export default function HospitalDepartments() {
   const [departments, setDepartments] = useState([]);
+  const [masterDepartments, setMasterDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -26,6 +27,9 @@ export default function HospitalDepartments() {
     try {
       const data = await hospitalApi.getDepartments();
       setDepartments(Array.isArray(data) ? data : data.departments || []);
+      
+      const masterData = await hospitalApi.getMasterDepartments();
+      setMasterDepartments(Array.isArray(masterData) ? masterData : []);
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to load departments');
     } finally {
@@ -134,14 +138,19 @@ export default function HospitalDepartments() {
         {isAdding && (
           <div className="p-4 border-b border-slate-100 bg-slate-50">
             <form onSubmit={handleAdd} className="flex gap-3">
-              <input
-                type="text"
+              <select
                 value={newDeptName}
                 onChange={(e) => setNewDeptName(e.target.value)}
-                placeholder="Department Name"
                 className="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7]"
                 autoFocus
-              />
+              >
+                <option value="">Select a department</option>
+                {masterDepartments.map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
               <button
                 type="submit"
                 className="px-4 py-2 bg-[#0284c7] text-white rounded-lg text-sm font-medium hover:bg-[#0369a1]"
@@ -169,13 +178,19 @@ export default function HospitalDepartments() {
               <li key={dept.department_id || dept.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                 {editingId === (dept.department_id || dept.id) ? (
                   <div className="flex flex-1 gap-3 mr-4 ml-8">
-                    <input
-                      type="text"
+                    <select
                       value={editDeptName}
                       onChange={(e) => setEditDeptName(e.target.value)}
                       className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0284c7]/30 focus:border-[#0284c7]"
                       autoFocus
-                    />
+                    >
+                      <option value="">Select a department</option>
+                      {masterDepartments.map((dept) => (
+                        <option key={dept} value={dept}>
+                          {dept}
+                        </option>
+                      ))}
+                    </select>
                     <button
                       onClick={() => handleUpdate(dept.department_id || dept.id)}
                       className="p-1.5 text-green-600 hover:bg-green-50 rounded"

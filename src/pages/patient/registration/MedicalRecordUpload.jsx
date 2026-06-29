@@ -1,16 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FileText, Plus, BrainCircuit, Sparkles, X, CheckCircle2, Upload, AlertCircle, Trash2 } from 'lucide-react';
 import { Field, Input, Select, NavButtons } from './SharedComponents';
-
-const DOC_TYPES = [
-  'Prescription',
-  'Blood Report',
-  'Radiology Scan',
-  'Discharge Summary',
-  'Pathology Report',
-  'ECG / Echo Report',
-  'Other Report',
-];
 
 const DocCard = ({ doc, index, total, onRemove, uploading }) => {
   const ext = doc.fileName?.split('.').pop()?.toUpperCase() || 'FILE';
@@ -51,9 +41,9 @@ const DocCard = ({ doc, index, total, onRemove, uploading }) => {
   );
 };
 
-const AddDocPanel = ({ onAdd, onCancel }) => {
+const AddDocPanel = ({ docTypes, onAdd, onCancel }) => {
   const fileRef = useRef(null);
-  const [local, setLocal] = useState({ title: '', type: 'Prescription', file: null });
+  const [local, setLocal] = useState({ title: '', type: docTypes[0] || 'Other', file: null });
   const [err, setErr] = useState('');
 
   const handleFile = (e) => {
@@ -92,7 +82,7 @@ const AddDocPanel = ({ onAdd, onCancel }) => {
 
       <Field label="Type">
         <Select value={local.type} onChange={e => setLocal(d => ({ ...d, type: e.target.value }))}>
-          {DOC_TYPES.map(t => <option key={t}>{t}</option>)}
+          {docTypes.map(t => <option key={t} value={t}>{t}</option>)}
         </Select>
       </Field>
 
@@ -136,8 +126,26 @@ const AddDocPanel = ({ onAdd, onCancel }) => {
   );
 };
 
-export default function MedicalRecordUpload({ form, uploadingId, addDoc, removeDoc, showAiModal, setShowAiModal, onNext, onBack }) {
+export default function MedicalRecordUpload({ form, uploadingId, addDoc, removeDoc, showAiModal, setShowAiModal, onNext, onBack, loading }) {
   const [showAddPanel, setShowAddPanel] = useState(false);
+  const [docTypes, setDocTypes] = useState(['Other']);
+
+  useEffect(() => {
+    const fetchTypes = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/document/types`, {
+          headers: { accept: 'application/json' }
+        });
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setDocTypes(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch doc types', err);
+      }
+    };
+    fetchTypes();
+  }, []);
 
   const handleAdd = (local) => {
     addDoc(local);
@@ -170,12 +178,12 @@ export default function MedicalRecordUpload({ form, uploadingId, addDoc, removeD
         <div className="py-10 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center text-slate-400 mb-4">
           <FileText size={28} className="mb-2 opacity-25" />
           <p className="text-sm font-semibold text-slate-400">No documents yet</p>
-          <p className="text-xs text-slate-300 mt-0.5">Optional — better records lead to better advice</p>
+          <p className="text-xs text-slate-300 mt-0.5">Required — please upload at least one document to proceed</p>
         </div>
       )}
 
       {showAddPanel ? (
-        <AddDocPanel onAdd={handleAdd} onCancel={() => setShowAddPanel(false)} />
+        <AddDocPanel docTypes={docTypes} onAdd={handleAdd} onCancel={() => setShowAddPanel(false)} />
       ) : (
         <button
           onClick={() => setShowAddPanel(true)}
@@ -198,6 +206,8 @@ export default function MedicalRecordUpload({ form, uploadingId, addDoc, removeD
         onBack={onBack}
         onNext={onNext}
         nextLabel="Continue"
+        nextDisabled={form.documents.length === 0}
+        loading={loading}
       />
 
       {/* ── AI Summary Modal ── */}

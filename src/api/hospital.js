@@ -36,6 +36,24 @@ export const hospitalApi = {
   removeDepartment: async (data) => {
     const response = await api.delete('/hospital/department/remove', { data });
     return response.data;
+  },
+  getMasterDepartments: async () => {
+    const response = await api.get('/hospital/master-departments');
+    return response.data;
+  },
+  uploadMOU: async (data) => {
+    const response = await api.post('/hospital/mou/upload', data, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+  },
+  getMOU: async () => {
+    const response = await api.get('/hospital/mou/get');
+    return response.data;
+  },
+  deleteMOU: async () => {
+    const response = await api.delete('/hospital/mou/delete');
+    return response.data;
   }
 };
 
