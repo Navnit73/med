@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { FileText, Plus, BrainCircuit, Sparkles, X, CheckCircle2, Upload, AlertCircle, Trash2 } from 'lucide-react';
 import { Field, Input, Select, NavButtons } from './SharedComponents';
+import api from '../../../api/axios';
 
 const DocCard = ({ doc, index, total, onRemove, uploading }) => {
   const ext = doc.fileName?.split('.').pop()?.toUpperCase() || 'FILE';
@@ -11,6 +12,11 @@ const DocCard = ({ doc, index, total, onRemove, uploading }) => {
     PNG: 'bg-violet-50 text-violet-600',
   };
   const badge = extColors[ext] || 'bg-slate-100 text-slate-600';
+
+  const trimName = (name) => {
+    if (!name || name.length <= 25) return name;
+    return name.substring(0, 15) + '...' + name.slice(-8);
+  };
 
   return (
     <div className="flex gap-3 relative">
@@ -25,7 +31,7 @@ const DocCard = ({ doc, index, total, onRemove, uploading }) => {
         <div className={`px-2 py-1 rounded-lg text-[10px] font-black shrink-0 mt-0.5 ${badge}`}>{ext}</div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold text-slate-800 truncate">{doc.title}</p>
-          <p className="text-[11px] text-slate-400 truncate mt-0.5">{doc.type} · {doc.fileName}</p>
+          <p className="text-[11px] text-slate-400 truncate mt-0.5">{doc.type} · {trimName(doc.fileName)}</p>
           {doc.uploaded && (
             <p className="text-[10px] text-emerald-500 font-semibold mt-0.5 flex items-center gap-1">
               <CheckCircle2 size={10} /> Uploaded
@@ -43,7 +49,7 @@ const DocCard = ({ doc, index, total, onRemove, uploading }) => {
 
 const AddDocPanel = ({ docTypes, onAdd, onCancel }) => {
   const fileRef = useRef(null);
-  const [local, setLocal] = useState({ title: '', type: docTypes[0] || 'Other', file: null });
+  const [local, setLocal] = useState({ title: '', type: docTypes[0] || 'Other', file: null, consent: false });
   const [err, setErr] = useState('');
 
   const handleFile = (e) => {
@@ -57,6 +63,7 @@ const AddDocPanel = ({ docTypes, onAdd, onCancel }) => {
   const submit = () => {
     if (!local.title.trim()) { setErr('Please enter a document title'); return; }
     if (!local.file) { setErr('Please select a file'); return; }
+    if (!local.consent) { setErr('Please check the consent box to upload this document'); return; }
     onAdd(local);
   };
 
@@ -106,6 +113,18 @@ const AddDocPanel = ({ docTypes, onAdd, onCancel }) => {
         )}
       </div>
 
+      <label className="flex items-start gap-2 cursor-pointer pt-1 px-1">
+        <input 
+          type="checkbox" 
+          checked={local.consent}
+          onChange={e => setLocal(d => ({ ...d, consent: e.target.checked }))}
+          className="mt-0.5 w-3.5 h-3.5 rounded border-slate-300 text-sky-600 focus:ring-sky-500"
+        />
+        <span className="text-xs text-slate-600">
+          I consent to upload this document to be used for my medical evaluation and shared with the selected specialists.
+        </span>
+      </label>
+
       {err && (
         <p className="text-xs text-rose-500 flex items-center gap-1.5">
           <AlertCircle size={12} /> {err}
@@ -133,10 +152,8 @@ export default function MedicalRecordUpload({ form, uploadingId, addDoc, removeD
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/document/types`, {
-          headers: { accept: 'application/json' }
-        });
-        const data = await res.json();
+        const res = await api.get('/document/types');
+        const data = res.data;
         if (Array.isArray(data) && data.length > 0) {
           setDocTypes(data);
         }

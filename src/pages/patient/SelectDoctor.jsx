@@ -18,15 +18,22 @@ export default function SelectDoctor() {
     setLoading(true);
     try {
       const data = await patientApi.getDoctors();
-      setDoctors(data.doctors || []);
+      if (data.doctors) {
+        setDoctors(data.doctors.map(d => ({
+          doctor_id: d.doctor_id,
+          name: d.name,
+          specialty: d.speciality || 'Specialist',
+          hospital: d.hospital_name || 'Medical Center',
+          exp: d.experience_years ? `${d.experience_years} years` : 'N/A',
+          rating: d.average_rating ? parseFloat(d.average_rating) * 20 : 98, // assuming rating is out of 5, multiply by 20 for %
+          reviews: d.total_reviews || 120
+        })));
+      } else {
+        setDoctors([]);
+      }
     } catch (err) {
       console.error('Error fetching doctors:', err);
-      // For now, if API fails, mock some data for the user so they can see the design
-      setDoctors([
-        { doctor_id: 'd1', name: 'Dr. Sarah Jenkins', specialty: 'Cardiologist', hospital: 'Apollo Medical Center', exp: '15 years', rating: 98, reviews: 120 },
-        { doctor_id: 'd2', name: 'Dr. Michael Chen', specialty: 'Neurologist', hospital: 'Mercy General Hospital', exp: '12 years', rating: 95, reviews: 85 }
-      ]);
-      // setError('Failed to load doctors. Please try again later.');
+      setError('Failed to load doctors. Please try again later.');
     } finally {
       setLoading(false);
     }

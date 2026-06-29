@@ -29,8 +29,7 @@ export const patientApi = {
   },
 
   getDoctors: async () => {
-    // Modify this endpoint according to the new API requirement
-    const response = await api.get('/patient/doctors');
+    const response = await api.get('/public/doctors?page=1&page_size=40');
     return response.data;
   }
 };

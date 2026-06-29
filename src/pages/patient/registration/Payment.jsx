@@ -66,11 +66,9 @@ export default function Payment({ intent, selectedDoctors, totalAmount, handlePa
         )}
       </button>
 
-      {intent !== 'caselet' && (
-        <button onClick={onBack} className="w-full mt-2 py-2.5 text-xs text-slate-400 hover:text-slate-600 font-semibold transition-colors">
-          ← Change doctor selection
-        </button>
-      )}
+      <button onClick={onBack} className="w-full mt-2 py-2.5 text-xs text-slate-400 hover:text-slate-600 font-semibold transition-colors">
+        ← {intent === 'caselet' ? 'Back' : 'Change doctor selection'}
+      </button>
     </div>
   );
 }

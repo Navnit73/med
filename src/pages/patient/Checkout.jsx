@@ -16,10 +16,16 @@ export default function Checkout() {
     const fetchDoctorDetails = async () => {
       try {
         const data = await patientApi.getDoctors();
-        const found = (data.doctors || []).find(d => d.doctor_id === doctorId);
+        const found = (data.doctors || []).find(d => String(d.doctor_id) === String(doctorId));
         
         if (found) {
-          setDoctor(found);
+          setDoctor({
+            doctor_id: found.doctor_id,
+            name: found.name,
+            specialty: found.speciality || 'Specialist',
+            hospital: found.hospital_name || 'Apollo Medical Center',
+            fee: found.online_consultation_fee || 800
+          });
         } else {
           // Mock fallback
           setDoctor({
@@ -27,8 +33,7 @@ export default function Checkout() {
             name: 'Dr. Sarah Jenkins',
             specialty: 'Cardiologist',
             hospital: 'Apollo Medical Center',
-            exp: '15 years',
-            rating: 98
+            fee: 800
           });
         }
       } catch (err) {
@@ -37,7 +42,8 @@ export default function Checkout() {
           doctor_id: doctorId,
           name: 'Dr. Sarah Jenkins',
           specialty: 'Cardiologist',
-          hospital: 'Apollo Medical Center'
+          hospital: 'Apollo Medical Center',
+          fee: 800
         });
       } finally {
         setLoading(false);
@@ -88,7 +94,7 @@ export default function Checkout() {
           <div className="space-y-3 mb-6 text-sm">
             <div className="flex justify-between text-slate-600">
               <span>Consultation Fee</span>
-              <span className="font-semibold text-slate-900">₹800</span>
+              <span className="font-semibold text-slate-900">₹{doctor?.fee || 800}</span>
             </div>
             <div className="flex justify-between text-slate-600">
               <span>Platform Fee</span>
@@ -96,11 +102,11 @@ export default function Checkout() {
             </div>
             <div className="flex justify-between text-slate-600">
               <span>Taxes (18% GST)</span>
-              <span className="font-semibold text-slate-900">₹153</span>
+              <span className="font-semibold text-slate-900">₹{Math.round(((doctor?.fee || 800) + 50) * 0.18)}</span>
             </div>
             <div className="flex justify-between pt-3 border-t border-slate-100 font-bold text-slate-900">
               <span>Total Amount</span>
-              <span className="text-sky-600 text-lg">₹1,003</span>
+              <span className="text-sky-600 text-lg">₹{(doctor?.fee || 800) + 50 + Math.round(((doctor?.fee || 800) + 50) * 0.18)}</span>
             </div>
           </div>
 

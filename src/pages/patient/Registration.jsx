@@ -73,6 +73,29 @@ export default function RegistrationWizard() {
     fetchExistingDocs();
   }, []);
 
+  useEffect(() => {
+    let interval;
+
+    const pollStatus = async () => {
+      const intentId = localStorage.getItem('current_intent_id');
+      if (!intentId) return;
+
+      try {
+        const res = await api.get(`/flexreport/status?intent_id=${intentId}`);
+        localStorage.setItem('flexreport_status', JSON.stringify(res.data));
+        
+        if (res.data?.status === 'generated') {
+          clearInterval(interval);
+        }
+      } catch (err) {
+        console.error('Polling flexreport status error:', err);
+      }
+    };
+
+    interval = setInterval(pollStatus, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -95,7 +118,9 @@ export default function RegistrationWizard() {
 
   const next = () => navigate(`${basePath}/${STEP_URLS[Math.min(step + 1, totalSteps)]}`);
   const prev = () => {
-    if (step === 4 && form.intent === 'caselet') {
+    if (step === 1) {
+      navigate('/patient');
+    } else if (step === 4 && form.intent === 'caselet') {
       navigate(`${basePath}/service_selection`);
     } else {
       navigate(`${basePath}/${STEP_URLS[Math.max(step - 1, 1)]}`);
@@ -123,7 +148,7 @@ export default function RegistrationWizard() {
       fd.append('intent_id', intentId);
       fd.append('document_type', local.type);
       fd.append('document_description', local.title);
-      fd.append('consent_given', 'true');
+      fd.append('consent_given', local.consent ? 'true' : 'false');
       fd.append('file', local.file);
 
       const res = await api.post('/document/patient/upload', fd, {
@@ -176,16 +201,13 @@ export default function RegistrationWizard() {
     try {
       const intentIdStr = localStorage.getItem('current_intent_id');
       const intentId = intentIdStr ? parseInt(intentIdStr, 10) : 10;
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/flexreport/trigger`, {
-        method: 'POST',
-        headers: {
-          'accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ intent_id: intentId })
-      });
-      const data = await res.json();
+      const res = await api.post('/flexreport/trigger', { intent_id: intentId });
+      const data = res.data;
       localStorage.setItem('flexreport_response', JSON.stringify(data));
+      
+      const statusRes = await api.get(`/flexreport/status?intent_id=${intentId}`);
+      localStorage.setItem('flexreport_status', JSON.stringify(statusRes.data));
+      
       next();
     } catch (err) {
       console.error('Flexreport API Error:', err);
@@ -209,16 +231,25 @@ export default function RegistrationWizard() {
     setLoading(true);
     setError(null);
     try {
-      await api.post('/registration/step-4', {
-        patient_id: patientData?.patient_id,
-        step_id: 3,
-        consult_type: form.consultType,
-        selected_doctor_ids: form.selectedDoctors.map(d => d.id)
-      });
+      const intentIdStr = localStorage.getItem('current_intent_id');
+      const intentId = intentIdStr ? parseInt(intentIdStr, 10) : 0;
+
+      await api.post('/intent/request-consultation', { intent_id: intentId });
+
+      const payload = {
+        intent_id: intentId,
+        doctors: form.selectedDoctors.map(d => ({
+          doctor_id: d.id,
+          consultation_type: "Video"
+        }))
+      };
+
+      const res = await api.post('/appointment/patient/book', payload);
+      localStorage.setItem('booked_appointments', JSON.stringify(res.data));
       next();
     } catch (err) {
-      console.error('Step 4 API Error:', err);
-      setError(err.response?.data?.detail || 'Failed to save doctor selection. Please try again.');
+      console.error('Booking API Error:', err);
+      setError(err.response?.data?.detail || 'Failed to book appointment. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -228,6 +259,8 @@ export default function RegistrationWizard() {
     setLoading(true);
     setError(null);
     try {
+      // Bypassed payment API call as requested
+      /*
       await api.post('/registration/payment', {
         patient_id: patientData?.patient_id,
         step_id: 4,
@@ -235,6 +268,8 @@ export default function RegistrationWizard() {
         currency: 'INR',
         intent: form.intent
       });
+      */
+      await new Promise(resolve => setTimeout(resolve, 800));
       next();
     } catch (err) {
       console.error('Payment API Error:', err);

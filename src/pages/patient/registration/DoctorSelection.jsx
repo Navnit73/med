@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 import { NavButtons } from './SharedComponents';
+import api from '../../../api/axios';
 
 export default function DoctorSelection({ consultType, setConsultType, selectedDoctors, toggleDoctor, onNext, onBack }) {
   const [doctors, setDoctors] = useState([]);
@@ -9,10 +10,8 @@ export default function DoctorSelection({ consultType, setConsultType, selectedD
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/public/doctors?page=1&page_size=40`, {
-          headers: { 'accept': 'application/json' }
-        });
-        const data = await response.json();
+        const response = await api.get('/public/doctors?page=1&page_size=40');
+        const data = response.data;
         if (data.doctors) {
           const mapped = data.doctors.map(d => ({
             id: d.doctor_id,

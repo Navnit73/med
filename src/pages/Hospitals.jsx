@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MapPin, Building2, Search, ArrowUpRight, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import api from '../api/axios';
 
 const AVATAR_COLORS = [
   'bg-[#0284c7]', 'bg-indigo-500', 'bg-blue-500',
@@ -31,10 +32,8 @@ export default function Hospitals() {
 
   const fetchCities = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/public/hospitals/filters`, {
-        headers: { 'accept': 'application/json' }
-      });
-      const data = await response.json();
+      const response = await api.get('/public/hospitals/filters');
+      const data = response.data;
       if (data.cities) {
         setCities(data.cities);
       }
@@ -46,15 +45,13 @@ export default function Hospitals() {
   const fetchHospitals = async () => {
     setLoading(true);
     try {
-      let url = `${import.meta.env.VITE_API_URL}/public/hospitals?page=${page}&page_size=${pageSize}`;
+      let url = `/public/hospitals?page=${page}&page_size=${pageSize}`;
       if (selectedCity && selectedCity !== 'all') {
         url += `&city=${encodeURIComponent(selectedCity)}`;
       }
       
-      const response = await fetch(url, {
-        headers: { 'accept': 'application/json' }
-      });
-      const data = await response.json();
+      const response = await api.get(url);
+      const data = response.data;
       setHospitals(data.hospitals || []);
       setTotal(data.total || 0);
     } catch (error) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { Search, MapPin, Briefcase, GraduationCap, ChevronRight, ThumbsUp, Video, Clock } from 'lucide-react';
 import { SPECIALTY_ICONS, DEFAULT_ICON, AVATAR_COLORS } from '../data/mockDoctors';
 
@@ -23,9 +23,7 @@ export default function FindDoctors() {
 
   useEffect(() => {
     // Fetch filters
-    axios.get(`${API_BASE_URL}/public/doctors/filters`, {
-      headers: { 'accept': 'application/json' }
-    })
+    api.get('/public/doctors/filters')
       .then(res => {
         const data = res.data;
         setFiltersData({
@@ -40,12 +38,11 @@ export default function FindDoctors() {
   useEffect(() => {
     // Fetch doctors
     setLoading(true);
-    axios.get(`${API_BASE_URL}/public/doctors`, {
+    api.get('/public/doctors', {
       params: {
         page: 1,
         page_size: 100
-      },
-      headers: { 'accept': 'application/json' }
+      }
     })
       .then(res => {
         const data = res.data;
