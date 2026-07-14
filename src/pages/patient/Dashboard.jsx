@@ -116,10 +116,10 @@ export default function PatientDashboard() {
             localStorage.setItem('current_intent_id', intentData.intent_id);
             localStorage.setItem('current_intent_type', 'expert');
           }
-          navigate('/patient/select-doctor');
+          navigate('/patient/second_opinion');
         } catch (err) {
           console.error('Failed to create intent', err);
-          navigate('/patient/select-doctor');
+          navigate('/patient/second_opinion');
         } finally {
           setLoading(false);
         }

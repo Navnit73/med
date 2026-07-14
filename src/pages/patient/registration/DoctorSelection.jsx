@@ -102,7 +102,7 @@ export default function DoctorSelection({ consultType, setConsultType, selectedD
           <span className="text-xs text-sky-800 font-semibold">
             {selectedDoctors.length} doctor{selectedDoctors.length > 1 ? 's' : ''} selected
           </span>
-          <span className="text-sm font-extrabold text-sky-800">₹{selectedDoctors.length * 1500 + 200}</span>
+          <span className="text-sm font-extrabold text-sky-800">₹{selectedDoctors.reduce((sum, d) => sum + (d.fee || 1500), 0) + 150}</span>
         </div>
       )}
 

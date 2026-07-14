@@ -30,8 +30,8 @@ export default function Payment({ intent, selectedDoctors, totalAmount, handlePa
               </div>
             ))}
             <div className="flex justify-between items-center pt-2 border-t border-slate-200">
-              <span className="text-sm text-slate-500">Platform Fee</span>
-              <span className="text-sm font-bold text-slate-900">₹200</span>
+              <span className="text-sm text-slate-500">Report & Platform Fee</span>
+              <span className="text-sm font-bold text-slate-900">₹150</span>
             </div>
           </div>
           <div className="bg-white border-t border-slate-100 px-4 py-3 flex justify-between items-center">

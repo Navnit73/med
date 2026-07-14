@@ -284,14 +284,7 @@ export default function RegistrationWizard() {
         
       } else {
         // --- EXPERT FLOW ---
-        const res = await api.post('/flexreport/trigger', { intent_id: intentId });
-        const data = res.data;
-        localStorage.setItem('flexreport_response', JSON.stringify(data));
-        
-        const statusRes = await api.get(`/flexreport/status?intent_id=${intentId}`);
-        localStorage.setItem('flexreport_status', JSON.stringify(statusRes.data));
-        
-        next();
+        navigate(`${basePath}/doctor_selection`);
         setLoading(false);
       }
     } catch (err) {
@@ -318,7 +311,13 @@ export default function RegistrationWizard() {
       const intentIdStr = localStorage.getItem('current_intent_id');
       const intentId = intentIdStr ? parseInt(intentIdStr, 10) : 0;
 
-      await api.post('/intent/request-consultation', { intent_id: intentId });
+      try {
+        await api.post('/intent/request-consultation', { intent_id: intentId });
+      } catch (err) {
+        if (err.response?.data?.detail !== "Intent is already an Expert intent.") {
+          throw err;
+        }
+      }
 
       const payload = {
         intent_id: intentId,
@@ -374,9 +373,23 @@ export default function RegistrationWizard() {
         name: 'Med Experts',
         description: 'Expert Second Opinion',
         order_id: razorpay_order_id,
-        handler: function (response) {
-          next();
-          setLoading(false);
+        handler: async function (response) {
+          setLoading(true);
+          try {
+            // trigger flexreport after successful payment
+            const res = await api.post('/flexreport/trigger', { intent_id: intentId });
+            localStorage.setItem('flexreport_response', JSON.stringify(res.data));
+            
+            const statusRes = await api.get(`/flexreport/status?intent_id=${intentId}`);
+            localStorage.setItem('flexreport_status', JSON.stringify(statusRes.data));
+            
+            next();
+          } catch (err) {
+            console.error('Report trigger error:', err);
+            setError('Payment successful but report generation failed.');
+          } finally {
+            setLoading(false);
+          }
         },
         prefill: {
           name: `${form.firstName} ${form.lastName}`.trim(),
@@ -406,7 +419,7 @@ export default function RegistrationWizard() {
     }
   };
 
-  const totalAmount = form.selectedDoctors.length * 1500 + 200;
+  const totalAmount = form.selectedDoctors.reduce((sum, d) => sum + (d.fee || 1500), 0) + 150;
 
   return (
     <div className="min-h-screen bg-slate-50/50 flex flex-col items-center pt-6 pb-20 sm:pt-12 px-4">
@@ -432,12 +445,11 @@ export default function RegistrationWizard() {
                   { label: 'Done' }
                 ] : [
                   { label: 'Records' },
-                  { label: 'Service' },
                   { label: 'Doctors' },
                   { label: 'Pay' },
                   { label: 'Done' }
                 ]} 
-                currentStepIndex={form.intent === 'caselet' ? (step === 1 ? 0 : 1) : step - 1}
+                currentStepIndex={form.intent === 'caselet' ? (step === 1 ? 0 : 1) : (step === 1 ? 0 : step - 2)}
               />
               {error && (
                 <div className="mt-4 p-3 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm font-semibold flex items-start gap-2">
