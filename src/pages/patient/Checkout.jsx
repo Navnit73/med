@@ -2,13 +2,17 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MapPin, Activity, ArrowLeft } from 'lucide-react';
 import { patientApi } from '../../api/patient';
+import api from '../../api/axios';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Checkout() {
   const navigate = useNavigate();
   const { doctorId } = useParams();
+  const { patientData } = useAuth();
   
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   useEffect(() => {
     // In a real app, we might fetch the specific doctor details by ID
@@ -111,14 +115,92 @@ export default function Checkout() {
           </div>
 
           <button 
-            onClick={() => {
-              const intentId = localStorage.getItem('current_intent_id');
-              alert(`Paid ₹1,003 and booked ${doctor?.name} for intent ${intentId || 'none'}!`);
-              navigate('/patient');
+            onClick={async () => {
+              setPaymentLoading(true);
+              try {
+                const intentIdStr = localStorage.getItem('current_intent_id');
+                const intentId = intentIdStr ? parseInt(intentIdStr, 10) : 0;
+
+                // Book appointment first
+                await api.post('/appointment/patient/book', {
+                  intent_id: intentId,
+                  doctors: [{ doctor_id: parseInt(doctorId, 10), consultation_type: "Video" }]
+                });
+
+                // Create order
+                const orderRes = await api.post('/payment/create-order', { intent_id: intentId });
+                const { amount, currency, razorpay_order_id, razorpay_key_id } = orderRes.data;
+
+                // Load Razorpay script
+                const scriptLoaded = await new Promise((resolve) => {
+                  if (window.Razorpay) return resolve(true);
+                  const script = document.createElement('script');
+                  script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+                  script.onload = () => resolve(true);
+                  script.onerror = () => resolve(false);
+                  document.body.appendChild(script);
+                });
+
+                if (!scriptLoaded) {
+                  alert('Failed to load payment gateway.');
+                  setPaymentLoading(false);
+                  return;
+                }
+
+                // Open Razorpay checkout
+                const options = {
+                  key: razorpay_key_id,
+                  amount: amount,
+                  currency: currency,
+                  name: 'Med Experts',
+                  description: 'Expert Second Opinion',
+                  order_id: razorpay_order_id,
+                  handler: function (response) {
+                    alert(`Paid successfully and booked ${doctor?.name}!`);
+                    navigate('/patient');
+                    setPaymentLoading(false);
+                  },
+                  prefill: {
+                    name: patientData?.first_name ? `${patientData.first_name} ${patientData.last_name || ''}`.trim() : '',
+                    email: patientData?.email || '',
+                    contact: patientData?.phone_number || patientData?.phone || ''
+                  },
+                  theme: { color: '#0284c7' }, // sky-600
+                  modal: {
+                    ondismiss: function () {
+                      setPaymentLoading(false);
+                    }
+                  }
+                };
+
+                const paymentObject = new window.Razorpay(options);
+                paymentObject.on('payment.failed', function (response) {
+                  console.error(response.error);
+                  alert('Payment failed. Please try again.');
+                  setPaymentLoading(false);
+                });
+                paymentObject.open();
+
+              } catch (err) {
+                console.error('Payment API Error:', err);
+                alert(err.response?.data?.detail || 'Payment failed. Please try again.');
+                setPaymentLoading(false);
+              }
             }}
-            className="w-full py-3.5 bg-sky-600 text-white font-bold rounded-xl hover:bg-sky-700 active:scale-95 transition-all shadow-sm flex justify-center items-center gap-2 text-sm"
+            disabled={paymentLoading}
+            className="w-full py-3.5 bg-sky-600 text-white font-bold rounded-xl hover:bg-sky-700 active:scale-95 transition-all shadow-sm flex justify-center items-center gap-2 text-sm disabled:opacity-50"
           >
-            Pay Now
+            {paymentLoading ? (
+              <span className="flex items-center gap-2">
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+                Processing…
+              </span>
+            ) : (
+              'Pay Now'
+            )}
           </button>
         </div>
       </main>

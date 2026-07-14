@@ -75,10 +75,21 @@ export default function RegistrationWizard() {
 
   useEffect(() => {
     let interval;
+    let retries = 0;
+    const MAX_RETRIES = 60; // 10 minutes (60 * 10s)
 
     const pollStatus = async () => {
       const intentId = localStorage.getItem('current_intent_id');
-      if (!intentId) return;
+      if (!intentId) {
+        clearInterval(interval);
+        return;
+      }
+
+      retries++;
+      if (retries > MAX_RETRIES) {
+        clearInterval(interval);
+        return;
+      }
 
       try {
         const res = await api.get(`/flexreport/status?intent_id=${intentId}`);
@@ -105,7 +116,7 @@ export default function RegistrationWizard() {
     phone:     patientData?.phone_number || patientData?.phone     || '',
     email:     patientData?.email     || '',
     documents:        [],
-    intent:           '',   // 'expert' | 'caselet'
+    intent:           localStorage.getItem('current_intent_type') || '',   // 'expert' | 'caselet'
     consultType:      '',   // 'single' | 'multiple'
     selectedDoctors:  [],
   });
@@ -201,18 +212,91 @@ export default function RegistrationWizard() {
     try {
       const intentIdStr = localStorage.getItem('current_intent_id');
       const intentId = intentIdStr ? parseInt(intentIdStr, 10) : 10;
-      const res = await api.post('/flexreport/trigger', { intent_id: intentId });
-      const data = res.data;
-      localStorage.setItem('flexreport_response', JSON.stringify(data));
       
-      const statusRes = await api.get(`/flexreport/status?intent_id=${intentId}`);
-      localStorage.setItem('flexreport_status', JSON.stringify(statusRes.data));
-      
-      next();
+      if (form.intent === 'caselet') {
+        // --- CASELET FLOW ---
+        // 1. Create order
+        const orderRes = await api.post('/payment/create-order', { intent_id: intentId });
+        const { amount, currency, razorpay_order_id, razorpay_key_id } = orderRes.data;
+
+        // 2. Load Razorpay script
+        const scriptLoaded = await new Promise((resolve) => {
+          if (window.Razorpay) return resolve(true);
+          const script = document.createElement('script');
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+          script.onload = () => resolve(true);
+          script.onerror = () => resolve(false);
+          document.body.appendChild(script);
+        });
+
+        if (!scriptLoaded) {
+          setError('Failed to load payment gateway.');
+          setLoading(false);
+          return;
+        }
+
+        // 3. Open Razorpay checkout
+        const options = {
+          key: razorpay_key_id,
+          amount: amount,
+          currency: currency,
+          name: 'Med Experts',
+          description: 'Caselet Generation',
+          order_id: razorpay_order_id,
+          handler: async function (response) {
+            setLoading(true);
+            try {
+              // trigger flexreport after successful payment
+              const res = await api.post('/flexreport/trigger', { intent_id: intentId });
+              localStorage.setItem('flexreport_response', JSON.stringify(res.data));
+              
+              const statusRes = await api.get(`/flexreport/status?intent_id=${intentId}`);
+              localStorage.setItem('flexreport_status', JSON.stringify(statusRes.data));
+              
+              navigate(`${basePath}/thanks`); // Skip straight to thanks step
+            } catch (err) {
+              console.error('Report trigger error:', err);
+              setError('Payment successful but report generation failed.');
+            } finally {
+              setLoading(false);
+            }
+          },
+          prefill: {
+            name: `${form.firstName} ${form.lastName}`.trim(),
+            email: form.email,
+            contact: form.phone,
+          },
+          theme: { color: '#0284c7' }, // sky-600
+          modal: {
+            ondismiss: function () {
+              setLoading(false);
+            }
+          }
+        };
+
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.on('payment.failed', function (response) {
+          console.error(response.error);
+          setError('Payment failed. Please try again.');
+          setLoading(false);
+        });
+        paymentObject.open();
+        
+      } else {
+        // --- EXPERT FLOW ---
+        const res = await api.post('/flexreport/trigger', { intent_id: intentId });
+        const data = res.data;
+        localStorage.setItem('flexreport_response', JSON.stringify(data));
+        
+        const statusRes = await api.get(`/flexreport/status?intent_id=${intentId}`);
+        localStorage.setItem('flexreport_status', JSON.stringify(statusRes.data));
+        
+        next();
+        setLoading(false);
+      }
     } catch (err) {
-      console.error('Flexreport API Error:', err);
-      setError('Failed to trigger flex report. Please try again.');
-    } finally {
+      console.error('API Error:', err);
+      setError('Failed to process. Please try again.');
       setLoading(false);
     }
   };
@@ -259,22 +343,65 @@ export default function RegistrationWizard() {
     setLoading(true);
     setError(null);
     try {
-      // Bypassed payment API call as requested
-      /*
-      await api.post('/registration/payment', {
-        patient_id: patientData?.patient_id,
-        step_id: 4,
-        amount: totalAmount,
-        currency: 'INR',
-        intent: form.intent
+      const intentIdStr = localStorage.getItem('current_intent_id');
+      const intentId = intentIdStr ? parseInt(intentIdStr, 10) : 0;
+
+      // 1. Create order
+      const orderRes = await api.post('/payment/create-order', { intent_id: intentId });
+      const { amount, currency, razorpay_order_id, razorpay_key_id } = orderRes.data;
+
+      // 2. Load Razorpay script
+      const scriptLoaded = await new Promise((resolve) => {
+        if (window.Razorpay) return resolve(true);
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
       });
-      */
-      await new Promise(resolve => setTimeout(resolve, 800));
-      next();
+
+      if (!scriptLoaded) {
+        setError('Failed to load payment gateway.');
+        setLoading(false);
+        return;
+      }
+
+      // 3. Open Razorpay checkout
+      const options = {
+        key: razorpay_key_id,
+        amount: amount,
+        currency: currency,
+        name: 'Med Experts',
+        description: 'Expert Second Opinion',
+        order_id: razorpay_order_id,
+        handler: function (response) {
+          next();
+          setLoading(false);
+        },
+        prefill: {
+          name: `${form.firstName} ${form.lastName}`.trim(),
+          email: form.email,
+          contact: form.phone,
+        },
+        theme: { color: '#0284c7' }, // sky-600
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+          }
+        }
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.on('payment.failed', function (response) {
+        console.error(response.error);
+        setError('Payment failed. Please try again.');
+        setLoading(false);
+      });
+      paymentObject.open();
+
     } catch (err) {
       console.error('Payment API Error:', err);
       setError(err.response?.data?.detail || 'Payment failed. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
@@ -299,7 +426,19 @@ export default function RegistrationWizard() {
           {/* Progress / Steps (hide on success) */}
           {step < 5 && (
             <div className="px-5 pt-6 pb-3 sm:px-7 border-b border-slate-50">
-              <StepBar step={step} total={totalSteps} />
+              <StepBar 
+                steps={form.intent === 'caselet' ? [
+                  { label: 'Records' },
+                  { label: 'Done' }
+                ] : [
+                  { label: 'Records' },
+                  { label: 'Service' },
+                  { label: 'Doctors' },
+                  { label: 'Pay' },
+                  { label: 'Done' }
+                ]} 
+                currentStepIndex={form.intent === 'caselet' ? (step === 1 ? 0 : 1) : step - 1}
+              />
               {error && (
                 <div className="mt-4 p-3 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm font-semibold flex items-start gap-2">
                   <div className="shrink-0 mt-0.5">

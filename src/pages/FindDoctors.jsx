@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { Search, MapPin, Briefcase, GraduationCap, ChevronRight, ThumbsUp, Video, Clock } from 'lucide-react';
@@ -22,8 +22,9 @@ export default function FindDoctors() {
   const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
+    const controller = new AbortController();
     // Fetch filters
-    api.get('/public/doctors/filters')
+    api.get('/public/doctors/filters', { signal: controller.signal })
       .then(res => {
         const data = res.data;
         setFiltersData({
@@ -32,17 +33,22 @@ export default function FindDoctors() {
           hospitals: data.hospitals || []
         });
       })
-      .catch(err => console.error('Error fetching filters:', err));
+      .catch(err => {
+        if (err.name !== 'CanceledError') console.error('Error fetching filters:', err);
+      });
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
+    const controller = new AbortController();
     // Fetch doctors
     setLoading(true);
     api.get('/public/doctors', {
       params: {
         page: 1,
         page_size: 100
-      }
+      },
+      signal: controller.signal
     })
       .then(res => {
         const data = res.data;
@@ -50,28 +56,33 @@ export default function FindDoctors() {
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching doctors:', err);
-        setLoading(false);
+        if (err.name !== 'CanceledError') {
+          console.error('Error fetching doctors:', err);
+          setLoading(false);
+        }
       });
+    return () => controller.abort();
   }, []);
 
-  const filtered = doctors.filter(d => {
-    const matchSpecialty = filter === 'All' || d.department_name === filter;
-    
-    const searchLower = search.toLowerCase();
-    const matchSearch = search === '' || 
-                        (d.name && d.name.toLowerCase().includes(searchLower)) || 
-                        (d.hospital_name && d.hospital_name.toLowerCase().includes(searchLower)) ||
-                        (d.department_name && d.department_name.toLowerCase().includes(searchLower)) ||
-                        (d.speciality && d.speciality.toLowerCase().includes(searchLower));
-                        
-    const locLower = locationSearch.toLowerCase();
-    const matchLocation = locationSearch === '' || 
-                          (d.city && d.city.toLowerCase().includes(locLower)) ||
-                          (d.hospital_name && d.hospital_name.toLowerCase().includes(locLower));
-    
-    return matchSpecialty && matchSearch && matchLocation;
-  });
+  const filtered = useMemo(() => {
+    return doctors.filter(d => {
+      const matchSpecialty = filter === 'All' || d.department_name === filter;
+      
+      const searchLower = search.toLowerCase();
+      const matchSearch = search === '' || 
+                          (d.name && d.name.toLowerCase().includes(searchLower)) || 
+                          (d.hospital_name && d.hospital_name.toLowerCase().includes(searchLower)) ||
+                          (d.department_name && d.department_name.toLowerCase().includes(searchLower)) ||
+                          (d.speciality && d.speciality.toLowerCase().includes(searchLower));
+                          
+      const locLower = locationSearch.toLowerCase();
+      const matchLocation = locationSearch === '' || 
+                            (d.city && d.city.toLowerCase().includes(locLower)) ||
+                            (d.hospital_name && d.hospital_name.toLowerCase().includes(locLower));
+      
+      return matchSpecialty && matchSearch && matchLocation;
+    });
+  }, [doctors, filter, search, locationSearch]);
 
   const displayDepartments = ['All', ...filtersData.departments];
 

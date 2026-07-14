@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { MapPin, Building2, Search, ArrowUpRight, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import api from '../api/axios';
 
@@ -27,7 +27,9 @@ export default function Hospitals() {
   }, []);
 
   useEffect(() => {
-    fetchHospitals();
+    const controller = new AbortController();
+    fetchHospitals(controller.signal);
+    return () => controller.abort();
   }, [selectedCity, page, pageSize]);
 
   const fetchCities = async () => {
@@ -42,7 +44,7 @@ export default function Hospitals() {
     }
   };
 
-  const fetchHospitals = async () => {
+  const fetchHospitals = async (signal) => {
     setLoading(true);
     try {
       let url = `/public/hospitals?page=${page}&page_size=${pageSize}`;
@@ -50,20 +52,24 @@ export default function Hospitals() {
         url += `&city=${encodeURIComponent(selectedCity)}`;
       }
       
-      const response = await api.get(url);
+      const response = await api.get(url, { signal });
       const data = response.data;
       setHospitals(data.hospitals || []);
       setTotal(data.total || 0);
     } catch (error) {
-      console.error('Error fetching hospitals:', error);
+      if (error.name !== 'CanceledError') {
+        console.error('Error fetching hospitals:', error);
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const filtered = hospitals.filter(h =>
-    h.name?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = useMemo(() => {
+    if (!search) return hospitals;
+    const lower = search.toLowerCase();
+    return hospitals.filter(h => h.name?.toLowerCase().includes(lower));
+  }, [hospitals, search]);
 
   return (
     <div className="min-h-screen bg-slate-50 pt-16 pb-12 font-sans">

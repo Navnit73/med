@@ -50,57 +50,53 @@ export const Row2 = ({ children }) => (
   <div className="grid grid-cols-2 gap-3">{children}</div>
 );
 
-const STEPS = [
-  { label: 'Records', short: 'Docs' },
-  { label: 'Service', short: 'Service' },
-  { label: 'Doctors', short: 'Doctors' },
-  { label: 'Pay', short: 'Pay' },
-  { label: 'Done', short: 'Done' },
-];
-
-export const StepBar = ({ step, total }) => (
-  <div className="mb-6">
-    <div className="sm:hidden flex items-center gap-3 bg-white border border-slate-100 rounded-2xl px-4 py-3 shadow-sm">
-      <div className="w-9 h-9 rounded-full bg-sky-600 text-white text-xs font-black flex items-center justify-center shrink-0 shadow-sm shadow-sky-200">
-        {step}
-      </div>
-      <div className="flex-1">
-        <div className="flex justify-between text-[11px] font-bold mb-1.5">
-          <span className="text-sky-700">{STEPS[step - 1]?.label}</span>
-          <span className="text-slate-400">{step} of {total}</span>
+export const StepBar = ({ steps, currentStepIndex }) => {
+  const total = steps.length;
+  const step = currentStepIndex + 1; // 1-indexed for display
+  return (
+    <div className="mb-6">
+      <div className="sm:hidden flex items-center gap-3 bg-white border border-slate-100 rounded-2xl px-4 py-3 shadow-sm">
+        <div className="w-9 h-9 rounded-full bg-sky-600 text-white text-xs font-black flex items-center justify-center shrink-0 shadow-sm shadow-sky-200">
+          {step}
         </div>
-        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-          <div className="h-full bg-sky-600 rounded-full transition-all duration-500"
-            style={{ width: `${((step - 1) / (total - 1)) * 100}%` }} />
-        </div>
-      </div>
-    </div>
-    <div className="hidden sm:flex items-center relative px-2">
-      <div className="absolute inset-x-6 top-3.5 h-0.5 bg-slate-100" />
-      <div className="absolute left-6 top-3.5 h-0.5 bg-sky-500 transition-all duration-500"
-        style={{ width: `calc(${((step - 1) / (total - 1)) * 100}% - 3rem + 24px)` }} />
-      {STEPS.map(({ label }, i) => {
-        const s = i + 1;
-        const active = step === s;
-        const done = step > s;
-        return (
-          <div key={s} className="flex-1 flex flex-col items-center relative z-10">
-            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold border-2 transition-all ${
-              done ? 'bg-sky-600 border-sky-600 text-white' :
-              active ? 'bg-white border-sky-600 text-sky-700 shadow-md' :
-              'bg-white border-slate-200 text-slate-400'
-            }`}>
-              {done ? <CheckCircle2 size={13} /> : s}
-            </div>
-            <span className={`text-[10px] mt-1 font-semibold ${active ? 'text-sky-700' : done ? 'text-sky-500' : 'text-slate-400'}`}>
-              {label}
-            </span>
+        <div className="flex-1">
+          <div className="flex justify-between text-[11px] font-bold mb-1.5">
+            <span className="text-sky-700">{steps[currentStepIndex]?.label}</span>
+            <span className="text-slate-400">{step} of {total}</span>
           </div>
-        );
-      })}
+          <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-full bg-sky-600 rounded-full transition-all duration-500"
+              style={{ width: `${total > 1 ? ((step - 1) / (total - 1)) * 100 : 100}%` }} />
+          </div>
+        </div>
+      </div>
+      <div className="hidden sm:flex items-center relative px-2">
+        <div className="absolute inset-x-6 top-3.5 h-0.5 bg-slate-100" />
+        <div className="absolute left-6 top-3.5 h-0.5 bg-sky-500 transition-all duration-500"
+          style={{ width: total > 1 ? `calc(${((step - 1) / (total - 1)) * 100}% - 3rem + 24px)` : '100%' }} />
+        {steps.map(({ label }, i) => {
+          const s = i + 1;
+          const active = step === s;
+          const done = step > s;
+          return (
+            <div key={s} className="flex-1 flex flex-col items-center relative z-10">
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold border-2 transition-all ${
+                done ? 'bg-sky-600 border-sky-600 text-white' :
+                active ? 'bg-white border-sky-600 text-sky-700 shadow-md' :
+                'bg-white border-slate-200 text-slate-400'
+              }`}>
+                {done ? <CheckCircle2 size={13} /> : s}
+              </div>
+              <span className={`text-[10px] mt-1 font-semibold ${active ? 'text-sky-700' : done ? 'text-sky-500' : 'text-slate-400'}`}>
+                {label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const NavButtons = ({ onBack, onNext, nextLabel = 'Continue', nextDisabled = false, showBack = true, loading = false }) => (
   <div className="sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-slate-100 px-5 py-3 -mx-5 -mb-5 sm:-mx-7 sm:-mb-7 mt-6 flex gap-2 z-20">

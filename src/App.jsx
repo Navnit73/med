@@ -29,6 +29,7 @@ import PatientDashboard from './pages/patient/Dashboard';
 import PatientRegistration from './pages/patient/Registration';
 import SelectDoctor from './pages/patient/SelectDoctor';
 import Checkout from './pages/patient/Checkout';
+import CaseletReport from './pages/patient/CaseletReport';
 
 // Doctor View Imports
 import DoctorLayout from './layouts/DoctorLayout';
@@ -87,6 +88,7 @@ export default function App() {
               <Route path="registration/*" element={<PatientRegistration />} />
               <Route path="select-doctor" element={<SelectDoctor />} />
               <Route path="checkout/:doctorId" element={<Checkout />} />
+              <Route path="caselet-report" element={<CaseletReport />} />
               <Route path="second_opinion/*" element={<PatientRegistration />} />
               <Route path="second_openion/*" element={<PatientRegistration />} />
             </Route>

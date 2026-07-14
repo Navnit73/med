@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FileText, Download, Receipt, Stethoscope, ChevronRight, X, Users, Loader2, Settings } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { patientApi } from "../../api/patient";
+import api from "../../api/axios";
 import ProfileSettingsModal from "./ProfileSettingsModal";
 
 export default function PatientDashboard() {
@@ -14,6 +15,7 @@ export default function PatientDashboard() {
   const [error, setError] = useState(null);
 
   const [showPdfModal, setShowPdfModal] = useState(false);
+  const [reportUrl, setReportUrl] = useState("/patient_summary.pdf");
   const [showDoctorCaseletPdfModal, setShowDoctorCaseletPdfModal] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
 
@@ -87,6 +89,7 @@ export default function PatientDashboard() {
           const intentData = await patientApi.createIntent('caselet');
           if (intentData?.intent_id) {
             localStorage.setItem('current_intent_id', intentData.intent_id);
+            localStorage.setItem('current_intent_type', 'caselet');
           }
           navigate("/patient/registration");
         } catch (err) {
@@ -111,6 +114,7 @@ export default function PatientDashboard() {
           const intentData = await patientApi.createIntent('expert');
           if (intentData?.intent_id) {
             localStorage.setItem('current_intent_id', intentData.intent_id);
+            localStorage.setItem('current_intent_type', 'expert');
           }
           navigate('/patient/select-doctor');
         } catch (err) {
@@ -122,21 +126,23 @@ export default function PatientDashboard() {
       },
       cta: "Request"
     },
-    // {
-    //   id: "download",
-    //   label: "Download Caselet",
-    //   desc: "Secure PDF of your submitted medical caselet and history.",
-    //   icon: Download,
-    //   color: "blue",
-    //   onClick: () => setShowPdfModal(true),
-    //   cta: "Download"
-    // },
+    {
+      id: "caselet_report",
+      label: "View Caselet Report",
+      desc: "Secure PDF of your submitted medical caselet and history.",
+      icon: FileText,
+      color: "violet",
+      onClick: () => {
+        navigate('/patient/caselet-report');
+      },
+      cta: "View"
+    },
     // {
     //   id: "receipts",
     //   label: "Receipts",
     //   desc: "View and download invoices for past expert consultations.",
     //   icon: Receipt,
-    //   color: "violet",
+    //   color: "blue",
     //   onClick: () => alert("Opening Receipts..."),
     //   cta: "View All"
     // },
@@ -230,28 +236,6 @@ export default function PatientDashboard() {
             </div>
             <div className="flex-1 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
               <iframe src="/doctor_summary.pdf" className="w-full h-full border-0" title="Doctor Summary PDF" />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Caselet PDF Modal */}
-      {showPdfModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-xl p-4 md:p-6 w-full max-w-4xl h-[85vh] flex flex-col shadow-2xl relative animate-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center mb-4 md:mb-6">
-              <h3 className="text-lg md:text-xl font-bold text-slate-900 font-sora">Caselet Summary</h3>
-              <div className="flex items-center gap-2 md:gap-3">
-                <a href="/patient_summary.pdf" download className="px-3 py-1.5 md:px-4 md:py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 font-semibold rounded-xl flex items-center gap-2 transition-colors text-sm md:text-base">
-                  <Download size={16} /> <span className="hidden sm:inline">Download</span>
-                </a>
-                <button onClick={() => setShowPdfModal(false)} className="text-slate-400 hover:text-slate-900 bg-slate-100 rounded-full p-1.5 md:p-2 transition-colors">
-                  <X size={20} />
-                </button>
-              </div>
-            </div>
-            <div className="flex-1 bg-slate-100 rounded-2xl overflow-hidden border border-slate-200">
-              <iframe src="/patient_summary.pdf" className="w-full h-full border-0" title="Patient Summary PDF" />
             </div>
           </div>
         </div>

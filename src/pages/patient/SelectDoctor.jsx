@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Star, Activity, Loader2, ArrowLeft } from 'lucide-react';
 import { patientApi } from '../../api/patient';
@@ -43,11 +43,13 @@ export default function SelectDoctor() {
     navigate(`/patient/checkout/${doctor.doctor_id || 'd1'}`);
   };
 
-  const filteredDoctors = doctors.filter(doc => 
-    doc.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    doc.specialty?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    doc.hospital?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredDoctors = useMemo(() => {
+    return doctors.filter(doc => 
+      doc.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doc.specialty?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doc.hospital?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [doctors, searchQuery]);
 
   return (
     <div className="bg-slate-50 min-h-screen">

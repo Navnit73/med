@@ -222,7 +222,7 @@ export default function MedicalRecordUpload({ form, uploadingId, addDoc, removeD
       <NavButtons
         onBack={onBack}
         onNext={onNext}
-        nextLabel="Continue"
+        nextLabel={form.intent === 'caselet' ? "Generate Caselet & Pay" : "Continue"}
         nextDisabled={form.documents.length === 0}
         loading={loading}
       />
